@@ -14,7 +14,7 @@ io.on('connection', (socket) => {
     socket.username = "Anonymous";
     
     socket.on('change_username', (data) => {
-        console.log(`user "${socket.username}" ==> "${data.username}"`);
+        console.log(`user "${socket.username}" → "${data.username}"`);
         socket.username = data.username
     });
 

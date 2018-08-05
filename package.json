@@ -1,0 +1,18 @@
+{
+  "name": "chat1",
+  "version": "1.0.0",
+  "description": "Chat V1",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "start": "nodemon app",
+  "author": "Niels Koster",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "nodemon": "^1.14.3",
+    "socket.io": "^2.0.4"
+  }
+}

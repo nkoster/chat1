@@ -9,13 +9,14 @@ const
     chatroom = $("#chatroom"),
     feedback = $("#feedback");
 
-send_message.click(function(){
-    socket.emit('new_message', {message : message.val()})
+send_message.click( () => {
+    socket.emit('new_message', {message : message.val()});
+    message.val('')
 });
 
 socket.on("new_message", (data) => {
-    feedback.html('');
-    message.val('');
+    // feedback.html('');
+    // message.val('');
     chatroom.append("<p class='message'>" + data.username + ": " + data.message + "</p>")
 });
 
@@ -30,8 +31,15 @@ message.bind("keypress", () => {
 message.bind("keyup", (event) => {
     event.preventDefault();
     if (event.keyCode === 13) {
-        console.log('Enter pressed');
-        socket.emit('new_message', {message : message.val()})
+        socket.emit('new_message', {message : message.val()});
+        message.val('')
+    }
+});
+
+username.bind('keyup', (event) => {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+        socket.emit('change_username', {username : username.val()})
     }
 });
 

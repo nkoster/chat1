@@ -15,8 +15,6 @@ send_message.click( () => {
 });
 
 socket.on("new_message", (data) => {
-    // feedback.html('');
-    // message.val('');
     chatroom.append("<p class='message'>" + data.username + ": " + data.message + "</p>")
 });
 
@@ -49,5 +47,8 @@ socket.on('typing', (data) => {
         feedback.html('')
     }, 5000)
 });
+
+username.val(Math.random().toString(36).substring(2, 15));
+socket.emit('hello', { username: username.val() } );
 
 });

@@ -15,8 +15,6 @@ app.get('/', (req, res) => {
 
 io.on('connection', function(socket) {
 
-    socket.username = "Anonymous";
-
     socket.on('hello', function(data) {
         socket.username = data.username;
         if (users.includes(socket.username)) {
@@ -42,10 +40,12 @@ io.on('connection', function(socket) {
     });
 
     socket.on('new_message', (data) => {
+        if (socket.username === undefined) return;
         io.sockets.emit('new_message', {message : data.message, username : socket.username});
     });
 
     socket.on('typing', (data) => {
+        if (socket.username === undefined) return;
         socket.broadcast.emit('typing', {username : socket.username})
     })
 

@@ -36,6 +36,8 @@ div#change_username {
     height: 3%;
     display: inline-block;
     background-color: #BCA9F5;
+    display: inline-block;
+    white-space: nowrap;
 }
 
 section#chatroom {

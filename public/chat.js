@@ -15,6 +15,7 @@ send_message.click( () => {
 });
 
 socket.on("new_message", (data) => {
+    if (data.username === undefined) return;
     chatroom.append("<p class='message'>" + data.username + ": " + data.message + "</p>")
 });
 
@@ -42,10 +43,10 @@ username.bind('keyup', (event) => {
 });
 
 socket.on('typing', (data) => {
-    feedback.html("<p><i>" + data.username + " is typing..." + "</i></p>");
+    feedback.html(data.username + ' is typing...');
     setTimeout( () => {
         feedback.html('')
-    }, 5000)
+    }, 1000)
 });
 
 username.val(Math.random().toString(36).substring(2, 15));

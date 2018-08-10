@@ -1,7 +1,7 @@
 $(function() {
 
 const
-    socket = io.connect('http://localhost:9999')
+    socket = io.connect('http://192.168.1.33:9999')
     message = $("#message"),
     username = $("#username"),
     send_message = $("#send_message"),
@@ -16,7 +16,9 @@ send_message.click( () => {
 
 socket.on("new_message", (data) => {
     if (data.username === undefined) return;
-    chatroom.append("<p class='message'>" + data.username + ": " + data.message + "</p>")
+    myDate = new Date();
+    chatroom.append('<p class="message">' + myDate.toString().split(/\s+/).slice(4,5) + ' <B> ' + data.username + ':</b> ' + data.message + '</p>');
+    chatroom.scrollTop($('#chatroom')[0].scrollHeight);
 });
 
 send_username.click(function(){

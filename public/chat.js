@@ -1,7 +1,7 @@
 $(function() {
 
 const
-    socket = io.connect('http://192.168.1.33:9999')
+    socket = io.connect('http://localhost:9999')
     message = $("#message"),
     username = $("#username"),
     send_message = $("#send_message"),
@@ -49,6 +49,13 @@ username.bind('keyup', (event) => {
 
 socket.on('typing', (data) => {
     feedback.html(data.username + ' is typing...');
+    setTimeout( () => {
+        feedback.html('')
+    }, 1000)
+});
+
+socket.on('user_exists', (data) => {
+    feedback.html(data.username + ' already exists!');
     setTimeout( () => {
         feedback.html('')
     }, 1000)

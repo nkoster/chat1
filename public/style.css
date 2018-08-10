@@ -87,7 +87,15 @@ p.message {
     width: 100%;
     height: 33px;
     font-family: 'Comfortaa', sans-serif;
+    display: table;
+}
+
+.inside {
+    max-width: 200px;
+    display: table-cell;
     vertical-align: middle;
+    clear: both;
+    padding-left: 10px;  
 }
 
 .message:nth-child(even) {

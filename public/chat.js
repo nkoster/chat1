@@ -20,7 +20,7 @@ socket.on("new_message", (data) => {
     if (data.username === undefined) return;
     myDate = new Date();
     chatroom.append('<p class="message"><span class="inside">' + myDate.toString().split(/\s+/).slice(4,5)
-     + ' - <b> ' + data.username + ':</b> &nbsp; ' + data.message + '</span></p>');
+     + ' - <b> ' + data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + data.message.replace(/<(?:.|\n)*?>/gm, '') + '</span></p>');
     chatroom.scrollTop($('#chatroom')[0].scrollHeight);
 });
 

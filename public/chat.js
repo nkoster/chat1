@@ -10,14 +10,16 @@ const
     feedback = $("#feedback");
 
 send_message.click( () => {
-    socket.emit('new_message', {message : message.val()});
-    message.val('')
+    if (message.val() !== '') {
+        socket.emit('new_message', {message : message.val()});
+        message.val('')
+    }
 });
 
 socket.on("new_message", (data) => {
     if (data.username === undefined) return;
     myDate = new Date();
-    chatroom.append('<p class="message">' + myDate.toString().split(/\s+/).slice(4,5) + ' <B> ' + data.username + ':</b> ' + data.message + '</p>');
+    chatroom.append('<p class="message">' + myDate.toString().split(/\s+/).slice(4,5) + ' - <b> ' + data.username + ':</b> &nbsp; ' + data.message + '</p>');
     chatroom.scrollTop($('#chatroom')[0].scrollHeight);
 });
 
@@ -31,7 +33,7 @@ message.bind("keypress", () => {
 
 message.bind("keyup", (event) => {
     event.preventDefault();
-    if (event.keyCode === 13) {
+    if (event.keyCode === 13 && message.val() !== '') {
         socket.emit('new_message', {message : message.val()});
         message.val('')
     }

@@ -51,4 +51,4 @@ io.on('connection', function(socket) {
 
 });
 
-console.log('Server listening 127.0.0.1:9999');
+console.log('Server listening at TCP port 9999');

@@ -19,6 +19,44 @@ body {
     height: 100%;
 }
 
+#TOP {
+    height: 5%;
+    background: #999;
+    border-bottom: 2px solid black;
+}
+#MIDDLE {
+    height: 90%;
+    background: #AAA;
+}
+#BOTTOM {
+    height: 5%;
+    text-align: center;
+    background: #BBB;
+    border-top: 2px solid black;
+}
+#LOG {
+    width: 15%;
+    height: 100%;
+    background: #888;
+    overflow: auto;
+    float: left;
+    border-right: 2px solid black;
+}
+#chatroom {
+    width: 70%;
+    height: 100%;
+    overflow: auto;
+    float: left;
+    border-right: 2px solid black;
+}
+#USERS {
+    width: 15%;
+    height: 100%;
+    background: #888;
+    overflow: auto;
+    float: right;
+}
+
 header {
     text-align: center;
 }
@@ -29,32 +67,18 @@ h1 {
 }
 
 div#change_username, section#input_zone {
-    border: 3px #666;
-    background: #999;
+    border: 5px outset #8258FA;
 }
 
 div#change_username {
-    height: 5%;
+    height: 3%;
     display: inline-block;
     background-color: #BCA9F5;
-    display: inline-block;
-    white-space: nowrap;
-}
-
-section#top {
-    background: #666;
-}
-
-section#chatroom {
-    border: 5px #666;
-    height: 90%;
-    overflow: auto;
 }
 
 section#input_zone {
-    height: 5%;
-    text-align: center;
-    background-color: #999;
+    height: 7%;
+    background-color: #BCA9F5;
 }
 
 .vertical-align {
@@ -74,6 +98,7 @@ input#message {
     width: 88%;
     height: 70%;
     font-family: 'Comfortaa', sans-serif;
+    font-size: 2vh;
 }
 
 button#send_message {

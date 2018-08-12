@@ -139,6 +139,10 @@ p.message {
     padding-left: 10px;  
 }
 
+.mono {
+    font-family: 'UbuntuMono', monospace;
+}
+
 .message:nth-child(even) {
     background-color: #e0e0e0;
 }

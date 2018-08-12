@@ -21,8 +21,8 @@ socket.on("new_message", (data) => {
     if (data.username === undefined) return;
     myDate = new Date();
 
-    chatroom.append('<p class="message"><span class="inside">' + 
-        myDate.toString().split(/\s+/).slice(4,5) + ' &nbsp; <b> ' + 
+    chatroom.append('<p class="message"><span class="inside"><span class="mono">' + 
+        myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
         data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + 
         data.message.replace(/<(?:.|\n)*?>/gm, '') + '</span></p>');
 

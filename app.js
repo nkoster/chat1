@@ -18,11 +18,11 @@ io.on('connection', function(socket) {
     socket.on('hello', function(data) {
         socket.username = data.username;
         if (users.includes(socket.username)) {
-            console.log(`${socket.username} already exists.`);
-            socket.emit('user_exists', {username: socket.username})
+            console.log(`${socket.username} already exists.`)
         } else {
             console.log(`connection from: "${socket.username}"`);
             users.push(socket.username);
+            io.sockets.emit('update_userlist', {userlist : users})
             console.log(users)
         }
     });
@@ -34,6 +34,7 @@ io.on('connection', function(socket) {
             } else {
                 console.log(`user "${socket.username}" → "${data.username}"`);
                 users[users.indexOf(socket.username)] = data.username;
+                io.sockets.emit('update_userlist', {userlist : users});
                 socket.username = data.username;
                 console.log(users)
             }

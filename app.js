@@ -22,11 +22,25 @@ io.on('connection', function(socket) {
         } else {
             console.log(`connection from: "${socket.username}"`);
             users.push(socket.username);
-            io.sockets.emit('update_userlist', {userlist : users})
+            io.sockets.emit('update_userlist', {userlist : users});
+            io.sockets.emit('new_message', {message : socket.username +
+                ' connected.', username : ':'});
             console.log(users)
         }
     });
-  
+
+    socket.on('disconnect', function() {
+        console.log('user ' + socket.username + ' disconnected');
+        let index = users.indexOf(socket.username);
+        if (index > -1) {
+            users.splice(index, 1);
+            io.sockets.emit('update_userlist', {userlist : users});
+            io.sockets.emit('new_message', {message : socket.username +
+                ' disconnected.', username : ':'});
+            console.log(users)
+        }
+    });
+
     socket.on('change_username', (data) => {
         if (users.includes(socket.username)) {
             if (users.includes(data.username)) {
@@ -35,6 +49,8 @@ io.on('connection', function(socket) {
                 console.log(`user "${socket.username}" → "${data.username}"`);
                 users[users.indexOf(socket.username)] = data.username;
                 io.sockets.emit('update_userlist', {userlist : users});
+                io.sockets.emit('new_message', {message : socket.username +
+                    ' → ' + data.username, username : ':'});
                 socket.username = data.username;
                 console.log(users)
             }

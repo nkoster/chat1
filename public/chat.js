@@ -24,7 +24,6 @@ socket.on("new_message", (data) => {
         myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
         data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + 
         data.message.replace(/<(?:.|\n)*?>/gm, '') + '</span></p>');
-
     chatroom.scrollTop($('#chatroom')[0].scrollHeight);
 });
 
@@ -33,7 +32,7 @@ socket.on("update_userlist", (data) => {
     data.userlist.forEach(element => {
          list += '<p class="user"><span class="inside"><b>' + element + '</b></span></p>'
     });
-    userlist.html(list)
+    userlist.html(list);
 });
 
 send_username.click(function(){
@@ -66,8 +65,6 @@ socket.on('typing', (data) => {
     }, 1000)
 });
 
-// username.val(Math.random().toString(36).substring(2, 15));
-// socket.emit('hello', { username: username.val() } );
 socket.emit('hello', { username: '' } );
 
 });

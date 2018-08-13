@@ -151,9 +151,9 @@ input#message {
     background: #f0f0f0;
 }
 
-button#send_message {
+/* button#send_message {
     display: inline-block;
-}
+} */
 
 p.message {
     margin: 0px;

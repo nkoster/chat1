@@ -19,17 +19,19 @@ io.on('connection', function(socket) {
 
     socket.on('hello', function(data) {
         socket.username = data.username;
+        if (socket.username === '') socket.username = Math.random().toString(36).substring(2, 15);
         if (queryUser.length > 0) socket.username = queryUser;
         if (users.includes(socket.username)) {
-            console.log(`${socket.username} already exists.`)
+            console.log(`${socket.username} already exists.`);
+            socket.username = Math.random().toString(36).substring(2, 15);
         } else {
             console.log(`connection from: "${socket.username}"`);
-            users.push(socket.username);
-            io.sockets.emit('update_userlist', {userlist : users});
-            io.sockets.emit('new_message', {message : socket.username +
-                ' connected.', username : ':'});
-            console.log(users)
         }
+        users.push(socket.username);
+        io.sockets.emit('update_userlist', {userlist : users});
+        io.sockets.emit('new_message', {message : socket.username +
+            ' connected.', username : ':'});
+        console.log(users)
     });
 
     socket.on('disconnect', function() {

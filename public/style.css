@@ -10,6 +10,13 @@
     box-sizing: border-box;
 }
 
+body, html {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 html {
     height: 100%;
 }
@@ -20,37 +27,62 @@ body {
 }
 
 #TOP {
-    height: 5%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
     background: #999;
     border-bottom: 2px solid black;
 }
 
 #MIDDLE {
-    height: 90%;
+    position: fixed;
+    top: 40px;
+    bottom: 40px;
+    left: 0;
+    right: 0;
     background: #AAA;
 }
 
 #BOTTOM {
-    height: 5%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
     text-align: center;
     background: #BBB;
     border-top: 2px solid black;
 }
 
 #chatroom {
-    width: 87%;
-    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 150px;
     overflow: auto;
-    float: left;
-    border-right: 2px solid black;
+    border-right: 4px solid black;
 }
 
 #userlist {
-    width: 13%;
-    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 150px;
     background: #888;
     overflow: auto;
-    float: right;
+}
+
+#drag {
+    position: absolute;
+    right: 150px;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    cursor: ew-resize;
 }
 
 p.user {

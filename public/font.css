@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'UbuntuMono';
   font-style: normal;
-  font-size: 20px;
-  src: local('UbuntuMono Regular'), local('UbuntuMono-Regular'), url(UbuntuMono-Regular.ttf) format('truetype');
+  src: local('UbuntuMono Regular'), local('UbuntuMono-Regular'),
+    url(UbuntuMono-Regular.ttf) format('truetype');
 }

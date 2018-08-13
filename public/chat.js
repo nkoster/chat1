@@ -20,7 +20,6 @@ send_message.click( () => {
 socket.on("new_message", (data) => {
     if (data.username === undefined) return;
     myDate = new Date();
-
     chatroom.append('<p class="message"><span class="inside"><span class="mono">' + 
         myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
         data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + 
@@ -34,7 +33,7 @@ socket.on("update_userlist", (data) => {
     data.userlist.forEach(element => {
          list += '<p class="user"><span class="inside"><b>' + element + '</b></span></p>'
     });
-    userlist.html(list);
+    userlist.html(list)
 });
 
 send_username.click(function(){

@@ -6,17 +6,20 @@ const
 
 let
     users = [];
+    user = '';
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.get('/', (req, res) => {
-	res.render('index')
+    res.render('index');
+    queryUser = req.query.user ? req.query.user : ''
 });
 
 io.on('connection', function(socket) {
 
     socket.on('hello', function(data) {
         socket.username = data.username;
+        if (queryUser.length > 0) socket.username = queryUser;
         if (users.includes(socket.username)) {
             console.log(`${socket.username} already exists.`)
         } else {

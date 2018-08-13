@@ -66,7 +66,8 @@ socket.on('typing', (data) => {
     }, 1000)
 });
 
-username.val(Math.random().toString(36).substring(2, 15));
-socket.emit('hello', { username: username.val() } );
+// username.val(Math.random().toString(36).substring(2, 15));
+// socket.emit('hello', { username: username.val() } );
+socket.emit('hello', { username: '' } );
 
 });

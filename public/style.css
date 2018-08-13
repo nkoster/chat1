@@ -31,15 +31,15 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 40px;
+    height: 30px;
     background: #999;
     border-bottom: 2px solid black;
 }
 
 #MIDDLE {
     position: fixed;
-    top: 40px;
-    bottom: 40px;
+    top: 30px;
+    bottom: 30px;
     left: 0;
     right: 0;
     background: #AAA;
@@ -50,9 +50,9 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 40px;
+    height: 30px;
     text-align: center;
-    background: #BBB;
+    background: #f0f0f0;
     border-top: 2px solid black;
 }
 
@@ -124,8 +124,7 @@ div#change_username {
     background-color: #BCA9F5;
 }
 
-section#input_zone {
-    height: 7%;
+#input_zone {
     background-color: #BCA9F5;
 }
 
@@ -143,16 +142,17 @@ input#username {
 
 input#message {
     display: inline-block;
-    width: 88%;
-    height: 70%;
+    width: 99%;
+    height: 100%;
     font-family: 'Comfortaa', sans-serif;
-    font-size: 2vh;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    background: #f0f0f0;
 }
 
 button#send_message {
     display: inline-block;
-    height: 70%;
-    width: 10%;
 }
 
 p.message {
@@ -164,11 +164,11 @@ p.message {
 }
 
 .inside {
-    max-width: 200px;
+    /* max-width: 200px; */
     display: table-cell;
     vertical-align: middle;
     clear: both;
-    padding-left: 10px;  
+    /* padding-left: 10px;   */
 }
 
 .mono {

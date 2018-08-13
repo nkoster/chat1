@@ -17,7 +17,7 @@ send_message.click( () => {
     }
 });
 
-socket.on("new_message", (data) => {
+socket.on("new_message", data => {
     if (data.username === undefined) return;
     myDate = new Date();
     chatroom.append('<p class="message"><span class="inside"><span class="mono">' + 
@@ -27,7 +27,7 @@ socket.on("new_message", (data) => {
     chatroom.scrollTop($('#chatroom')[0].scrollHeight);
 });
 
-socket.on("update_userlist", (data) => {
+socket.on("update_userlist", data => {
     let list = '';
     data.userlist.forEach(element => {
          list += '<p class="user"><span class="inside"><b>' + element + '</b></span></p>'
@@ -35,7 +35,7 @@ socket.on("update_userlist", (data) => {
     userlist.html(list);
 });
 
-send_username.click(function(){
+send_username.click(() => {
     socket.emit('change_username', {username : username.val()})
 });
 
@@ -43,7 +43,7 @@ message.bind("keypress", () => {
     socket.emit('typing')
 });
 
-message.bind("keyup", (event) => {
+message.bind("keyup", event => {
     event.preventDefault();
     if (event.keyCode === 13 && message.val() !== '') {
         socket.emit('new_message', {message : message.val()});
@@ -58,7 +58,7 @@ username.bind('keyup', (event) => {
     }
 });
 
-socket.on('typing', (data) => {
+socket.on('typing', data => {
     feedback.html(data.username + ' is typing...');
     setTimeout( () => {
         feedback.html('')

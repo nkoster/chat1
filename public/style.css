@@ -20,7 +20,7 @@ input {
     right: 0;
     height: 30px;
     background: #666;
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid #333;
     display: table;
 }
 
@@ -41,7 +41,7 @@ input {
     height: 30px;
     text-align: center;
     background: #f0f0f0;
-    border-top: 2px solid black;
+    border-top: 2px solid #333;
 }
 
 #chatroom {
@@ -51,7 +51,7 @@ input {
     bottom: 0;
     right: 150px;
     overflow: auto;
-    border-right: 4px solid black;
+    border-right: 5px solid #555;
 }
 
 #userlist {
@@ -85,11 +85,11 @@ p.user {
     text-align: right;
     padding-right: 10px;
 }
-.user:nth-child(even) {
+.user:nth-child(odd) {
     background-color: #e0e0e0;
 }
 
-.user:nth-child(odd) {
+.user:nth-child(even) {
     background-color: #f0f0f0;
 }
 

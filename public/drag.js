@@ -14,6 +14,7 @@ $(function () {
 
     $(document).on('mousemove', function (e) {
         if (!isResizing) return false;
+        document.body.style.MozUserSelect="none";
         var offsetRight = container.width() - (e.clientX - container.offset().left);
         if (offsetRight < (container.width() - 5) && offsetRight > 5) {
             left.css('right', offsetRight);

@@ -13,6 +13,11 @@ input {
     outline: none;
 }
 
+::placeholder {
+    color: #444;
+    opacity: 1;
+}
+
 #TOP {
     position: fixed;
     top: 0;
@@ -108,7 +113,7 @@ input#username {
     border: none;
     background: #666;
     float: right;
-    width: 110px;
+    width: 145px;
 }
 
 input#message {

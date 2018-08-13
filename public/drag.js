@@ -13,18 +13,15 @@ $(function () {
     });
 
     $(document).on('mousemove', function (e) {
-        // we don't want to do anything if we aren't resizing.
-        if (!isResizing) 
-            return false;
-        
+        if (!isResizing) return false;
         var offsetRight = container.width() - (e.clientX - container.offset().left);
-
-        left.css('right', offsetRight);
-        right.css('width', offsetRight);
-        handle.css('right', offsetRight);
+        if (offsetRight < (container.width() - 5) && offsetRight > 5) {
+            left.css('right', offsetRight);
+            right.css('width', offsetRight);
+            handle.css('right', offsetRight);
+        }
         return false
     }).on('mouseup', function (e) {
-        // stop resizing
         isResizing = false;
     });
 });

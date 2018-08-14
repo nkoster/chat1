@@ -30,7 +30,7 @@ io.on('connection', socket => {
         users.push(socket.username);
         io.sockets.emit('update_userlist', {userlist : users});
         io.sockets.emit('new_message', {message : socket.username +
-            ' connected.', username : ':'});
+            ' connected', username : ':'});
         console.log(users)
     });
 
@@ -41,7 +41,7 @@ io.on('connection', socket => {
             users.splice(index, 1);
             io.sockets.emit('update_userlist', {userlist : users});
             io.sockets.emit('new_message', {message : socket.username +
-                ' disconnected.', username : ':'});
+                ' disconnected', username : ':'});
             console.log(users)
         }
     });

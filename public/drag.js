@@ -1,28 +1,30 @@
-var isResizing = false,
+let
+    isResizing = false,
     lastDownX = 0;
 
-$(function () {
-    var container = $('#MIDDLE'),
+$(() => {
+    let
+        container = $('#MIDDLE'),
         left = $('#chatroom'),
         right = $('#userlist'),
         handle = $('#drag');
 
-    handle.on('mousedown', function (e) {
+    handle.on('mousedown', e => {
         isResizing = true;
-        lastDownX = e.clientX;
+        lastDownX = e.clientX
     });
 
-    $(document).on('mousemove', function (e) {
+    $(document).on('mousemove', e => {
         if (!isResizing) return false;
-        document.body.style.MozUserSelect="none";
+        document.body.style.MozUserSelect = "none";
         var offsetRight = container.width() - (e.clientX - container.offset().left);
         if (offsetRight < (container.width() - 5) && offsetRight > 5) {
             left.css('right', offsetRight);
             right.css('width', offsetRight);
-            handle.css('right', offsetRight);
+            handle.css('right', offsetRight)
         }
         return false
-    }).on('mouseup', function (e) {
-        isResizing = false;
-    });
+    }).on('mouseup', e => {
+        isResizing = false
+    })
 });

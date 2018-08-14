@@ -51,11 +51,9 @@ $(function() {
         }
     });
 
-    username.bind('keyup', (event) => {
-        event.preventDefault();
-        if (event.keyCode === 13) {
-            socket.emit('change_username', {username : username.val()})
-        }
+    username.keypress(function(e) {
+        if (e.keyCode === 13) socket.emit('change_username', {username : username.html()});
+        return e.which != 13
     });
 
     socket.on('typing', data => {
@@ -65,9 +63,7 @@ $(function() {
         }, 1000)
     });
 
-    socket.on('confirm_username', user => {
-        username.val(user)
-    });
+    socket.on('confirm_username', user => username.html(user));
 
     socket.emit('hello', { username: '' } );
 

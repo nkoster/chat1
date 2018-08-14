@@ -104,8 +104,8 @@ p.user {
     color: white;
 }
 
-input#username {
-    height: 100%;
+#username {
+    /* height: 33px; */
     font-family: 'Comfortaa', sans-serif;
     font-size: 16px;
     font-weight: bold;
@@ -113,7 +113,9 @@ input#username {
     border: none;
     background: #666;
     float: right;
-    width: 145px;
+    min-width: 20px;
+    margin-right: 5px;
+    margin-top: 5px;
 }
 
 input#message {

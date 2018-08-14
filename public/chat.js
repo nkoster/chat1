@@ -51,7 +51,7 @@ $(function() {
         }
     });
 
-    username.keypress(function(e) {
+    username.keypress( e => {
         if (e.keyCode === 13) socket.emit('change_username', {username : username.html()});
         return e.which != 13
     });

@@ -6,7 +6,6 @@ const
 
 let
     users = [];
-    user = '';
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -15,9 +14,9 @@ app.get('/', (req, res) => {
     queryUser = req.query.user ? req.query.user : ''
 });
 
-io.on('connection', function(socket) {
+io.on('connection', socket => {
 
-    socket.on('hello', function(data) {
+    socket.on('hello', data => {
         socket.username = data.username;
         if (socket.username === '') socket.username = Math.random().toString(36).substring(2, 15);
         if (queryUser.length > 0) socket.username = queryUser;
@@ -34,7 +33,7 @@ io.on('connection', function(socket) {
         console.log(users)
     });
 
-    socket.on('disconnect', function() {
+    socket.on('disconnect', () => {
         console.log('user ' + socket.username + ' disconnected');
         let index = users.indexOf(socket.username);
         if (index > -1) {
@@ -46,7 +45,7 @@ io.on('connection', function(socket) {
         }
     });
 
-    socket.on('change_username', (data) => {
+    socket.on('change_username', data => {
         if (users.includes(socket.username)) {
             if (users.includes(data.username)) {
                 console.log(`${data.username} already exists.`)
@@ -66,12 +65,12 @@ io.on('connection', function(socket) {
         }
     });
 
-    socket.on('new_message', (data) => {
+    socket.on('new_message', data => {
         if (socket.username === undefined) return;
         io.sockets.emit('new_message', {message : data.message, username : socket.username});
     });
 
-    socket.on('typing', (data) => {
+    socket.on('typing', () => {
         if (socket.username === undefined) return;
         socket.broadcast.emit('typing', {username : socket.username})
     })

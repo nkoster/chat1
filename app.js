@@ -26,6 +26,7 @@ io.on('connection', socket => {
         } else {
             console.log(`connection from: "${socket.username}"`);
         }
+        socket.emit('confirm_username', socket.username);
         users.push(socket.username);
         io.sockets.emit('update_userlist', {userlist : users});
         io.sockets.emit('new_message', {message : socket.username +

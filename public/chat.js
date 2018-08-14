@@ -1,7 +1,7 @@
 $(function() {
 
     const
-        socket = io.connect('http://192.168.1.33:9999')
+        socket = io.connect('http://localhost:9999')
         message = $("#message"),
         username = $("#username"),
         send_message = $("#send_message"),
@@ -63,6 +63,10 @@ $(function() {
         setTimeout( () => {
             feedback.html('')
         }, 1000)
+    });
+
+    socket.on('confirm_username', user => {
+        username.val(user)
     });
 
     socket.emit('hello', { username: '' } );

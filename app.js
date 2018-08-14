@@ -50,7 +50,7 @@ io.on('connection', socket => {
         if (users.includes(socket.username)) {
             if (users.includes(data.username)) {
                 console.log(`${data.username} already exists.`)
-            } else if (data.username.length < 1) {
+            } else if (data.username.replace(/<(?:.|\n)*?>/gm, '').length < 1) {
                 console.log('Too small.')
             } else if (data.username.indexOf(':') > -1) {
                 console.log('Reserved.')

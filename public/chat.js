@@ -52,7 +52,9 @@ $(function() {
     });
 
     username.keypress( e => {
-        if (e.keyCode === 13) socket.emit('change_username', {username : username.html()});
+        if (e.keyCode === 13) socket.emit('change_username',
+            {username : username.html().substring(0, 32).replace(/ /g, '_')}
+        );
         return e.which != 13
     });
 

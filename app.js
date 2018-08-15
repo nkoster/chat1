@@ -11,13 +11,14 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.get('/', (req, res) => {
     res.render('index');
-    queryUser = req.query.user ? req.query.user : ''
+    queryUser = req.query.user ? req.query.user : '';
+    queryUser = queryUser.substring(0, 32).replace(/ /g, '_')
 });
 
 io.on('connection', socket => {
 
     socket.on('hello', data => {
-        socket.username = data.username;
+        socket.username = data.username.substring(0, 32).replace(/ /g, '_');
         if (socket.username === '') socket.username = Math.random().toString(36).substring(2, 15);
         if (queryUser.length > 0) socket.username = queryUser;
         if (users.includes(socket.username)) {

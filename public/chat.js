@@ -51,10 +51,12 @@ $(function() {
         }
     });
 
-    username.keypress( e => {
-        if (e.keyCode === 13) socket.emit('change_username',
-            {username : username.html().substring(0, 32).replace(/ /g, '_')}
-        );
+    username.keypress(e => {
+        if (e.keyCode === 13) {
+            const u = username.html().substring(0, 32).replace(/ /g, '_');
+            socket.emit('change_username', {username : u});
+            username.html(u)
+        }
         return e.which != 13
     });
 
@@ -65,7 +67,7 @@ $(function() {
         }, 1000)
     });
 
-    socket.on('confirm_username', user => username.html(user));
+    socket.on('confirm_username', user => username.html(user.substring(0, 32).replace(/ /g, '_')));
 
     socket.emit('hello', { username: '' } );
 

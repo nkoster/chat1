@@ -83,6 +83,8 @@ io.on('connection', socket => {
     socket.on('new_message', data => {
         if (socket.username === undefined) resetClient();
         let message = data.message;
+        message = message.replace(/<(?:.|\n)*?>/gm, '').trim();
+        if (message === '') return false;
         if (message[0] === '/') {
             console.log('command')
         } else {

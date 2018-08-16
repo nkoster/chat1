@@ -1,4 +1,5 @@
 const
+    MESSAGE_MAX_LENGTH = 240,
     express = require('express'),
     app = express(),
     server = app.listen(9999),
@@ -67,13 +68,28 @@ io.on('connection', socket => {
         }
     });
 
+    function resetUsername() {
+        console.log('Undefined username.');
+        socket.username = Math.random().toString(36).substring(2, 15);
+        socket.emit('confirm_username', socket.username);
+        users.push(socket.username);
+        io.sockets.emit('update_userlist', {userlist : users});
+        io.sockets.emit('new_message', {message : socket.username +
+            ' connected', username : ':'});
+        console.log(users)        
+    }
+
     socket.on('new_message', data => {
-        if (socket.username === undefined) return;
-        io.sockets.emit('new_message', {message : data.message, username : socket.username});
+        if (socket.username === undefined) resetUsername();
+        let message = data.message;
+        if (message.length > MESSAGE_MAX_LENGTH) {
+            message = message.substring(0, MESSAGE_MAX_LENGTH) + '... &larr; TRUNCATED'
+        }
+        io.sockets.emit('new_message', {message : message, username : socket.username});
     });
 
     socket.on('typing', () => {
-        if (socket.username === undefined) return;
+        if (socket.username === undefined) resetUsername();
         socket.broadcast.emit('typing', {username : socket.username})
     })
 

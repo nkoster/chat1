@@ -64,7 +64,7 @@ $(function() {
         feedback.html(data.username + ' is typing...');
         setTimeout( () => {
             feedback.html('')
-        }, 1000)
+        }, 500)
     });
 
     socket.on('confirm_username', user => username.html(user.substring(0, 32).replace(/ /g, '_')));

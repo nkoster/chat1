@@ -66,7 +66,7 @@ input {
     bottom: 0;
     width: 150px;
     background: #888;
-    overflow: auto;
+    overflow-x: hidden;
 }
 
 #drag {
@@ -89,6 +89,7 @@ p.user {
 .user {
     text-align: right;
     padding-right: 10px;
+    padding-left: 5px;
 }
 .user:nth-child(odd) {
     background-color: #e0e0e0;

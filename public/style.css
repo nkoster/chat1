@@ -84,6 +84,7 @@ p.user {
     height: 33px;
     font-family: 'Comfortaa', sans-serif;
     display: table;
+    cursor: default;
 }
 
 .user {
@@ -135,6 +136,7 @@ p.message {
     font-family: 'Comfortaa', sans-serif;
     display: table;
     padding-left: 10px;
+    cursor: default;
 }
 
 .inside {

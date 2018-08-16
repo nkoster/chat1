@@ -1,5 +1,6 @@
 const
     MESSAGE_MAX_LENGTH = 240,
+    USERNAME_MAX_LENGTH = 32,
     express = require('express'),
     app = express(),
     server = app.listen(9999),
@@ -13,13 +14,13 @@ app.use(express.static('public'));
 app.get('/', (req, res) => {
     res.render('index');
     queryUser = req.query.user ? req.query.user : '';
-    queryUser = queryUser.substring(0, 32).replace(/ /g, '_')
+    queryUser = queryUser.substring(0, USERNAME_MAX_LENGTH).replace(/ /g, '_')
 });
 
 io.on('connection', socket => {
 
     socket.on('hello', data => {
-        socket.username = data.username.substring(0, 32).replace(/ /g, '_');
+        socket.username = data.username.substring(0, USERNAME_MAX_LENGTH).replace(/ /g, '_');
         if (socket.username === '') socket.username = Math.random().toString(36).substring(2, 15);
         if (queryUser.length > 0) socket.username = queryUser;
         if (users.includes(socket.username)) {
@@ -68,7 +69,7 @@ io.on('connection', socket => {
         }
     });
 
-    function resetUsername() {
+    function resetClient() {
         console.log('Undefined username.');
         socket.username = Math.random().toString(36).substring(2, 15);
         socket.emit('confirm_username', socket.username);
@@ -76,20 +77,24 @@ io.on('connection', socket => {
         io.sockets.emit('update_userlist', {userlist : users});
         io.sockets.emit('new_message', {message : socket.username +
             ' connected', username : ':'});
-        console.log(users)        
+        console.log(users)
     }
 
     socket.on('new_message', data => {
-        if (socket.username === undefined) resetUsername();
+        if (socket.username === undefined) resetClient();
         let message = data.message;
-        if (message.length > MESSAGE_MAX_LENGTH) {
-            message = message.substring(0, MESSAGE_MAX_LENGTH) + '... &larr; TRUNCATED'
+        if (message[0] === '/') {
+            console.log('command')
+        } else {
+            if (message.length > MESSAGE_MAX_LENGTH) {
+                message = message.substring(0, MESSAGE_MAX_LENGTH) + '... &larr; TRUNCATED'
+            }
+            io.sockets.emit('new_message', {message : message, username : socket.username});
         }
-        io.sockets.emit('new_message', {message : message, username : socket.username});
     });
 
     socket.on('typing', () => {
-        if (socket.username === undefined) resetUsername();
+        if (socket.username === undefined) resetClient();
         socket.broadcast.emit('typing', {username : socket.username})
     })
 

@@ -5,21 +5,8 @@ const
     express = require('express'),
     app = express(),
     server = app.listen(9999),
-    io = require("socket.io")(server);
-
-let channels = [
-    {
-        channel: '',
-        topic: '',
-        members: [
-            {
-                user: '',
-                ip: '',
-                key: ''
-            }
-        ]
-    }
-]
+    sio = require("socket.io")(server),
+    io = sio.of('/cyberworld');
 
 let
     users = [];
@@ -38,36 +25,34 @@ app.get('/', (req, res) => {
 io.on('connection', socket => {
 
     socket.on('hello', data => {
-        if (typeof data.channel !== "undefined" ) {
-            socket.channel = data.channel.substring(0, CHANNEL_MAX_LENGTH).replace(/ /, '_')
+
+        // Channel stuff
+        if (queryChannel.length > 0) {
+            socket.channel = queryChannel
         } else {
-            socket.channel = socket.channel = Math.random().toString(36).substring(2, 15);
-        }
-        if (queryChannel.length > 0) socket.channel = queryChannel;
-        if (channels.includes(socket.channel)) {
-            console.log(`${socket.channel} already exists.`);
             socket.channel = Math.random().toString(36).substring(2, 15)
-        } else {
-            console.log('New channel: ' + socket.channel)
         }
-        if (typeof data.username !== "undefined") {
-            socket.username = data.username.substring(0, USER_MAX_LENGTH).replace(/ /g, '_');
+
+        // User stuff
+        if (queryUser.length > 0) { 
+            socket.username = queryUser
         } else {
             socket.username = Math.random().toString(36).substring(2, 15);
         }
-        if (queryUser.length > 0) socket.username = queryUser;
+
         if (users.includes(socket.username)) {
             console.log(`${socket.username} already exists.`);
             socket.username = Math.random().toString(36).substring(2, 15);
         } else {
-            console.log(`connection from: "${socket.username}"`);
+            console.log(`connection from: "${socket.username}" to channel "${socket.channel}".`);
         }
-        socket.emit('confirm_username', socket.username);
+        socket.emit('confirm_username', { user: socket.username, channel: socket.channel } );
         users.push(socket.username);
-        io.sockets.emit('update_userlist', {userlist : users});
-        io.sockets.emit('new_message', {message : socket.username +
+        io.emit('update_userlist', {userlist : users});
+        io.emit('new_message', {message : socket.username +
             ' connected', username : ':'});
-        console.log(users)
+        // console.log(users);
+        // console.log(channels)
     });
 
     socket.on('disconnect', () => {
@@ -75,8 +60,8 @@ io.on('connection', socket => {
         let index = users.indexOf(socket.username);
         if (index > -1) {
             users.splice(index, 1);
-            io.sockets.emit('update_userlist', {userlist : users});
-            io.sockets.emit('new_message', {message : socket.username +
+            io.emit('update_userlist', {userlist : users});
+            io.emit('new_message', {message : socket.username +
                 ' disconnected', username : ':'});
             console.log(users)
         }
@@ -93,8 +78,8 @@ io.on('connection', socket => {
             } else {
                 console.log(`user "${socket.username}" → "${data.username}"`);
                 users[users.indexOf(socket.username)] = data.username;
-                io.sockets.emit('update_userlist', {userlist : users});
-                io.sockets.emit('new_message', {message : socket.username +
+                io.emit('update_userlist', {userlist : users});
+                io.emit('new_message', {message : socket.username +
                     ' → ' + data.username, username : ':'});
                 socket.username = data.username;
                 console.log(users)
@@ -107,8 +92,8 @@ io.on('connection', socket => {
         socket.username = Math.random().toString(36).substring(2, 15);
         socket.emit('confirm_username', socket.username);
         users.push(socket.username);
-        io.sockets.emit('update_userlist', {userlist : users});
-        io.sockets.emit('new_message', {message : socket.username +
+        io.emit('update_userlist', {userlist : users});
+        io.emit('new_message', {message : socket.username +
             ' connected', username : ':'});
         console.log(users)
     }
@@ -124,7 +109,7 @@ io.on('connection', socket => {
             if (message.length > MESSAGE_MAX_LENGTH) {
                 message = message.substring(0, MESSAGE_MAX_LENGTH) + '... &larr; TRUNCATED'
             }
-            io.sockets.emit('new_message', {message : message, username : socket.username});
+            io.emit('new_message', {message : message, username : socket.username});
         }
     });
 

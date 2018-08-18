@@ -24,14 +24,16 @@ app.get('/', (req, res) => {
 
 io.on('connection', socket => {
 
-    socket.on('hello', data => {
+    // Channel stuff
+    if (queryChannel.length > 0) {
+        socket.channel = queryChannel
+    } else {
+        socket.channel = Math.random().toString(36).substring(2, 15)
+    }
 
-        // Channel stuff
-        if (queryChannel.length > 0) {
-            socket.channel = queryChannel
-        } else {
-            socket.channel = Math.random().toString(36).substring(2, 15)
-        }
+    socket.join(queryChannel);
+
+    socket.on('hello', data => {
 
         // User stuff
         if (queryUser.length > 0) { 
@@ -48,8 +50,8 @@ io.on('connection', socket => {
         }
         socket.emit('confirm_username', { user: socket.username, channel: socket.channel } );
         users.push(socket.username);
-        io.emit('update_userlist', {userlist : users});
-        io.emit('new_message', {message : socket.username +
+        io.to(socket.channel).emit('update_userlist', {userlist : users});
+        io.to(socket.channel).emit('new_message', {message : socket.username +
             ' connected', username : ':'});
         // console.log(users);
         // console.log(channels)
@@ -60,8 +62,8 @@ io.on('connection', socket => {
         let index = users.indexOf(socket.username);
         if (index > -1) {
             users.splice(index, 1);
-            io.emit('update_userlist', {userlist : users});
-            io.emit('new_message', {message : socket.username +
+            io.to(socket.channel).emit('update_userlist', {userlist : users});
+            io.to(socket.channel).emit('new_message', {message : socket.username +
                 ' disconnected', username : ':'});
             console.log(users)
         }
@@ -78,8 +80,8 @@ io.on('connection', socket => {
             } else {
                 console.log(`user "${socket.username}" → "${data.username}"`);
                 users[users.indexOf(socket.username)] = data.username;
-                io.emit('update_userlist', {userlist : users});
-                io.emit('new_message', {message : socket.username +
+                io.to(socket.channel).emit('update_userlist', {userlist : users});
+                io.to(socket.channel).emit('new_message', {message : socket.username +
                     ' → ' + data.username, username : ':'});
                 socket.username = data.username;
                 console.log(users)
@@ -92,8 +94,8 @@ io.on('connection', socket => {
         socket.username = Math.random().toString(36).substring(2, 15);
         socket.emit('confirm_username', socket.username);
         users.push(socket.username);
-        io.emit('update_userlist', {userlist : users});
-        io.emit('new_message', {message : socket.username +
+        io.to(socket.channel).emit('update_userlist', {userlist : users});
+        io.to(socket.channel).emit('new_message', {message : socket.username +
             ' connected', username : ':'});
         console.log(users)
     }
@@ -109,13 +111,13 @@ io.on('connection', socket => {
             if (message.length > MESSAGE_MAX_LENGTH) {
                 message = message.substring(0, MESSAGE_MAX_LENGTH) + '... &larr; TRUNCATED'
             }
-            io.emit('new_message', {message : message, username : socket.username});
+            io.to(socket.channel).emit('new_message', {message : message, username : socket.username});
         }
     });
 
     socket.on('typing', () => {
         if (socket.username === undefined) resetClient();
-        socket.broadcast.emit('typing', {username : socket.username})
+        socket.broadcast.to(socket.channel).emit('typing', {username : socket.username})
     })
 
 });

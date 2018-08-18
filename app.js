@@ -8,13 +8,14 @@ const
 
 let
     users = [];
-
+    queryUser = '';
+    
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.get('/', (req, res) => {
-    res.render('index');
     queryUser = req.query.user ? req.query.user : '';
-    queryUser = queryUser.substring(0, USERNAME_MAX_LENGTH).replace(/ /g, '_')
+    queryUser = queryUser.substring(0, USERNAME_MAX_LENGTH).replace(/ /g, '_');
+    res.render('index')
 });
 
 io.on('connection', socket => {

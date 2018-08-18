@@ -38,8 +38,23 @@ app.get('/', (req, res) => {
 io.on('connection', socket => {
 
     socket.on('hello', data => {
-        socket.username = data.username.substring(0, USER_MAX_LENGTH).replace(/ /g, '_');
-        if (socket.username === '') socket.username = Math.random().toString(36).substring(2, 15);
+        if (typeof data.channel !== "undefined" ) {
+            socket.channel = data.channel.substring(0, CHANNEL_MAX_LENGTH).replace(/ /, '_')
+        } else {
+            socket.channel = socket.channel = Math.random().toString(36).substring(2, 15);
+        }
+        if (queryChannel.length > 0) socket.channel = queryChannel;
+        if (channels.includes(socket.channel)) {
+            console.log(`${socket.channel} already exists.`);
+            socket.channel = Math.random().toString(36).substring(2, 15)
+        } else {
+            console.log('New channel: ' + socket.channel)
+        }
+        if (typeof data.username !== "undefined") {
+            socket.username = data.username.substring(0, USER_MAX_LENGTH).replace(/ /g, '_');
+        } else {
+            socket.username = Math.random().toString(36).substring(2, 15);
+        }
         if (queryUser.length > 0) socket.username = queryUser;
         if (users.includes(socket.username)) {
             console.log(`${socket.username} already exists.`);

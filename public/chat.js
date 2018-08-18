@@ -1,7 +1,7 @@
 $(function() {
 
     const
-        socket = io.connect('http://localhost:9999')
+        socket = io('/cyberworld'),
         message = $("#message"),
         username = $("#username"),
         send_message = $("#send_message"),
@@ -67,7 +67,12 @@ $(function() {
         }, 500)
     });
 
-    socket.on('confirm_username', user => username.html(user.substring(0, 32).replace(/ /g, '_')));
+    socket.on('confirm_username', (data) => {
+        console.log(data);
+        username.html(data.user.substring(0, 32).replace(/ /g, '_'));
+    });
+
+    socket.connect('http://localhost:9999');
 
     socket.emit('hello', { username: '' } );
 

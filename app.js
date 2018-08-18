@@ -17,7 +17,7 @@ app.use(express.static('public'));
 app.get('/', (req, res) => {
     queryUser = req.query.user ? req.query.user : '';
     queryUser = queryUser.substring(0, USER_MAX_LENGTH).replace(/ /g, '_');
-    queryChannel = req.query.channel ? req.query.channel : '';
+    queryChannel = req.query.channel ? req.query.channel : 'cyberworld';
     queryChannel = queryChannel.substring(0, CHANNEL_MAX_LENGTH).replace(/ /g, '_');
     res.render('index')
 });
@@ -54,7 +54,6 @@ io.on('connection', socket => {
         io.to(socket.channel).emit('new_message', {message : socket.username +
             ' connected', username : ':'});
         // console.log(users);
-        // console.log(channels)
     });
 
     socket.on('disconnect', () => {

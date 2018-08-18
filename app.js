@@ -1,27 +1,44 @@
 const
     MESSAGE_MAX_LENGTH = 240,
-    USERNAME_MAX_LENGTH = 32,
+    USER_MAX_LENGTH = 32,
+    CHANNEL_MAX_LENGTH = 32,
     express = require('express'),
     app = express(),
     server = app.listen(9999),
     io = require("socket.io")(server);
 
+let channels = [
+    {
+        channel: '',
+        topic: '',
+        members: [
+            {
+                user: '',
+                ip: '',
+                key: ''
+            }
+        ]
+    }
+]
+
 let
     users = [];
-    queryUser = '';
-    
+    queryUser = '', queryChannel = '';
+
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.get('/', (req, res) => {
     queryUser = req.query.user ? req.query.user : '';
-    queryUser = queryUser.substring(0, USERNAME_MAX_LENGTH).replace(/ /g, '_');
+    queryUser = queryUser.substring(0, USER_MAX_LENGTH).replace(/ /g, '_');
+    queryChannel = req.query.channel ? req.query.channel : '';
+    queryChannel = queryChannel.substring(0, CHANNEL_MAX_LENGTH).replace(/ /g, '_');
     res.render('index')
 });
 
 io.on('connection', socket => {
 
     socket.on('hello', data => {
-        socket.username = data.username.substring(0, USERNAME_MAX_LENGTH).replace(/ /g, '_');
+        socket.username = data.username.substring(0, USER_MAX_LENGTH).replace(/ /g, '_');
         if (socket.username === '') socket.username = Math.random().toString(36).substring(2, 15);
         if (queryUser.length > 0) socket.username = queryUser;
         if (users.includes(socket.username)) {

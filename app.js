@@ -49,19 +49,31 @@ io.on('connection', socket => {
             console.log(`connection from: "${socket.username}" to channel "${socket.channel}".`);
         }
         socket.emit('confirm_username', { user: socket.username, channel: socket.channel } );
-        users.push(socket.username);
-        io.to(socket.channel).emit('update_userlist', {userlist : users});
+        users.push(socket.channel + '%%%%' +  socket.username);
+        let u = [];
+        for (let i=0; i<users.length; i++) {
+            if (users[i].indexOf(socket.channel) === 0) {
+                u[i] = users[i].substring(users[i].indexOf('%%%%') + 4)
+            }
+        }
+        io.to(socket.channel).emit('update_userlist', {userlist : u});
         io.to(socket.channel).emit('new_message', {message : socket.username +
             ' connected', username : ':'});
-        // console.log(users);
+        console.log(users);
     });
 
     socket.on('disconnect', () => {
         console.log('user ' + socket.username + ' disconnected');
-        let index = users.indexOf(socket.username);
+        let index = users.indexOf(socket.channel + '%%%%' + socket.username);
         if (index > -1) {
             users.splice(index, 1);
-            io.to(socket.channel).emit('update_userlist', {userlist : users});
+            let u = [];
+            for (let i=0; i<users.length; i++) {
+                if (users[i].indexOf(socket.channel) === 0) {
+                    u[i] = users[i].substring(users[i].indexOf('%%%%') + 4)
+                }
+            }
+            io.to(socket.channel).emit('update_userlist', {userlist : u});
             io.to(socket.channel).emit('new_message', {message : socket.username +
                 ' disconnected', username : ':'});
             console.log(users)
@@ -69,17 +81,24 @@ io.on('connection', socket => {
     });
 
     socket.on('change_username', data => {
-        if (users.includes(socket.username)) {
-            if (users.includes(data.username)) {
-                console.log(`${data.username} already exists.`)
+        if (users.includes(socket.channel + '%%%%' + socket.username)) {
+            if (users.includes(data.username + '%%%%' + socket.username)) {
+                console.log(`${data.username + '%%%%' + socket.username} already exists.`)
             } else if (data.username.replace(/<(?:.|\n)*?>/gm, '').length < 1) {
                 console.log('Too small.')
             } else if (data.username.indexOf(':') > -1) {
                 console.log('Reserved.')
             } else {
                 console.log(`user "${socket.username}" → "${data.username}"`);
-                users[users.indexOf(socket.username)] = data.username;
-                io.to(socket.channel).emit('update_userlist', {userlist : users});
+                users[users.indexOf(socket.channel + '%%%%' + socket.username)] =
+                    socket.channel + '%%%%' + data.username;
+                let u = [];
+                for (let i=0; i<users.length; i++) {
+                    if (users[i].indexOf(socket.channel) === 0) {
+                        u[i] = users[i].substring(users[i].indexOf('%%%%') + 4)
+                    }
+                }
+                io.to(socket.channel).emit('update_userlist', {userlist : u});
                 io.to(socket.channel).emit('new_message', {message : socket.username +
                     ' → ' + data.username, username : ':'});
                 socket.username = data.username;

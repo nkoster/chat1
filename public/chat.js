@@ -30,7 +30,10 @@ $(function() {
     socket.on("update_userlist", data => {
         let list = '';
         data.userlist.forEach(element => {
-            list += '<p class="user"><span class="inside"><b>' + element + '</b></span></p>'
+            if (element !== null) {
+                list += '<p class="user"><span class="inside"><b>' +
+                element + '</b></span></p>'
+            }
         });
         userlist.html(list)
     });

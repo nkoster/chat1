@@ -2,13 +2,14 @@ $(function() {
 
     const
         socket = io('/cyberworld'),
-        message = $("#message"),
-        username = $("#username"),
-        send_message = $("#send_message"),
-        send_username = $("#send_username"),
-        chatroom = $("#chatroom"),
+        channel = $('#channel'),
+        message = $('#message'),
+        username = $('#username'),
+        send_message = $('#send_message'),
+        send_username = $('#send_username'),
+        chatroom = $('#chatroom'),
         userlist = $('#userlist'),
-        feedback = $("#feedback");
+        feedback = $('#feedback');
 
     send_message.click( () => {
         if (message.val() !== '') {
@@ -72,6 +73,7 @@ $(function() {
 
     socket.on('confirm_username', (data) => {
         console.log(data);
+        channel.html(data.channel.substring(0, 32).replace(/ /g, '_'));
         username.html(data.user.substring(0, 32).replace(/ /g, '_'));
     });
 

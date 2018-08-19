@@ -65,7 +65,7 @@ $(function() {
     });
 
     socket.on('typing', data => {
-        feedback.html(data.username + ' is typing...');
+        feedback.html(data.username.replace(/<(?:.|\n)*?>/gm, '') + ' is typing...');
         setTimeout( () => {
             feedback.html('')
         }, 500)

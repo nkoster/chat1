@@ -7,6 +7,7 @@ body, html {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: 'UbuntuR', Verdana, Geneva, Tahoma, sans-serif;
 }
 
 input {
@@ -82,7 +83,6 @@ p.user {
     margin: 0px;
     width: 100%;
     height: 33px;
-    font-family: 'Comfortaa', sans-serif;
     display: table;
     cursor: default;
 }
@@ -101,7 +101,6 @@ p.user {
 }
 
 #feedback {
-    font-family: 'Comfortaa', sans-serif;
     padding-left: 10px;
     font-size: 12px;
     color: white;
@@ -112,7 +111,6 @@ p.user {
 }
 
 #channel {
-    font-family: 'Comfortaa', sans-serif;
     font-size: 16px;
     font-weight: bold;
     color: #ccc;
@@ -126,7 +124,6 @@ p.user {
 }
 
 #username {
-    font-family: 'Comfortaa', sans-serif;
     font-size: 16px;
     font-weight: bold;
     color: #ccc;
@@ -137,6 +134,7 @@ p.user {
     margin-right: 5px;
     margin-top: 5px;
     min-width: 30px;
+    transition: 0.3s;
 }
 
 #username:hover {
@@ -147,7 +145,6 @@ input#message {
     display: inline-block;
     width: 99%;
     height: 100%;
-    font-family: 'Comfortaa', sans-serif;
     font-size: 16px;
     border: none;
     background: #f0f0f0;
@@ -157,7 +154,6 @@ p.message {
     margin: 0px;
     width: 100%;
     height: 33px;
-    font-family: 'Comfortaa', sans-serif;
     display: table;
     padding-left: 10px;
     cursor: default;

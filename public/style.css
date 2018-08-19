@@ -54,7 +54,7 @@ input {
     left: 0;
     top: 0;
     bottom: 0;
-    right: 150px;
+    right: 170px;
     overflow: auto;
     border-right: 5px solid #555;
 }
@@ -64,14 +64,14 @@ input {
     right: 0;
     top: 0;
     bottom: 0;
-    width: 150px;
+    width: 170px;
     background: #888;
     overflow-x: hidden;
 }
 
 #drag {
     position: absolute;
-    right: 150px;
+    right: 170px;
     top: 0;
     bottom: 0;
     width: 10px;
@@ -104,19 +104,40 @@ p.user {
     font-family: 'Comfortaa', sans-serif;
     padding-left: 10px;
     color: white;
+    background: #666;
+    white-space:nowrap;
+    cursor: default;
+}
+
+#channel {
+    font-family: 'Comfortaa', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #bbb;
+    border: none;
+    background: #666;
+    float: left;
+    white-space:nowrap;
+    margin-left: 10px;
+    cursor: default;
 }
 
 #username {
     font-family: 'Comfortaa', sans-serif;
     font-size: 16px;
     font-weight: bold;
-    color: white;
+    color: #bbb;
     border: none;
     background: #666;
     float: right;
     white-space:nowrap;
     margin-right: 5px;
     margin-top: 5px;
+    min-width: 30px;
+}
+
+#username:hover {
+    color: white;
 }
 
 input#message {

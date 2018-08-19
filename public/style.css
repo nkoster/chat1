@@ -107,6 +107,7 @@ p.user {
     background: #666;
     white-space:nowrap;
     cursor: default;
+    white-space: nowrap;
 }
 
 #channel {
@@ -130,7 +131,7 @@ p.user {
     border: none;
     background: #666;
     float: right;
-    white-space:nowrap;
+    white-space: nowrap;
     margin-right: 5px;
     margin-top: 5px;
     min-width: 30px;

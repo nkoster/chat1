@@ -148,6 +148,7 @@ input#message {
     font-size: 16px;
     border: none;
     background: #f0f0f0;
+    font-family: 'UbuntuR', Verdana, Geneva, Tahoma, sans-serif;
 }
 
 p.message {

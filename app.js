@@ -99,7 +99,7 @@ io.on('connection', socket => {
                     }
                 }
                 io.to(socket.channel).emit('update_userlist', {userlist : u});
-                io.to(socket.channel).emit('new_message', {message : socket.username +
+                io.to(socket.channel).emit('server_message', {message : socket.username +
                     ' → ' + data.username, username : ':'});
                 socket.username = data.username;
                 console.log(users)

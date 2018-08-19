@@ -4,3 +4,9 @@
   src: local('UbuntuMono Regular'), local('UbuntuMono-Regular'),
     url(UbuntuMono-Regular.ttf) format('truetype');
 }
+
+@font-face {
+  font-family: 'UbuntuR';
+  font-style: normal;
+  src: local('Ubuntu-Regular'), url(Ubuntu-R.ttf) format('truetype');
+}

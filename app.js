@@ -57,9 +57,9 @@ io.on('connection', socket => {
             }
         }
         io.to(socket.channel).emit('update_userlist', {userlist : u});
-        io.to(socket.channel).emit('new_message', {message : socket.username +
+        io.to(socket.channel).emit('server_message', {message : socket.username +
             ' connected', username : ':'});
-        console.log(users);
+        // console.log(users);
     });
 
     socket.on('disconnect', () => {
@@ -76,13 +76,13 @@ io.on('connection', socket => {
             io.to(socket.channel).emit('update_userlist', {userlist : u});
             io.to(socket.channel).emit('new_message', {message : socket.username +
                 ' disconnected', username : ':'});
-            console.log(users)
+            // console.log(users)
         }
     });
 
     socket.on('change_username', data => {
         if (users.includes(socket.channel + '%%%%' + socket.username)) {
-            if (users.includes(data.username + '%%%%' + socket.username)) {
+            if (users.includes(socket.channel + '%%%%' + data.username)) {
                 console.log(`${data.username + '%%%%' + socket.username} already exists.`)
             } else if (data.username.replace(/<(?:.|\n)*?>/gm, '').length < 1) {
                 console.log('Too small.')
@@ -107,24 +107,12 @@ io.on('connection', socket => {
         }
     });
 
-    function resetClient() {
-        console.log('Undefined username.');
-        socket.username = Math.random().toString(36).substring(2, 15);
-        socket.emit('confirm_username', socket.username);
-        users.push(socket.username);
-        io.to(socket.channel).emit('update_userlist', {userlist : users});
-        io.to(socket.channel).emit('new_message', {message : socket.username +
-            ' connected', username : ':'});
-        console.log(users)
-    }
-
     socket.on('new_message', data => {
-        if (socket.username === undefined) resetClient();
         let message = data.message;
         message = message.replace(/<(?:.|\n)*?>/gm, '').trim();
         if (message === '') return false;
         if (message[0] === '/') {
-            console.log('command')
+            console.log('command: ' + command)
         } else {
             if (message.length > MESSAGE_MAX_LENGTH) {
                 message = message.substring(0, MESSAGE_MAX_LENGTH) + '... &larr; TRUNCATED'
@@ -134,7 +122,6 @@ io.on('connection', socket => {
     });
 
     socket.on('typing', () => {
-        if (socket.username === undefined) resetClient();
         socket.broadcast.to(socket.channel).emit('typing', {username : socket.username})
     })
 

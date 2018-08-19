@@ -31,7 +31,7 @@ $(function() {
     socket.on("server_message", data => {
         if (data.username === undefined) return;
         myDate = new Date();
-        chatroom.append('<p class="message" style="color:#060"><span class="inside"><span class="mono">' + 
+        chatroom.append('<p class="message" style="color:#043"><span class="inside"><span class="mono">' + 
             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
             data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + 
             data.message.replace(/<(?:.|\n)*?>/gm, '') + '</span></p>');

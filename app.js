@@ -74,7 +74,7 @@ io.on('connection', socket => {
 
     socket.on('disconnect', () => {
         if (socket.username === undefined) {
-            logger('Disconnect from undefined.')
+            logger('Disconnect from undefined. ' + socket.handshake.address)
         } else {
             let user = socket.username.split('%%%%');
             logger('user ' + socket.username + ' disconnected');

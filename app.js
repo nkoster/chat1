@@ -163,7 +163,7 @@ io.on('connection', socket => {
 
     socket.on('typing', () => {
         if (socket.username === undefined) {
-            logger('"typing to to undefined in channel ' + socket.channel);
+            logger('"typing" to undefined in channel ' + socket.channel);
             resetUser()
         }
         let user = socket.username.split('%%%%');

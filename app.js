@@ -12,6 +12,10 @@ let
     users = [];
     queryUser = '', queryChannel = '';
 
+function logger(msg) {
+    console.log((new Date).toLocaleString() + ' :: ' + msg)
+}
+
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.get('/', (req, res) => {
@@ -25,31 +29,37 @@ app.get('/', (req, res) => {
 io.on('connection', socket => {
 
     // Channel stuff
-    if (queryChannel.length > 0) {
-        socket.channel = queryChannel
-    } else {
-        socket.channel = Math.random().toString(36).substring(2, 15)
+    if (socket.channel === undefined) {
+        if (queryChannel.length > 0) {
+            socket.channel = queryChannel
+        } else {
+            socket.channel = 'cyberworld'
+        }
     }
 
-    socket.join(queryChannel);
+    socket.join(socket.channel);
 
     socket.on('hello', data => {
 
         // User stuff
-        if (queryUser.length > 0) { 
-            socket.username = queryUser
-        } else {
-            socket.username = Math.random().toString(36).substring(2, 15);
-        }
+        if (socket.username === undefined) {
+            if (queryUser.length > 0) { 
+                socket.username = socket.channel + '%%%%' + queryUser;
+                queryUser = ''
+            } else {
+                socket.username = socket.channel + '%%%%' + Math.random().toString(36).substring(2, 15);
+            }
 
-        if (users.includes(socket.username)) {
-            console.log(`${socket.username} already exists.`);
-            socket.username = Math.random().toString(36).substring(2, 15);
-        } else {
-            console.log(`connection from: "${socket.username}" to channel "${socket.channel}".`);
+            if (users.includes(socket.username)) {
+                logger(`${socket.username} already exists.`);
+                socket.username = socket.channel + '%%%%' + Math.random().toString(36).substring(2, 15);
+            } else {
+                logger(`connection from: "${socket.username}" to channel "${socket.channel}".`);
+            }
         }
-        socket.emit('confirm_username', { user: socket.username, channel: socket.channel } );
-        users.push(socket.channel + '%%%%' +  socket.username);
+        let user = socket.username.split('%%%%');
+        socket.emit('confirm_username', { user: user[1], channel: socket.channel } );
+        users.push(socket.username);
         let u = [];
         for (let i=0; i<users.length; i++) {
             if (users[i].indexOf(socket.channel) === 0) {
@@ -57,42 +67,47 @@ io.on('connection', socket => {
             }
         }
         io.to(socket.channel).emit('update_userlist', {userlist : u});
-        io.to(socket.channel).emit('server_message', {message : socket.username +
+        io.to(socket.channel).emit('server_message', {message : user[1] +
             ' connected', username : ':'});
-        // console.log(users);
+        logger(users)
     });
 
     socket.on('disconnect', () => {
-        console.log('user ' + socket.username + ' disconnected');
-        let index = users.indexOf(socket.channel + '%%%%' + socket.username);
-        if (index > -1) {
-            users.splice(index, 1);
-            let u = [];
-            for (let i=0; i<users.length; i++) {
-                if (users[i].indexOf(socket.channel) === 0) {
-                    u[i] = users[i].substring(users[i].indexOf('%%%%') + 4)
-                }
+        if (socket.username === undefined) {
+            logger('Disconnect from undefined.')
+        } else {
+            let user = socket.username.split('%%%%');
+            logger('user ' + socket.username + ' disconnected');
+                let index = users.indexOf(socket.username);
+                if (index > -1) {
+                    users.splice(index, 1);
+                    let u = [];
+                    for (let i=0; i<users.length; i++) {
+                        if (users[i].indexOf(socket.channel) === 0) {
+                            u[i] = users[i].substring(users[i].indexOf('%%%%') + 4)
+                        }
+                    }
+                io.to(socket.channel).emit('update_userlist', {userlist : u});
+                io.to(socket.channel).emit('new_message', {message : user[1] +
+                    ' disconnected', username : ':'});
+                // logger(users)
             }
-            io.to(socket.channel).emit('update_userlist', {userlist : u});
-            io.to(socket.channel).emit('new_message', {message : socket.username +
-                ' disconnected', username : ':'});
-            // console.log(users)
         }
     });
 
     socket.on('change_username', data => {
         let name = data.username.replace(/<(?:.|\n)*?>/gm, '');
-        if (users.includes(socket.channel + '%%%%' + socket.username)) {
+        let user = socket.username.split('%%%%');
+        if (users.includes(socket.username)) {
             if (users.includes(socket.channel + '%%%%' + name)) {
-                console.log(`${name + '%%%%' + socket.username} already exists.`)
+                logger(`${name + '%%%%' + socket.username} already exists.`)
             } else if (name.length < 1) {
-                console.log('Too small.')
+                logger('Too small.')
             } else if (name.indexOf(':') > -1) {
-                console.log('Reserved.')
+                logger('Reserved.')
             } else {
-                console.log(`user "${socket.username}" → "${name}"`);
-                users[users.indexOf(socket.channel + '%%%%' + socket.username)] =
-                    socket.channel + '%%%%' + name;
+                logger(`user "${user[1]}" → "${name}"`);
+                users[users.indexOf(socket.username)] = socket.channel + '%%%%' + name;
                 let u = [];
                 for (let i=0; i<users.length; i++) {
                     if (users[i].indexOf(socket.channel) === 0) {
@@ -100,34 +115,61 @@ io.on('connection', socket => {
                     }
                 }
                 io.to(socket.channel).emit('update_userlist', {userlist : u});
-                io.to(socket.channel).emit('server_message', {message : socket.username +
+                io.to(socket.channel).emit('server_message', {message : user[1] +
                     ' → ' + name, username : ':'});
-                socket.username = name;
-                console.log(users)
+                socket.username = socket.channel + '%%%%' + name;
+                logger(users)
             }
         }
     });
 
+    function resetUser() {
+        socket.username = socket.channel + '%%%%' + Math.random().toString(36).substring(2, 15);
+        socket.join(socket.channel);
+        let user = socket.username.split('%%%%');
+        socket.emit('confirm_username', { user: user[1], channel: socket.channel } );
+        users.push(socket.username);
+        let u = [];
+        for (let i=0; i<users.length; i++) {
+            if (users[i].indexOf(socket.channel) === 0) {
+                u[i] = users[i].substring(users[i].indexOf('%%%%') + 4)
+            }
+        }
+        io.to(socket.channel).emit('update_userlist', {userlist : u});
+        io.to(socket.channel).emit('server_message', {message : user[1] +
+            ' connected', username : ':'});
+        logger('resetUser()');
+        logger(users)
+    }
+
     socket.on('new_message', data => {
-        if (socket.username === undefined) return false;
+        if (socket.username === undefined) {
+            logger('Sending message from undefined in channel ' + socket.channel);
+            resetUser()
+        }
         let message = data.message;
+        let user = socket.username.split('%%%%');
         message = message.replace(/<(?:.|\n)*?>/gm, '').trim();
         if (message === '') return false;
         if (message[0] === '/') {
-            // console.log('command: ' + command)
+            // logger('command: ' + command)
         } else {
             if (message.length > MESSAGE_MAX_LENGTH) {
                 message = message.substring(0, MESSAGE_MAX_LENGTH) + '... &larr; TRUNCATED'
             }
-            io.to(socket.channel).emit('new_message', {message : message, username : socket.username});
+            io.to(socket.channel).emit('new_message', {message : message, username : user[1]});
         }
     });
 
     socket.on('typing', () => {
-        if (socket.username === undefined) return false;
-        socket.broadcast.to(socket.channel).emit('typing', {username : socket.username})
+        if (socket.username === undefined) {
+            logger('"typing to to undefined in channel ' + socket.channel);
+            resetUser()
+        }
+        let user = socket.username.split('%%%%');
+        socket.broadcast.to(socket.channel).emit('typing', {username : user[1]})
     })
 
 });
 
-console.log('Server listening at TCP port 9999');
+logger('Server listening at TCP port 9999');

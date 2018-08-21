@@ -124,6 +124,7 @@ io.on('connection', socket => {
     });
 
     function resetUser() {
+
         socket.username = socket.channel + '%%%%' + Math.random().toString(36).substring(2, 15);
         socket.join(socket.channel);
         let user = socket.username.split('%%%%');
@@ -140,6 +141,7 @@ io.on('connection', socket => {
             ' connected', username : ':'});
         logger('resetUser()');
         logger(users)
+        //socket.emit('reset', 'reset');
     }
 
     socket.on('new_message', data => {

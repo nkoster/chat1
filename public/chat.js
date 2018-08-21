@@ -87,9 +87,12 @@ $(function() {
         username.html(data.user.substring(0, 32).replace(/ /g, '_'));
     });
 
-    socket.connect('http://localhost:9999');
+    socket.connect('http://192.168.1.33:9999');
 
-    socket.emit('hello', { username: '' } );
+    socket.emit('hello', { username: username.html(), channel: channel.html() } );
+    socket.on('reset', () => {
+        socket.emit('hello', { username: username.html(), channel: channel.html() } );
+    });
 
     $(window).bind('beforeunload', () => {
         return 'Leave site?'

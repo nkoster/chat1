@@ -96,6 +96,10 @@ io.on('connection', socket => {
     });
 
     socket.on('change_username', data => {
+        if (socket.username === undefined) {
+            logger('aaaarg')
+            return false
+        }
         let name = data.username.replace(/<(?:.|\n)*?>/gm, '');
         let user = socket.username.split('%%%%');
         if (users.includes(socket.username)) {

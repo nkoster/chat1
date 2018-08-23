@@ -1,5 +1,14 @@
 $(function() {
 
+    function urlify(text) {
+        var urlRegex = /(https?:\/\/[^\s]+)/g;
+        // return text.replace(urlRegex, function(url) {
+        //     return '<a href="' + url + '">' + url + '</a>';
+        // })
+        //or alternatively
+        return text.replace(urlRegex, '<a href="$1">$1</a>')
+    }
+    
     var
         socket = io('/cyberworld'),
         channel = $('#channel'),
@@ -34,7 +43,7 @@ $(function() {
         chatroom.append('<div class="message" style="color:#043"><span class="inside"><span class="mono">' + 
             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
             data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + 
-            data.message.replace(/<(?:.|\n)*?>/gm, '') + '</span></div>');
+            urlify(data.message.replace(/<(?:.|\n)*?>/gm, '')) + '</span></div>');
         chatroom.scrollTop($('#chatroom')[0].scrollHeight)
     });
 

@@ -1,20 +1,20 @@
-let
+var
     isResizing = false,
     lastDownX = 0;
 
-$(() => {
-    let
+$(function() {
+    var
         container = $('#MIDDLE'),
         left = $('#chatroom'),
         right = $('#userlist'),
         handle = $('#drag');
 
-    handle.on('mousedown', e => {
+    handle.on('mousedown', function(e) {
         isResizing = true;
         lastDownX = e.clientX
     });
 
-    $(document).on('mousemove', e => {
+    $(document).on('mousemove', function(e) {
         if (!isResizing) return false;
         document.body.style.MozUserSelect = "none";
         var offsetRight = container.width() - (e.clientX - container.offset().left);
@@ -24,7 +24,7 @@ $(() => {
             handle.css('right', offsetRight)
         }
         return false
-    }).on('mouseup', e => {
+    }).on('mouseup', function(e) {
         isResizing = false
     })
 });

@@ -6,7 +6,7 @@ $(function() {
         //     return '<a href="' + url + '">' + url + '</a>';
         // })
         //or alternatively
-        return text.replace(urlRegex, '<a href="$1">$1</a>')
+        return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>')
     }
     
     var

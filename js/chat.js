@@ -21,20 +21,20 @@ $(function() {
     socket.on("new_message", function(data) {
         if (data.username === undefined) return;
         myDate = new Date();
-        chatroom.append('<p class="message"><span class="inside"><span class="mono">' + 
+        chatroom.append('<div class="message"><span class="inside"><span class="mono">' + 
             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
             data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + 
-            data.message.replace(/<(?:.|\n)*?>/gm, '') + '</span></p>');
+            data.message.replace(/<(?:.|\n)*?>/gm, '') + '</span></div>');
         chatroom.scrollTop($('#chatroom')[0].scrollHeight)
     });
 
     socket.on("server_message", function(data) {
         if (data.username === undefined) return;
         myDate = new Date();
-        chatroom.append('<p class="message" style="color:#043"><span class="inside"><span class="mono">' + 
+        chatroom.append('<div class="message" style="color:#043"><span class="inside"><span class="mono">' + 
             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
             data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + 
-            data.message.replace(/<(?:.|\n)*?>/gm, '') + '</span></p>');
+            data.message.replace(/<(?:.|\n)*?>/gm, '') + '</span></div>');
         chatroom.scrollTop($('#chatroom')[0].scrollHeight)
     });
 

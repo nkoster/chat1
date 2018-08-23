@@ -42,8 +42,8 @@ $(function() {
         var list = '';
         data.userlist.forEach(function(element) {
             if (element !== null) {
-                list += '<p class="user"><span class="inside"><b>' +
-                element + '</b></span></p>'
+                list += '<p class="user"><span class="inside"><b><span class="' + element + '">' +
+                element + '</span></b></span></p>'
             }
         });
         userlist.html(list)
@@ -75,9 +75,20 @@ $(function() {
     });
 
     socket.on('typing', function(data) {
-        feedback.html(data.username.replace(/<(?:.|\n)*?>/gm, '') + ' is typing...');
+        var user = data.username.replace(/<(?:.|\n)*?>/gm, '');
+        feedback.html(user + ' is typing...');
+        var all = document.getElementsByClassName(user);
+        for (var i = 0; i < all.length; i++) {
+            all[i].style.color = 'gray';
+            all[i].style.fontStyle = 'italic';
+        }
         setTimeout(function() {
-            feedback.html('')
+            feedback.html('');
+            var all = document.getElementsByClassName(user);
+            for (var i = 0; i < all.length; i++) {
+                all[i].style.color = 'black';
+                all[i].style.fontStyle = 'normal';
+            }
         }, 500)
     });
 

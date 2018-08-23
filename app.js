@@ -73,6 +73,9 @@ io.on('connection', socket => {
             logger('default channel.');
             socket.emit('server_message', {
                 message : 'this is the default channel', username : ':'
+            });
+            socket.emit('server_message', {
+                message : 'try http://cheapchat.nl/?user=MyNickName&channel=MyChannel', username : ':'
             })
         }
         logger(users)

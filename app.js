@@ -68,7 +68,13 @@ io.on('connection', socket => {
         }
         io.to(socket.channel).emit('update_userlist', {userlist : u});
         io.to(socket.channel).emit('server_message', {message : user[1] +
-            ' connected', username : ':'});
+            ' connected to channel "' + socket.channel + '"', username : ':'});
+        if (socket.channel === 'cyberworld') {
+            logger('default channel.');
+            socket.emit('server_message', {
+                message : 'this is the default channel', username : ':'
+            })
+        }
         logger(users)
     });
 

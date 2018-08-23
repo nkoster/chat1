@@ -109,7 +109,11 @@ io.on('connection', socket => {
             logger('aaaarg')
             return false
         }
-        let name = data.username.replace(/<(?:.|\n)*?>/gm, '');
+        let name = data.username
+            .replace(/<(?:.|\n)*?>/gm, '')
+            .replace(/&/g, '-')
+            .substring(0, USER_MAX_LENGTH)
+            .replace(/ /g, '_');
         let user = socket.username.split('%%%%');
         if (users.includes(socket.username)) {
             if (users.includes(socket.channel + '%%%%' + name)) {

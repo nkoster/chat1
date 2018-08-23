@@ -33,7 +33,7 @@ $(function() {
         chatroom.append('<div class="message"><span class="inside"><span class="mono">' + 
             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
             data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + 
-            data.message.replace(/<(?:.|\n)*?>/gm, '') + '</span></div>');
+            urlify(data.message.replace(/<(?:.|\n)*?>/gm, '')) + '</span></div>');
         chatroom.scrollTop($('#chatroom')[0].scrollHeight)
     });
 

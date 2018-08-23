@@ -28,7 +28,6 @@ app.get('/', (req, res) => {
 
 io.on('connection', socket => {
 
-    // Channel stuff
     if (socket.channel === undefined) {
         if (queryChannel.length > 0) {
             socket.channel = queryChannel
@@ -40,8 +39,6 @@ io.on('connection', socket => {
     socket.join(socket.channel);
 
     socket.on('hello', data => {
-
-        // User stuff
         if (socket.username === undefined) {
             if (queryUser.length > 0) { 
                 socket.username = socket.channel + '%%%%' + queryUser;
@@ -99,7 +96,6 @@ io.on('connection', socket => {
                 io.to(socket.channel).emit('update_userlist', {userlist : u});
                 io.to(socket.channel).emit('new_message', {message : user[1] +
                     ' disconnected', username : ':'});
-                // logger(users)
             }
         }
     });
@@ -141,7 +137,6 @@ io.on('connection', socket => {
     });
 
     function resetUser() {
-
         socket.username = socket.channel + '%%%%' + Math.random().toString(36).substring(2, 15);
         socket.join(socket.channel);
         let user = socket.username.split('%%%%');
@@ -158,7 +153,6 @@ io.on('connection', socket => {
             ' connected', username : ':'});
         logger('resetUser()');
         logger(users)
-        //socket.emit('reset', 'reset');
     }
 
     socket.on('new_message', data => {
@@ -171,7 +165,7 @@ io.on('connection', socket => {
         message = message.replace(/<(?:.|\n)*?>/gm, '').trim();
         if (message === '') return false;
         if (message[0] === '/') {
-            // logger('command: ' + command)
+            // command handler, nothing here yet.
         } else {
             if (message.length > MESSAGE_MAX_LENGTH) {
                 message = message.substring(0, MESSAGE_MAX_LENGTH) + '... &larr; TRUNCATED'

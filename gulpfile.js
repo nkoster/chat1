@@ -12,5 +12,5 @@ return gulp.src(['./js/jquery.min.js', './js/socket.io.js', './js/chat.js', './j
 });
 
 gulp.task('watch:concat', ['concat'], function() {
-  gulp.watch('js/**/*.js', ['js'])
+  gulp.watch('js/**/*.js', ['concat'])
 });

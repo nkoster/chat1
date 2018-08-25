@@ -11,6 +11,18 @@ body, html {
     max-width: 100%;
 }
 
+a {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 86%;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+a:hover {
+    color: #333;
+}
+
 input {
     outline: none;
 }

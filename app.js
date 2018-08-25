@@ -51,7 +51,7 @@ io.on('connection', socket => {
                 logger(`${socket.username} already exists.`);
                 socket.username = socket.channel + '%%%%' + Math.random().toString(36).substring(2, 15);
             } else {
-                logger(`connection from: "${socket.username}" to channel "${socket.channel}".`);
+                logger(`connection from: "${socket.username}@${socket.handshake.headers['x-real-ip']}" to channel "${socket.channel}".`);
             }
         }
         let user = socket.username.split('%%%%');
@@ -67,7 +67,6 @@ io.on('connection', socket => {
         io.to(socket.channel).emit('server_message', {message : user[1] +
             ' connected to channel "' + socket.channel + '"', username : ':'});
         if (socket.channel === 'cyberworld') {
-            logger('default channel.');
             socket.emit('server_message', {
                 message : 'this is the default channel', username : ':'
             });
@@ -80,19 +79,20 @@ io.on('connection', socket => {
 
     socket.on('disconnect', () => {
         if (socket.username === undefined) {
-            logger('Disconnect from undefined. ' + socket.handshake.address)
+            logger('Disconnect from undefined: ' + socket.handshake.headers['x-real-ip'])
         } else {
             let user = socket.username.split('%%%%');
-            logger('user ' + socket.username + ' disconnected');
-                let index = users.indexOf(socket.username);
-                if (index > -1) {
-                    users.splice(index, 1);
-                    let u = [];
-                    for (let i=0; i<users.length; i++) {
-                        if (users[i].indexOf(socket.channel) === 0) {
-                            u[i] = users[i].substring(users[i].indexOf('%%%%') + 4)
-                        }
+            logger('user ' + socket.username + '@' +
+                socket.handshake.headers['x-real-ip'] + ' disconnected');
+            let index = users.indexOf(socket.username);
+            if (index > -1) {
+                users.splice(index, 1);
+                let u = [];
+                for (let i=0; i<users.length; i++) {
+                    if (users[i].indexOf(socket.channel) === 0) {
+                        u[i] = users[i].substring(users[i].indexOf('%%%%') + 4)
                     }
+                }
                 io.to(socket.channel).emit('update_userlist', {userlist : u});
                 io.to(socket.channel).emit('new_message', {message : user[1] +
                     ' disconnected', username : ':'});
@@ -150,14 +150,15 @@ io.on('connection', socket => {
         }
         io.to(socket.channel).emit('update_userlist', {userlist : u});
         io.to(socket.channel).emit('server_message', {message : user[1] +
-            ' connected', username : ':'});
-        logger('resetUser()');
+            ' connected to channel "' + socket.channel + '"', username : ':'});
+        logger('resetUser: ' + socket.handshake.headers['x-real-ip']);
         logger(users)
     }
 
     socket.on('new_message', data => {
         if (socket.username === undefined) {
-            logger('Sending message from undefined in channel ' + socket.channel);
+            logger('Sending message from undefined@' +
+                socket.handshake.headers['x-real-ip'] + ' in channel ' + socket.channel);
             resetUser()
         }
         let message = data.message;
@@ -165,6 +166,17 @@ io.on('connection', socket => {
         message = message.replace(/<(?:.|\n)*?>/gm, '').trim();
         if (message === '') return false;
         if (message[0] === '/') {
+            logger('command: ' + message);
+            let commands = message.split(' ');
+            if (commands[0] === '/lol') {
+                io.to(socket.channel).emit('new_message', {message : 'hahaha', username : user[1]});
+            }
+            if (commands.length > 1) {
+                if (commands[0] === '/me') {
+                    io.to(socket.channel).emit('bold_message',
+                     {message : user[1] + ' ' + message.substring(4), username : ':'});
+                }
+            }
             // command handler, nothing here yet.
         } else {
             if (message.length > MESSAGE_MAX_LENGTH) {

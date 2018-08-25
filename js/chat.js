@@ -43,6 +43,16 @@ $(function() {
         chatroom.scrollTop($('#chatroom')[0].scrollHeight)
     });
 
+    socket.on("bold_message", function(data) {
+        if (data.username === undefined) return;
+        myDate = new Date();
+        chatroom.append('<div class="message" style="color:#043"><span class="inside"><span class="mono">' + 
+            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
+            data.username.replace(/<(?:.|\n)*?>/gm, '') + ': &nbsp; ' + 
+            urlify(data.message.replace(/<(?:.|\n)*?>/gm, '')) + '</b></span></div>');
+        chatroom.scrollTop($('#chatroom')[0].scrollHeight)
+    });
+
     socket.on("update_userlist", function(data) {
         var list = '';
         data.userlist.forEach(function(element) {

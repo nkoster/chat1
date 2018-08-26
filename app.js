@@ -176,8 +176,11 @@ io.on('connection', socket => {
                     io.to(socket.channel).emit('bold_message',
                      {message : user[1] + ' ' + message.substring(4), username : ':'});
                 }
+                if (commands[0] === '/topic') {
+                    io.to(socket.channel).emit('topic',
+                     {topic : message.substring(7), username : ':'});
+                }
             }
-            // command handler, nothing here yet.
         } else {
             if (message.length > MESSAGE_MAX_LENGTH) {
                 message = message.substring(0, MESSAGE_MAX_LENGTH) + '... &larr; TRUNCATED'

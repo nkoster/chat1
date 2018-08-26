@@ -53,6 +53,12 @@ $(function() {
         chatroom.scrollTop($('#chatroom')[0].scrollHeight)
     });
 
+    socket.on("topic", function(data) {
+        if (data.username === undefined) return;
+        myDate = new Date();
+        console.log(data.topic)
+    });
+
     socket.on("update_userlist", function(data) {
         var list = '';
         data.userlist.forEach(function(element) {

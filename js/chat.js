@@ -14,7 +14,7 @@ $(function() {
         send_username = $('#send_username'),
         chatroom = $('#chatroom'),
         userlist = $('#userlist'),
-        feedback = $('#feedback');
+        topic = $('#topic');
 
     send_message.click(function() {
         if (message.val() !== '') {
@@ -54,9 +54,12 @@ $(function() {
     });
 
     socket.on("topic", function(data) {
-        if (data.username === undefined) return;
         myDate = new Date();
-        console.log(data.topic)
+        topic.html(data.topic);
+    });
+
+    socket.on('get_topic', function() {
+        if (topic.length > 0) socket.emit('send_topic', { topic: topic.html() })
     });
 
     socket.on("update_userlist", function(data) {
@@ -97,14 +100,12 @@ $(function() {
 
     socket.on('typing', function(data) {
         var user = data.username.replace(/<(?:.|\n)*?>/gm, '');
-        feedback.html(user + ' is typing...');
         var all = document.getElementsByClassName(user);
         for (var i = 0; i < all.length; i++) {
             all[i].style.color = 'gray';
             all[i].style.fontStyle = 'italic';
         }
         setTimeout(function() {
-            feedback.html('');
             var all = document.getElementsByClassName(user);
             for (var i = 0; i < all.length; i++) {
                 all[i].style.color = 'black';

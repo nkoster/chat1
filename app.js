@@ -61,7 +61,7 @@ io.on('connection', socket => {
                 logger(`${socket.username} already exists.`);
                 socket.username = socket.channel + '%%%%' + Math.random().toString(36).substring(2, 15);
             } else {
-                logger(`connection from: "${socket.username}@${socket.handshake.headers['x-real-ip']}" to channel "${socket.channel}".`);
+                logger(`connection from: "${socket.username}@${socket.handshake.headers['x-real-ip']}" to channel "${socket.channel}".`)
             }
         }
         let user = socket.username.split('%%%%');

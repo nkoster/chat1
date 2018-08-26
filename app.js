@@ -9,7 +9,7 @@ const
     io = sio.of('/cyberworld');
 
 let
-    users = [];
+    users = [],
     queryUser = '', queryChannel = '';
 
 function logger(msg) {
@@ -37,6 +37,16 @@ io.on('connection', socket => {
     }
 
     socket.join(socket.channel);
+
+    io.to(socket.channel).emit('get_topic', '');
+
+    socket.on('send_topic', function(data) {
+        socket.topic = data.topic;
+        if (socket.topic.length > 0) {
+            // socket.emit('topic', {topic : socket.topic, username : ':'});
+            io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'});
+        }
+    });
 
     socket.on('hello', data => {
         if (socket.username === undefined) {
@@ -177,8 +187,10 @@ io.on('connection', socket => {
                      {message : user[1] + ' ' + message.substring(4), username : ':'});
                 }
                 if (commands[0] === '/topic') {
-                    io.to(socket.channel).emit('topic',
-                     {topic : message.substring(7), username : ':'});
+                    socket.topic = message.substring(7);
+                    io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'});
+                    io.to(socket.channel).emit('server_message',
+                     {message : user[1] + ' changed topic to "' + socket.topic + '"', username : ':'});
                 }
             }
         } else {

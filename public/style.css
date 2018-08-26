@@ -114,9 +114,9 @@ p.user {
     background-color: #c0c0c0;
 }
 
-#feedback {
+#topic {
     padding-left: 10px;
-    font-size: 12px;
+    font-size: 14px;
     color: white;
     background: #666;
     white-space:nowrap;

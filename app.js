@@ -74,7 +74,7 @@ io.on('connection', socket => {
             }
         }
         io.to(socket.channel).emit('update_userlist', {userlist : u});
-        io.to(socket.channel).emit('server_message', {message : user[1] +
+        io.to(socket.channel).emit('new_message', {message : user[1] +
             ' connected to channel "' + socket.channel + '"', username : ':'});
         if (socket.channel === 'cyberworld') {
             socket.emit('server_message', {
@@ -104,7 +104,7 @@ io.on('connection', socket => {
                     }
                 }
                 io.to(socket.channel).emit('update_userlist', {userlist : u});
-                io.to(socket.channel).emit('new_message', {message : user[1] +
+                io.to(socket.channel).emit('server_message', {message : user[1] +
                     ' disconnected', username : ':'});
             }
         }

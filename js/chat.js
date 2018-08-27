@@ -25,6 +25,7 @@ $(function() {
     });
 
     socket.on("new_message", function(data) {
+        checkAlarm();
         if (data.username === undefined) return;
         myDate = new Date();
         chatroom.append('<div class="message"><span class="inside"><span class="mono">' + 
@@ -45,6 +46,7 @@ $(function() {
     });
 
     socket.on("bold_message", function(data) {
+        checkAlarm();
         if (data.username === undefined) return;
         myDate = new Date();
         chatroom.append('<div class="message" style="color:#043"><span class="inside"><span class="mono">' + 
@@ -64,6 +66,7 @@ $(function() {
     });
 
     socket.on("update_userlist", function(data) {
+        checkAlarm();
         var list = '';
         data.userlist.forEach(function(element) {
             if (element !== null) {
@@ -87,9 +90,9 @@ $(function() {
         if (event.keyCode === 13 && message.val() !== '') {
             if (message.val() === '/beep') {
                 myDate = new Date();
-                chatroom.append('<div class="message" style="color:#043"><span class="inside"><span class="mono">' + 
+                chatroom.append('<div class="message" style="color:#600"><span class="inside"><span class="mono">' + 
                     myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                    username.html() + ':</b> &nbsp; alarm set</span></div>');
+                    '::</b> &nbsp; alarm set</span></div>');
                 chatroom.scrollTop($('#chatroom')[0].scrollHeight);
                 alarm = true
             } else {
@@ -108,12 +111,21 @@ $(function() {
         return e.which != 13
     });
 
-    socket.on('typing', function(data) {
+    function checkAlarm() {
         if (alarm) {
             console.log('BEEP!');
             beep();
-            alarm = false
+            alarm = false;
+            myDate = new Date();
+            chatroom.append('<div class="message" style="color:#600"><span class="inside"><span class="mono">' + 
+                myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
+                '::</b> &nbsp; alarm!</span></div>');
+            chatroom.scrollTop($('#chatroom')[0].scrollHeight);
         }
+    }
+
+    socket.on('typing', function(data) {
+        checkAlarm();
         var user = data.username.replace(/<(?:.|\n)*?>/gm, '');
         var all = document.getElementsByClassName(user);
         for (var i = 0; i < all.length; i++) {

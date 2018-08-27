@@ -89,7 +89,7 @@ $(function() {
         if (event.keyCode === 13 && message.val() !== '') {
             if (message.val() === '/beep') {
                 myDate = new Date();
-                chatroom.append('<div class="message" style="color:#600"><span class="inside"><span class="mono">' + 
+                chatroom.append('<div class="message" style="color:#067"><span class="inside"><span class="mono">' + 
                     myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
                     '::</b> &nbsp; beep is set</span></div>');
                 chatroom.scrollTop($('#chatroom')[0].scrollHeight);
@@ -116,7 +116,7 @@ $(function() {
             beep();
             alarm = false;
             myDate = new Date();
-            chatroom.append('<div class="message" style="color:#600"><span class="inside"><span class="mono">' + 
+            chatroom.append('<div class="message" style="color:#067"><span class="inside"><span class="mono">' + 
                 myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
                 '::</b> &nbsp; <b>beep!</b></span></div>');
             chatroom.scrollTop($('#chatroom')[0].scrollHeight);

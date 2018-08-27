@@ -118,7 +118,7 @@ $(function() {
             myDate = new Date();
             chatroom.append('<div class="message" style="color:#600"><span class="inside"><span class="mono">' + 
                 myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                ':: &nbsp; beep!</b></span></div>');
+                '::</b> &nbsp; <b>beep!</b></span></div>');
             chatroom.scrollTop($('#chatroom')[0].scrollHeight);
         }
     }

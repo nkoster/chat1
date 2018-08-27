@@ -91,7 +91,7 @@ $(function() {
                 myDate = new Date();
                 chatroom.append('<div class="message" style="color:#600"><span class="inside"><span class="mono">' + 
                     myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                    '::</b> &nbsp; beep set</span></div>');
+                    '::</b> &nbsp; beep is set</span></div>');
                 chatroom.scrollTop($('#chatroom')[0].scrollHeight);
                 alarm = true
             } else {
@@ -118,7 +118,7 @@ $(function() {
             myDate = new Date();
             chatroom.append('<div class="message" style="color:#600"><span class="inside"><span class="mono">' + 
                 myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                '::</b> &nbsp; beep!</span></div>');
+                ':: &nbsp; beep!</b></span></div>');
             chatroom.scrollTop($('#chatroom')[0].scrollHeight);
         }
     }

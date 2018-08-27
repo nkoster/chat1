@@ -66,7 +66,6 @@ $(function() {
     });
 
     socket.on("update_userlist", function(data) {
-        checkAlarm();
         var list = '';
         data.userlist.forEach(function(element) {
             if (element !== null) {
@@ -92,7 +91,7 @@ $(function() {
                 myDate = new Date();
                 chatroom.append('<div class="message" style="color:#600"><span class="inside"><span class="mono">' + 
                     myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                    '::</b> &nbsp; alarm set</span></div>');
+                    '::</b> &nbsp; beep set</span></div>');
                 chatroom.scrollTop($('#chatroom')[0].scrollHeight);
                 alarm = true
             } else {
@@ -119,7 +118,7 @@ $(function() {
             myDate = new Date();
             chatroom.append('<div class="message" style="color:#600"><span class="inside"><span class="mono">' + 
                 myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                '::</b> &nbsp; alarm!</span></div>');
+                '::</b> &nbsp; beep!</span></div>');
             chatroom.scrollTop($('#chatroom')[0].scrollHeight);
         }
     }

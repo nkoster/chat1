@@ -116,9 +116,10 @@ p.user {
 
 #topic {
     padding-left: 10px;
+    height: 24px;
     font-size: 14px;
     color: white;
-    background: #666;
+    background: none;
     white-space:nowrap;
     cursor: default;
     white-space: nowrap;
@@ -161,7 +162,7 @@ input#message {
     height: 100%;
     font-size: 16px;
     border: none;
-    background: #f0f0f0;
+    background: none;
     font-family: 'UbuntuR', Verdana, Geneva, Tahoma, sans-serif;
 }
 

@@ -43,12 +43,11 @@ io.on('connection', socket => {
     socket.on('send_topic', function(data) {
         socket.topic = data.topic;
         if (socket.topic.length > 0) {
-            // socket.emit('topic', {topic : socket.topic, username : ':'});
-            io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'});
+            io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'})
         }
     });
 
-    socket.on('hello', data => {
+    socket.on('hello', () => {
         if (socket.username === undefined) {
             if (queryUser.length > 0) { 
                 socket.username = socket.channel + '%%%%' + queryUser;

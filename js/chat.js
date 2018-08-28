@@ -72,7 +72,7 @@ $(function() {
                 var u = element.substring(0, element.lastIndexOf('@'));
                 var ip = element.substring(element.lastIndexOf('@') + 1);
                 list += '<p class="user"><span class="inside"><b><span class="' +
-                element + '" title="' + u + ' from ' + ip + '">' + u + '</span></b></span></p>'
+                element + '" title="' + u + ' at ' + ip + '">' + u + '</span></b></span></p>'
             }
         });
         userlist.html(list)
@@ -144,7 +144,6 @@ $(function() {
     });
 
     socket.on('confirm_username', function(data) {
-        console.log(data);
         channel.html(data.channel.substring(0, 32).replace(/ /g, '_'));
         var u = data.user;
         u = u.substring(0, u.lastIndexOf('@')).substring(0, 32).replace(/ /g, '_');

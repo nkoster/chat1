@@ -50,21 +50,26 @@ io.on('connection', socket => {
     socket.on('hello', () => {
         if (socket.username === undefined) {
             if (queryUser.length > 0) { 
-                socket.username = socket.channel + '%%%%' + queryUser;
+                socket.username = socket.channel + '%%%%' + queryUser +
+                    '@' + socket.handshake.headers['x-real-ip'];
                 queryUser = ''
             } else {
-                socket.username = socket.channel + '%%%%' + Math.random().toString(36).substring(2, 15);
+                socket.username = socket.channel + '%%%%' +
+                    Math.random().toString(36).substring(2, 15) +
+                    '@' + socket.handshake.headers['x-real-ip'];
             }
 
             if (users.includes(socket.username)) {
                 logger(`${socket.username} already exists.`);
-                socket.username = socket.channel + '%%%%' + Math.random().toString(36).substring(2, 15);
+                socket.username = socket.channel + '%%%%' +
+                    Math.random().toString(36).substring(2, 15) +
+                    '@' + socket.handshake.headers['x-real-ip'];
             } else {
-                logger(`connection from: "${socket.username}@${socket.handshake.headers['x-real-ip']}" to channel "${socket.channel}".`)
+                logger(`connection from: "${socket.username}" to channel "${socket.channel}".`)
             }
         }
-        let user = socket.username.split('%%%%');
-        socket.emit('confirm_username', { user: user[1], channel: socket.channel } );
+        let user = socket.username.split('%%%%')[1];
+        socket.emit('confirm_username', { user: user, channel: socket.channel } );
         users.push(socket.username);
         let u = [];
         for (let i=0; i<users.length; i++) {
@@ -73,7 +78,7 @@ io.on('connection', socket => {
             }
         }
         io.to(socket.channel).emit('update_userlist', {userlist : u});
-        io.to(socket.channel).emit('new_message', {message : user[1] +
+        io.to(socket.channel).emit('new_message', {message : user +
             ' connected to channel "' + socket.channel + '"', username : ':'});
         if (socket.channel === 'cyberworld') {
             socket.emit('server_message', {
@@ -90,9 +95,8 @@ io.on('connection', socket => {
         if (socket.username === undefined) {
             logger('Disconnect from undefined: ' + socket.handshake.headers['x-real-ip'])
         } else {
-            let user = socket.username.split('%%%%');
-            logger('user ' + socket.username + '@' +
-                socket.handshake.headers['x-real-ip'] + ' disconnected');
+            let user = socket.username.split('%%%%')[1];
+            logger('user ' + socket.username + ' disconnected');
             let index = users.indexOf(socket.username);
             if (index > -1) {
                 users.splice(index, 1);
@@ -103,7 +107,7 @@ io.on('connection', socket => {
                     }
                 }
                 io.to(socket.channel).emit('update_userlist', {userlist : u});
-                io.to(socket.channel).emit('server_message', {message : user[1] +
+                io.to(socket.channel).emit('server_message', {message : user +
                     ' disconnected', username : ':'});
             }
         }
@@ -119,17 +123,20 @@ io.on('connection', socket => {
             .replace(/&/g, '-')
             .substring(0, USER_MAX_LENGTH)
             .replace(/ /g, '_');
-        let user = socket.username.split('%%%%');
+        let user = socket.username.split('%%%%')[1];
+        let shortUser = user.substring(0, user.lastIndexOf('@'));
         if (users.includes(socket.username)) {
-            if (users.includes(socket.channel + '%%%%' + name)) {
-                logger(`${name + '%%%%' + socket.username} already exists.`)
+            if (users.includes(socket.channel + '%%%%' + name +
+                '@' + socket.handshake.headers['x-real-ip'])) {
+                logger(`${name} already exists.`)
             } else if (name.length < 1) {
                 logger('Too small.')
             } else if (name.indexOf(':') > -1) {
                 logger('Reserved.')
             } else {
-                logger(`user "${user[1]}" → "${name}"`);
-                users[users.indexOf(socket.username)] = socket.channel + '%%%%' + name;
+                logger(`user "${user}" → "${name}"`);
+                users[users.indexOf(socket.username)] = socket.channel + '%%%%' + name +
+                    '@' + socket.handshake.headers['x-real-ip']
                 let u = [];
                 for (let i=0; i<users.length; i++) {
                     if (users[i].indexOf(socket.channel) === 0) {
@@ -137,19 +144,22 @@ io.on('connection', socket => {
                     }
                 }
                 io.to(socket.channel).emit('update_userlist', {userlist : u});
-                io.to(socket.channel).emit('server_message', {message : user[1] +
+                io.to(socket.channel).emit('server_message', {message : shortUser +
                     ' → ' + name, username : ':'});
-                socket.username = socket.channel + '%%%%' + name;
+                socket.username = socket.channel + '%%%%' + name +
+                    '@' + socket.handshake.headers['x-real-ip'];
                 logger(users)
             }
         }
     });
 
     function resetUser() {
-        socket.username = socket.channel + '%%%%' + Math.random().toString(36).substring(2, 15);
+        socket.username = socket.channel + '%%%%' +
+            Math.random().toString(36).substring(2, 15) +
+            '@' + socket.handshake.headers['x-real-ip'];
         socket.join(socket.channel);
-        let user = socket.username.split('%%%%');
-        socket.emit('confirm_username', { user: user[1], channel: socket.channel } );
+        let user = socket.username.split('%%%%')[1];
+        socket.emit('confirm_username', { user: user, channel: socket.channel } );
         users.push(socket.username);
         let u = [];
         for (let i=0; i<users.length; i++) {
@@ -158,7 +168,7 @@ io.on('connection', socket => {
             }
         }
         io.to(socket.channel).emit('update_userlist', {userlist : u});
-        io.to(socket.channel).emit('server_message', {message : user[1] +
+        io.to(socket.channel).emit('server_message', {message : user +
             ' connected to channel "' + socket.channel + '"', username : ':'});
         logger('resetUser: ' + socket.handshake.headers['x-real-ip']);
         logger(users)
@@ -171,32 +181,33 @@ io.on('connection', socket => {
             resetUser()
         }
         let message = data.message;
-        let user = socket.username.split('%%%%');
+        let user = socket.username.split('%%%%')[1];
+        let shortUser = user.substring(0, user.lastIndexOf('@'));
         message = message.replace(/<(?:.|\n)*?>/gm, '').trim();
         if (message === '') return false;
         if (message[0] === '/') {
             logger('command: ' + message);
             let commands = message.split(' ');
             if (commands[0] === '/lol') {
-                io.to(socket.channel).emit('new_message', {message : 'hahaha', username : user[1]});
+                io.to(socket.channel).emit('new_message', {message : 'hahaha', username : shortUser});
             }
             if (commands.length > 1) {
                 if (commands[0] === '/me') {
                     io.to(socket.channel).emit('bold_message',
-                     {message : user[1] + ' ' + message.substring(4), username : ':'});
+                     {message : shortUser + ' ' + message.substring(4), username : ':'});
                 }
                 if (commands[0] === '/topic') {
                     socket.topic = message.substring(7);
                     io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'});
                     io.to(socket.channel).emit('server_message',
-                     {message : user[1] + ' changed topic to "' + socket.topic + '"', username : ':'});
+                     {message : shortUser + ' changed topic to "' + socket.topic + '"', username : ':'});
                 }
             }
         } else {
             if (message.length > MESSAGE_MAX_LENGTH) {
                 message = message.substring(0, MESSAGE_MAX_LENGTH) + '... &larr; TRUNCATED'
             }
-            io.to(socket.channel).emit('new_message', {message : message, username : user[1]});
+            io.to(socket.channel).emit('new_message', {message : message, username : shortUser});
         }
     });
 
@@ -205,8 +216,8 @@ io.on('connection', socket => {
             logger('"typing" to undefined in channel ' + socket.channel);
             resetUser()
         }
-        let user = socket.username.split('%%%%');
-        socket.broadcast.to(socket.channel).emit('typing', {username : user[1]})
+        let user = socket.username.split('%%%%')[1];
+        socket.broadcast.to(socket.channel).emit('typing', {username : user})
     })
 
 });

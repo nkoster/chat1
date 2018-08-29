@@ -1,26 +1,26 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <title>pepchat</title>
-        <meta http-equiv="Content-Type" const="text/html;charset=UTF-8" />
+        <meta charset="UTF-8"> 
         <link href="font.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" type="text/css" href="style.css" >
     </head>
     <body>
-        <section id="TOP">
+        <div id="TOP">
             <div class="inside" id="channel"></div>
             <div class="inside" id="topic"></div>
             <div class="inside" id="username" contenteditable="true"
-                autocomplete="off" autocorrect="off"
                 autocapitalize="off" spellcheck="false"></div>
-        </section>
-        <section id="MIDDLE">
+        </div>
+        <div id="MIDDLE">
             <div id="chatroom"></div>
             <div id="drag"></div>
             <div id="userlist"></div>
-        </section>
-        <section id="BOTTOM">
+        </div>
+        <div id="BOTTOM">
             <input id="message" type="text" />
-        </section>
+        </div>
         <script src="chat.js"></script>
     </body>
 </html>

@@ -7,6 +7,7 @@ $(function() {
     
     var
         socket = io('/cyberworld'),
+        cheap = $('#cheap'),
         channel = $('#channel'),
         message = $('#message'),
         username = $('#username'),
@@ -107,7 +108,8 @@ $(function() {
         if (e.keyCode === 13) {
             var u = username.html().substring(0, 32).replace(/ /g, '_');
             socket.emit('change_username', {username : u});
-            username.html(u)
+            username.html(u);
+            message.focus()
         }
         return e.which != 13
     });
@@ -160,5 +162,10 @@ $(function() {
     $(window).bind('beforeunload', function() {
         return 'Leave site?'
     })
+
+    setTimeout(function(){ 
+        cheap.css({transition : 'all 0.8s ease-in-out'});
+        cheap.css({opacity: 1.0, height: '100%'})
+    }, 1000);
 
 });

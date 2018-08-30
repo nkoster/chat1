@@ -11,6 +11,10 @@ body, html {
     max-width: 100%;
 }
 
+body {
+    background: black;
+}
+
 a {
     text-decoration: none;
     font-weight: bold;
@@ -30,6 +34,11 @@ input {
 ::placeholder {
     color: #444;
     opacity: 1;
+}
+
+#cheap {
+    opacity: 0;
+    height: 0;
 }
 
 #TOP {

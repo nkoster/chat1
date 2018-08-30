@@ -13,6 +13,8 @@ body, html {
 
 body {
     background: black;
+    background-image: url("leeuw.jpg");
+    background-size: cover;
 }
 
 a {

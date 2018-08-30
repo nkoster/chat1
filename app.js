@@ -218,8 +218,10 @@ io.on('connection', socket => {
                     sockets.forEach(s => {
                         if (typeof s.username !== "undefined")
                             if (s.username.lastIndexOf('%%%%' + msgUser + '@') > 1) {
-                                s.emit('bold_message', {message: 'private from ' +
+                                s.emit('bold_message', {message: 'message from ' +
                                     shortUser + ': ' + msg, username: ':'});
+                                socket.emit('bold_message', {message: 'message to ' +
+                                msgUser + ': ' + msg, username: ':'});
                                 logger('message "' + msg + '" to ' + s.username)
                             }
                     })

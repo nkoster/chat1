@@ -10,7 +10,8 @@ const
 
 let
     users = [],
-    queryUser = '', queryChannel = '';
+    queryUser = '', queryChannel = '',
+    sockets = [];
 
 function logger(msg) {
     console.log((new Date).toLocaleString() + ' :: ' + msg)
@@ -27,6 +28,8 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', socket => {
+
+    sockets.push(socket);
 
     logger(`Client connected [id=${socket.id}]`);
 
@@ -90,10 +93,15 @@ io.on('connection', socket => {
                 message : 'try http://cheapchat.nl/?user=MyNickName&channel=MyChannel', username : ':'
             })
         }
-        logger(users)
+        // logger(users);
+        console.log('************************');
+        sockets.forEach(n => console.log(' -> ' + n.username));
     });
 
     socket.on('disconnect', () => {
+
+        sockets.splice(sockets.indexOf(socket), 1);
+
         if (socket.username === undefined) {
             logger('Disconnect from undefined: ' + socket.handshake.headers['x-real-ip'])
         } else {
@@ -207,8 +215,14 @@ io.on('connection', socket => {
                 if (commands[0] === '/msg') {
                     let msgUser = commands[1];
                     let msg = message.substring(message.indexOf(msgUser) + msgUser.length + 1);
-                    // for (let i=0; i<)
-                    console.log(msg)
+                    sockets.forEach(s => {
+                        if (typeof s.username !== "undefined")
+                            if (s.username.lastIndexOf('%%%%' + msgUser + '@') > 1) {
+                                s.emit('bold_message', {message: 'private from ' +
+                                    shortUser + ': ' + msg, username: ':'});
+                                logger('message "' + msg + '" to ' + s.username)
+                            }
+                    })
                 }
             }
         } else {

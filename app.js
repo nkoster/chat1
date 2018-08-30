@@ -28,6 +28,8 @@ app.get('/', (req, res) => {
 
 io.on('connection', socket => {
 
+    logger(`Client connected [id=${socket.id}]`);
+
     if (socket.channel === undefined) {
         if (queryChannel.length > 0) {
             socket.channel = queryChannel
@@ -201,6 +203,12 @@ io.on('connection', socket => {
                     io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'});
                     io.to(socket.channel).emit('server_message',
                      {message : shortUser + ' changed topic to "' + socket.topic + '"', username : ':'});
+                }
+                if (commands[0] === '/msg') {
+                    let msgUser = commands[1];
+                    let msg = message.substring(message.indexOf(msgUser) + msgUser.length + 1);
+                    // for (let i=0; i<)
+                    console.log(msg)
                 }
             }
         } else {

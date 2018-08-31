@@ -163,9 +163,15 @@ $(function() {
         return 'Leave site?'
     })
 
-    setTimeout(function(){ 
+    setTimeout(function() { 
         cheap.css({transition : 'all 0.8s ease-in-out'});
-        cheap.css({opacity: 1.0, height: '100%'})
+        cheap.css({opacity: 0.9, height: '100%'});
+        setTimeout(function() {
+            cheap.css({transition : 'all 2s ease-in-out'});
+            cheap.css({opacity: 1, height: '100%'})
+        }, 3000)
     }, 1000);
+
+    message.focus()
 
 });

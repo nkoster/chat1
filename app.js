@@ -29,9 +29,6 @@ app.get('/', (req, res) => {
 
 function firstInChannel(c) {
     let counter = 0;
-    // for (let i=0; i<users.length; i++) {
-    //     if (users[i].indexOf(c) === 0) counter++
-    // }
     users.forEach(x => { if (x.indexOf(c) === 0) counter++ });
     return counter === 0 ? true : false
 }

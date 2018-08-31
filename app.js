@@ -217,7 +217,7 @@ io.on('connection', socket => {
                     let msg = message.substring(message.indexOf(msgUser) + msgUser.length + 1);
                     sockets.forEach(s => {
                         if (typeof s.username !== "undefined")
-                            if (s.username.lastIndexOf('%%%%' + msgUser + '@') > 1) {
+                            if (s.username.indexOf(socket.channel + '%%%%' + msgUser + '@') === 0) {
                                 s.emit('bold_message', {message: 'message from ' +
                                     shortUser + ': ' + msg, username: ':'});
                                 socket.emit('bold_message', {message: 'message to ' +

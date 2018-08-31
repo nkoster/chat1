@@ -27,6 +27,15 @@ app.get('/', (req, res) => {
     res.render('index')
 });
 
+function firstInChannel(c) {
+    let counter = 0;
+    // for (let i=0; i<users.length; i++) {
+    //     if (users[i].indexOf(c) === 0) counter++
+    // }
+    users.forEach(x => { if (x.indexOf(c) === 0) counter++ });
+    return counter === 0 ? true : false
+}
+
 io.on('connection', socket => {
 
     sockets.push(socket);
@@ -53,6 +62,14 @@ io.on('connection', socket => {
     });
 
     socket.on('hello', () => {
+
+        let mode = '-';
+
+        if (firstInChannel(socket.channel)) {
+            mode = '+';
+            console.log('first in channel ' + socket.channel)
+        }
+
         if (socket.username === undefined) {
             if (queryUser.length > 0) { 
                 socket.username = socket.channel + '%%%%' + queryUser +
@@ -93,10 +110,7 @@ io.on('connection', socket => {
                 message : 'try http://cheapchat.nl/?user=MyNickName&channel=MyChannel', username : ':'
             })
         }
-        // logger(users);
-        console.log('************************');
-        sockets.forEach(n => console.log(' -> ' + n.username));
-    });
+    })
 
     socket.on('disconnect', () => {
 
@@ -198,21 +212,22 @@ io.on('connection', socket => {
         if (message[0] === '/') {
             logger('command: ' + message);
             let commands = message.split(' ');
-            if (commands[0] === '/lol') {
+            commands[0] = commands[0].toUpperCase();
+            if (commands[0] === '/LOL') {
                 io.to(socket.channel).emit('new_message', {message : 'hahaha', username : shortUser});
             }
             if (commands.length > 1) {
-                if (commands[0] === '/me') {
+                if (commands[0] === '/ME') {
                     io.to(socket.channel).emit('bold_message',
                      {message : shortUser + ' ' + message.substring(4), username : ':'});
                 }
-                if (commands[0] === '/topic') {
+                if (commands[0] === '/TOPIC') {
                     socket.topic = message.substring(7);
                     io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'});
                     io.to(socket.channel).emit('server_message',
                      {message : shortUser + ' changed topic to "' + socket.topic + '"', username : ':'});
                 }
-                if (commands[0] === '/msg') {
+                if (commands[0] === '/MSG') {
                     let msgUser = commands[1];
                     let msg = message.substring(message.indexOf(msgUser) + msgUser.length + 1);
                     sockets.forEach(s => {

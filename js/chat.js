@@ -72,8 +72,10 @@ $(function() {
             if (element !== null) {
                 var u = element.substring(0, element.lastIndexOf('@'));
                 var ip = element.substring(element.lastIndexOf('@') + 1);
+                var myClass = element;
+                if (myClass[0] === '@') myClass = myClass.substring(1);
                 list += '<p class="user"><span class="inside"><b><span class="' +
-                element + '" title="' + u + ' at ' + ip + '">' + u + '</span></b></span></p>'
+                myClass + '" title="' + u + ' at ' + ip + '">' + u + '</span></b></span></p>'
             }
         });
         userlist.html(list)

@@ -177,7 +177,8 @@ io.on('connection', socket => {
             });
 
             if (newUserExists) {
-                logger(`${name} already exists.`)
+                logger(`${name} already exists.`);
+                socket.emit('confirm_username', { user: user, channel: socket.channel } );
             } else if (name.length < 1) {
                 logger('Too small.')
             } else if (name.indexOf(':') > -1) {
@@ -203,7 +204,7 @@ io.on('connection', socket => {
                 }
                 io.to(socket.channel).emit('update_userlist', {userlist : u});
                 io.to(socket.channel).emit('server_message', {message : shortUser +
-                    ' → ' + name, username : ':'});
+                    ' changed name to ' + name, username : ':'});
                 socket.username = socket.channel + '%%%%' + name +
                     '@' + socket.handshake.headers['x-real-ip'] +
                     '%%%%' + socket.mode;

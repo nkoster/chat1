@@ -35,6 +35,8 @@ function firstInChannel(c) {
 
 io.on('connection', socket => {
 
+    socket.mode = '-';
+
     sockets.push(socket);
 
     logger(`Client connected [id=${socket.id}]`);
@@ -60,29 +62,35 @@ io.on('connection', socket => {
 
     socket.on('hello', () => {
 
-        let mode = '-';
-
         if (firstInChannel(socket.channel)) {
-            mode = '+';
+            socket.mode = '+';
             console.log('first in channel ' + socket.channel)
         }
 
         if (socket.username === undefined) {
             if (queryUser.length > 0) { 
                 socket.username = socket.channel + '%%%%' + queryUser +
-                    '@' + socket.handshake.headers['x-real-ip'];
+                    '@' + socket.handshake.headers['x-real-ip'] +
+                    '%%%%' + socket.mode;
                 queryUser = ''
             } else {
                 socket.username = socket.channel + '%%%%' +
                     Math.random().toString(36).substring(2, 15) +
-                    '@' + socket.handshake.headers['x-real-ip'];
+                    '@' + socket.handshake.headers['x-real-ip'] +
+                    '%%%%' + socket.mode;
             }
-
-            if (users.includes(socket.username)) {
+            let userExists = false;
+            users.forEach(u => {
+                if (u.indexOf(socket.username.substring(0, socket.username.length - 1)) === 0) {
+                    userExists = true
+                }
+            });
+            if (userExists) {
                 logger(`${socket.username} already exists.`);
                 socket.username = socket.channel + '%%%%' +
                     Math.random().toString(36).substring(2, 15) +
-                    '@' + socket.handshake.headers['x-real-ip'];
+                    '@' + socket.handshake.headers['x-real-ip'] +
+                    '%%%%' + socket.mode;
             } else {
                 logger(`connection from: "${socket.username}" to channel "${socket.channel}".`)
             }
@@ -93,7 +101,10 @@ io.on('connection', socket => {
         let u = [];
         for (let i=0; i<users.length; i++) {
             if (users[i].indexOf(socket.channel) === 0) {
-                u[i] = users[i].substring(users[i].indexOf('%%%%') + 4)
+                u[i] = users[i].split('%%%%')[1];
+                if (users[i].split('%%%%')[2] === '+') {
+                    u[i] = '@' + u[i]
+                }
             }
         }
         io.to(socket.channel).emit('update_userlist', {userlist : u});
@@ -107,12 +118,11 @@ io.on('connection', socket => {
                 message : 'try http://cheapchat.nl/?user=MyNickName&channel=MyChannel', username : ':'
             })
         }
+        logger(users)
     })
 
     socket.on('disconnect', () => {
-
         sockets.splice(sockets.indexOf(socket), 1);
-
         if (socket.username === undefined) {
             logger('Disconnect from undefined: ' + socket.handshake.headers['x-real-ip'])
         } else {
@@ -124,7 +134,10 @@ io.on('connection', socket => {
                 let u = [];
                 for (let i=0; i<users.length; i++) {
                     if (users[i].indexOf(socket.channel) === 0) {
-                        u[i] = users[i].substring(users[i].indexOf('%%%%') + 4)
+                        u[i] = users[i].split('%%%%')[1];
+                        if (users[i].split('%%%%')[2] === '+') {
+                            u[i] = '@' + u[i]
+                        }
                     }
                 }
                 io.to(socket.channel).emit('update_userlist', {userlist : u});
@@ -136,39 +149,64 @@ io.on('connection', socket => {
 
     socket.on('change_username', data => {
         if (socket.username === undefined) {
-            logger('aaaarg')
-            return false
+            resetUser()
         }
         let name = data.username
             .replace(/<(?:.|\n)*?>/gm, '')
-            .replace(/&/g, '-')
+            .replace(/[&@]/g, '-')
             .substring(0, USER_MAX_LENGTH)
             .replace(/ /g, '_');
         let user = socket.username.split('%%%%')[1];
         let shortUser = user.substring(0, user.lastIndexOf('@'));
-        if (users.includes(socket.username)) {
-            if (users.includes(socket.channel + '%%%%' + name +
-                '@' + socket.handshake.headers['x-real-ip'])) {
+
+        let userExists = false;
+        users.forEach(u => {
+            if (u.indexOf(socket.username === 0)) {
+                userExists = true
+            }
+        });
+
+        if (userExists) {
+
+            let newUserExists = false;
+            users.forEach(u => {
+                if (u.indexOf(socket.channel + '%%%%' + name +
+                '@' + socket.handshake.headers['x-real-ip']) === 0) {
+                    newUserExists = true
+                }
+            });
+
+            if (newUserExists) {
                 logger(`${name} already exists.`)
             } else if (name.length < 1) {
                 logger('Too small.')
             } else if (name.indexOf(':') > -1) {
                 logger('Reserved.')
             } else {
-                logger(`user "${user}" → "${name}"`);
-                users[users.indexOf(socket.username)] = socket.channel + '%%%%' + name +
-                    '@' + socket.handshake.headers['x-real-ip']
+                logger(`user "${user}" → "${name}" (${socket.username})`);
+                let index = -1;
+                for (i=0; i<users.length; i++) {
+                    if (users[i].indexOf(socket.channel + '%%%%' + user) === 0) index = i
+                }
+                if (index > -1) console.log('ok');
+                users[index] = socket.channel + '%%%%' + name +
+                    '@' + socket.handshake.headers['x-real-ip'] +
+                    '%%%%' + socket.mode
                 let u = [];
                 for (let i=0; i<users.length; i++) {
                     if (users[i].indexOf(socket.channel) === 0) {
-                        u[i] = users[i].substring(users[i].indexOf('%%%%') + 4)
+                        u[i] = users[i].split('%%%%')[1];
+                        if (users[i].split('%%%%')[2] === '+') {
+                            u[i] = '@' + u[i]
+                        }
                     }
                 }
                 io.to(socket.channel).emit('update_userlist', {userlist : u});
                 io.to(socket.channel).emit('server_message', {message : shortUser +
                     ' → ' + name, username : ':'});
                 socket.username = socket.channel + '%%%%' + name +
-                    '@' + socket.handshake.headers['x-real-ip'];
+                    '@' + socket.handshake.headers['x-real-ip'] +
+                    '%%%%' + socket.mode;
                 logger(users)
             }
         }
@@ -177,7 +215,8 @@ io.on('connection', socket => {
     function resetUser() {
         socket.username = socket.channel + '%%%%' +
             Math.random().toString(36).substring(2, 15) +
-            '@' + socket.handshake.headers['x-real-ip'];
+            '@' + socket.handshake.headers['x-real-ip'] +
+            '%%%%' + socket.mode;
         socket.join(socket.channel);
         let user = socket.username.split('%%%%')[1];
         socket.emit('confirm_username', { user: user, channel: socket.channel } );
@@ -185,7 +224,10 @@ io.on('connection', socket => {
         let u = [];
         for (let i=0; i<users.length; i++) {
             if (users[i].indexOf(socket.channel) === 0) {
-                u[i] = users[i].substring(users[i].indexOf('%%%%') + 4)
+                u[i] = users[i].split('%%%%')[1];
+                if (users[i].split('%%%%')[2] === '+') {
+                    u[i] = '@' + u[i]
+                }
             }
         }
         io.to(socket.channel).emit('update_userlist', {userlist : u});
@@ -237,6 +279,40 @@ io.on('connection', socket => {
                                 logger('message "' + msg + '" to ' + s.username)
                             }
                     })
+                }
+                if (commands[0] === '/OP') {
+                    if (socket.mode === '+') {
+                        let opUser = commands[1];
+                        for (i=0; i<users.length; i++) {
+                            if (users[i].indexOf(socket.channel + '%%%%' + opUser) === 0) {
+                                logger(shortUser + ' ops ' + opUser);
+                                users[i] = users[i].substring(0, users[i].length - 1) + '+';
+                                console.log(users[i][users[i].length - 1])
+                                io.to(socket.channel).emit('server_message',
+                                    {message : shortUser + ' gives operator status to ' +
+                                    opUser, username : ':'});
+                                let u = [];
+                                for (let i=0; i<users.length; i++) {
+                                    if (users[i].indexOf(socket.channel) === 0) {
+                                        u[i] = users[i].split('%%%%')[1];
+                                        if (users[i].split('%%%%')[2] === '+') {
+                                            u[i] = '@' + u[i]
+                                        }
+                                    }
+                                }
+                                io.to(socket.channel).emit('update_userlist', {userlist : u});
+                                sockets.forEach(s => {
+                                    if (typeof s.username !== "undefined")
+                                        if (s.username.indexOf(socket.channel + '%%%%' + opUser + '@') === 0) {
+                                            s.mode = '+';
+                                        }
+                                })            
+                            } 
+                        }
+                        console.log(users)
+                    } else {
+                        logger('Wrong mode!! '+ socket.username)
+                    }
                 }
             }
         } else {

@@ -128,7 +128,11 @@ io.on('connection', socket => {
         } else {
             let user = socket.username.split('%%%%')[1];
             logger('user ' + socket.username + ' disconnected');
-            let index = users.indexOf(socket.username);
+            // let index = users.indexOf(socket.username);
+            let index = -1;
+            for (let i=0; i<users.length; i++) {
+                if (users[i].indexOf(socket.username)) index = i
+            }
             if (index > -1) {
                 users.splice(index, 1);
                 let u = [];

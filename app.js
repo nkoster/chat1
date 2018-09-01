@@ -1,4 +1,5 @@
 const
+    operKey = 'thepasswordis',
     MESSAGE_MAX_LENGTH = 240,
     USER_MAX_LENGTH = 32,
     CHANNEL_MAX_LENGTH = 32,
@@ -128,10 +129,9 @@ io.on('connection', socket => {
         } else {
             let user = socket.username.split('%%%%')[1];
             logger('user ' + socket.username + ' disconnected');
-            // let index = users.indexOf(socket.username);
             let index = -1;
             for (let i=0; i<users.length; i++) {
-                if (users[i].indexOf(socket.username)) index = i
+                if (users[i].indexOf(socket.username) === 0) index = i
             }
             if (index > -1) {
                 users.splice(index, 1);
@@ -285,8 +285,42 @@ io.on('connection', socket => {
                             }
                     })
                 }
+                if (commands[0] === '/DEOP') {
+                    if (socket.mode === '+' || commands[2] === operKey) {
+                        let deopUser = commands[1];
+                        for (i=0; i<users.length; i++) {
+                            if (users[i].indexOf(socket.channel + '%%%%' + deopUser) === 0) {
+                                logger(shortUser + ' deops ' + deopUser);
+                                users[i] = users[i].substring(0, users[i].length - 1) + '-';
+                                console.log(users[i][users[i].length - 1])
+                                io.to(socket.channel).emit('server_message',
+                                    {message : shortUser + ' removes operator status from ' +
+                                    deopUser, username : ':'});
+                                let u = [];
+                                for (let i=0; i<users.length; i++) {
+                                    if (users[i].indexOf(socket.channel) === 0) {
+                                        u[i] = users[i].split('%%%%')[1];
+                                        if (users[i].split('%%%%')[2] === '+') {
+                                            u[i] = '@' + u[i]
+                                        }
+                                    }
+                                }
+                                io.to(socket.channel).emit('update_userlist', {userlist : u});
+                                sockets.forEach(s => {
+                                    if (typeof s.username !== "undefined")
+                                        if (s.username.indexOf(socket.channel + '%%%%' + deopUser + '@') === 0) {
+                                            s.mode = '-';
+                                        }
+                                })            
+                            } 
+                        }
+                        console.log(users)
+                    } else {
+                        logger('Wrong mode!! '+ socket.username)
+                    }
+                }
                 if (commands[0] === '/OP') {
-                    if (socket.mode === '+') {
+                    if (socket.mode === '+' || commands[2] === operKey) {
                         let opUser = commands[1];
                         for (i=0; i<users.length; i++) {
                             if (users[i].indexOf(socket.channel + '%%%%' + opUser) === 0) {

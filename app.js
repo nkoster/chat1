@@ -3,6 +3,7 @@ const
     MESSAGE_MAX_LENGTH = 240,
     USER_MAX_LENGTH = 32,
     CHANNEL_MAX_LENGTH = 32,
+    TOPIC_MAX_LENGTH = 100,
     express = require('express'),
     app = express(),
     server = app.listen(9999),
@@ -266,10 +267,12 @@ io.on('connection', socket => {
                      {message : shortUser + ' ' + message.substring(4), username : ':'});
                 }
                 if (commands[0] === '/TOPIC') {
-                    socket.topic = message.substring(7);
-                    io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'});
-                    io.to(socket.channel).emit('server_message',
-                     {message : shortUser + ' changed topic to "' + socket.topic + '"', username : ':'});
+                    if (socket.mode === '+' || commands[2] === operKey) {
+                        socket.topic = message.substring(7, TOPIC_MAX_LENGTH);
+                        io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'});
+                        io.to(socket.channel).emit('server_message',
+                        {message : shortUser + ' changed topic to "' + socket.topic + '"', username : ':'});
+                        }
                 }
                 if (commands[0] === '/MSG') {
                     let msgUser = commands[1];

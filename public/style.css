@@ -79,7 +79,6 @@ input {
     top: 0;
     bottom: 0;
     right: 170px;
-    /* overflow: auto; */
     overflow-x: hidden;
     border-right: 5px solid #555;
 }
@@ -121,7 +120,7 @@ p.user {
 }
 
 .user:nth-child(even) {
-    background-color: #c0c0c0;
+    background: linear-gradient(to right, #d0d0d0, #c0c0c0);
 }
 
 input#message {
@@ -158,7 +157,6 @@ input#message {
     color: #ccc;
     border: none;
     background: #666;
-    /* cursor: default; */
     white-space: nowrap;
     height: 24px;
 }

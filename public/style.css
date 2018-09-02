@@ -51,7 +51,6 @@ input {
     height: 30px;
     background: #666;
     border-bottom: 2px solid #333;
-    display: table;
 }
 
 #MIDDLE {
@@ -125,48 +124,6 @@ p.user {
     background-color: #c0c0c0;
 }
 
-#topic {
-    padding-left: 10px;
-    height: 24px;
-    font-size: 14px;
-    color: white;
-    background: none;
-    white-space:nowrap;
-    cursor: default;
-    white-space: nowrap;
-}
-
-#channel {
-    font-size: 16px;
-    font-weight: bold;
-    color: #ccc;
-    border: none;
-    background: #666;
-    float: left;
-    white-space:nowrap;
-    margin-left: 10px;
-    margin-right: 15px;
-    cursor: default;
-}
-
-#username {
-    font-size: 16px;
-    font-weight: bold;
-    color: #ccc;
-    border: none;
-    background: #666;
-    float: right;
-    white-space: nowrap;
-    margin-right: 5px;
-    margin-top: 5px;
-    min-width: 30px;
-    transition: 0.3s;
-}
-
-#username:hover {
-    color: white;
-}
-
 input#message {
     display: inline-block;
     width: 99%;
@@ -190,6 +147,46 @@ input#message {
     display: table-cell;
     vertical-align: middle;
     clear: both;
+}
+
+#channel, #picture, #topic, #username {
+    display: inline-block;
+    padding: 5px;
+    vertical-align: middle;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ccc;
+    border: none;
+    background: #666;
+    /* cursor: default; */
+    white-space: nowrap;
+    height: 24px;
+}
+
+#picture {
+    margin-top: 1px;
+}
+
+#channel {
+    margin-left: 5px;
+    margin-bottom: 2px;
+}
+
+#topic {
+    font-size: 80%;
+    color: #eee;
+    vertical-align: middle;
+    margin-top: 3px;
+}
+
+#username {
+    margin-right: 5px;
+    float: right;
+    transition: 0.4s;
+}
+
+#username:hover {
+    color: white;
 }
 
 .mono {

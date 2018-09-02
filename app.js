@@ -298,10 +298,32 @@ io.on('connection', socket => {
                             }
                     })
                 }
+                if (commands[0] === '/KICK') {
+                    if (socket.mode === '+') {
+                        let kickedUser = commands[1];
+                        let msg = '';
+                        if (commands.length > 2)
+                            msg = ': ' + message.substring(7 + kickedUser.length);
+
+                        for (let i=0; i<sockets.length; i++) {
+                            if (typeof sockets[i].username !== "undefined") {
+                                if (sockets[i].username.indexOf(socket.channel + '%%%%' + kickedUser) === 0) {
+                                    io.to(socket.channel).emit('server_message',
+                                    {message : shortUser + ' kicks ' + kickedUser +
+                                        ' from channel ' + socket.channel + msg,
+                                        username : ':'});
+                                    sockets[i].disconnect();
+                                    logger(shortUser + ' kicks ' + kickedUser);
+                                }
+                            }
+                        }
+                    } else {
+                        logger('Wrong mode!! ' + socket.username)
+                    }
+                }
                 if (commands[0] === '/BAN') {
                     if (socket.mode === '+' || commands[2] === operKey) {
                         let bannedUser = commands[1];
-                        let bannedSocket;
                         for (let i=0; i<sockets.length; i++) {
                             if (typeof sockets[i].username !== "undefined") {
                                 if (sockets[i].username.indexOf(socket.channel + '%%%%' + bannedUser) === 0) {
@@ -312,6 +334,7 @@ io.on('connection', socket => {
                                     {message : shortUser + ' bans ' + sockets[i].handshake.headers['x-real-ip'] + '@' +
                                         socket.channel + ' (' + bannedUser + ')',
                                         username : ':'});
+                                    sockets[i].disconnect();
                                     logger(shortUser + ' bans ' + bannedUser);
                                     logger(banned);
                                 }

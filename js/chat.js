@@ -172,7 +172,7 @@ $(function() {
             cheap.css({transition : 'all 2s ease-in-out'});
             cheap.css({opacity: 1, height: '100%'})
         }, 3000)
-    }, 1000);
+    }, 0.5);
 
     message.focus()
 

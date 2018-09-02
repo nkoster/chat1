@@ -12,6 +12,7 @@ const
 
 let
     users = [],
+    banned = [],
     queryUser = '', queryChannel = '',
     sockets = [];
 
@@ -49,6 +50,11 @@ io.on('connection', socket => {
         } else {
             socket.channel = 'cyberworld'
         }
+    }
+
+    if (banned.indexOf(socket.handshake.headers['x-real-ip'] + '@' + socket.channel) === 0) {
+        logger('BANNED: ' + socket.handshake.headers['x-real-ip'] + '@' + socket.channel);
+        return
     }
 
     socket.join(socket.channel);
@@ -125,31 +131,31 @@ io.on('connection', socket => {
 
     socket.on('disconnect', () => {
         sockets.splice(sockets.indexOf(socket), 1);
-        if (socket.username === undefined) {
-            logger('Disconnect from undefined: ' + socket.handshake.headers['x-real-ip'])
-        } else {
-            let user = socket.username.split('%%%%')[1];
-            logger('user ' + socket.username + ' disconnected');
-            let index = -1;
+        if (typeof socket.username === 'undefined') resetUser();
+        //     logger('Disconnect from undefined: ' + socket.handshake.headers['x-real-ip'])
+        // } else {
+        let user = socket.username.split('%%%%')[1];
+        logger('user ' + socket.username + ' disconnected');
+        let index = -1;
+        for (let i=0; i<users.length; i++) {
+            if (users[i].indexOf(socket.username) === 0) index = i
+        }
+        if (index > -1) {
+            users.splice(index, 1);
+            let u = [];
             for (let i=0; i<users.length; i++) {
-                if (users[i].indexOf(socket.username) === 0) index = i
-            }
-            if (index > -1) {
-                users.splice(index, 1);
-                let u = [];
-                for (let i=0; i<users.length; i++) {
-                    if (users[i].indexOf(socket.channel) === 0) {
-                        u[i] = users[i].split('%%%%')[1];
-                        if (users[i].split('%%%%')[2] === '+') {
-                            u[i] = '@' + u[i]
-                        }
+                if (users[i].indexOf(socket.channel) === 0) {
+                    u[i] = users[i].split('%%%%')[1];
+                    if (users[i].split('%%%%')[2] === '+') {
+                        u[i] = '@' + u[i]
                     }
                 }
-                io.to(socket.channel).emit('update_userlist', {userlist : u});
-                io.to(socket.channel).emit('server_message', {message : user +
-                    ' disconnected', username : ':'});
             }
+            io.to(socket.channel).emit('update_userlist', {userlist : u});
+            io.to(socket.channel).emit('server_message', {message : user +
+                ' disconnected', username : ':'});
         }
+        // }
     });
 
     socket.on('change_username', data => {
@@ -249,6 +255,10 @@ io.on('connection', socket => {
                 socket.handshake.headers['x-real-ip'] + ' in channel ' + socket.channel);
             resetUser()
         }
+        if (banned.indexOf(socket.handshake.headers['x-real-ip'] + '@' + socket.channel) === 0) {
+            logger('BANNED: ' + socket.handshake.headers['x-real-ip'] + '@' + socket.channel);
+            return
+        }
         let message = data.message;
         let user = socket.username.split('%%%%')[1];
         let shortUser = user.substring(0, user.lastIndexOf('@'));
@@ -288,6 +298,44 @@ io.on('connection', socket => {
                             }
                     })
                 }
+                if (commands[0] === '/BAN') {
+                    if (socket.mode === '+' || commands[2] === operKey) {
+                        let bannedUser = commands[1];
+                        let bannedSocket;
+                        for (let i=0; i<sockets.length; i++) {
+                            if (typeof sockets[i].username !== "undefined") {
+                                if (sockets[i].username.indexOf(socket.channel + '%%%%' + bannedUser) === 0) {
+                                    sockets[i].banned = true;
+                                    banned.push(sockets[i].handshake.headers['x-real-ip'] +
+                                        '@' + socket.channel)
+                                    io.to(socket.channel).emit('server_message',
+                                    {message : shortUser + ' bans ' + sockets[i].handshake.headers['x-real-ip'] + '@' +
+                                        socket.channel + ' (' + bannedUser + ')',
+                                        username : ':'});
+                                    logger(shortUser + ' bans ' + bannedUser);
+                                    logger(banned);
+                                }
+                            }
+                        }
+                    } else {
+                        logger('Wrong mode!! ' + socket.username)
+                    }
+                }
+                if (commands[0] === '/UNBAN') {
+                    if (socket.mode === '+' || commands[2] === operKey) {
+                        let unBannedUser = commands[1];
+                        if (banned.indexOf(unBannedUser) === 0) {
+                            banned.splice(banned.indexOf(unBannedUser), 1);
+                            io.to(socket.channel).emit('server_message',
+                            {message : shortUser + ' unbans ' + unBannedUser,
+                                username : ':'});
+                            logger(shortUser + ' unbans ' + unBannedUser);
+                            logger(banned);
+                        }
+                    } else {
+                        logger('Wrong mode!! ' + socket.username)
+                    }
+                }
                 if (commands[0] === '/DEOP') {
                     if (socket.mode === '+' || commands[2] === operKey) {
                         let deopUser = commands[1];
@@ -313,6 +361,7 @@ io.on('connection', socket => {
                                     if (typeof s.username !== "undefined")
                                         if (s.username.indexOf(socket.channel + '%%%%' + deopUser + '@') === 0) {
                                             s.mode = '-';
+                                            s.username = s.username.substring(0, s.username.length - 1) + '-'; 
                                         }
                                 })            
                             } 
@@ -347,6 +396,7 @@ io.on('connection', socket => {
                                     if (typeof s.username !== "undefined")
                                         if (s.username.indexOf(socket.channel + '%%%%' + opUser + '@') === 0) {
                                             s.mode = '+';
+                                            s.username = s.username.substring(0, s.username.length - 1) + '+'; 
                                         }
                                 })            
                             } 

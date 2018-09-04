@@ -99,6 +99,15 @@ $(function() {
                     '::</b> &nbsp; beep is set</span></div>');
                 chatroom.scrollTop($('#chatroom')[0].scrollHeight);
                 alarm = true
+            } else if (message.val().split(' ')[0] === '/send') {
+                var commands = message.val().split(' ');
+                var destUser = commands[1];
+                var input = $(document.createElement("input"));
+                input.attr("id", "input");
+                input.attr("type", "file");
+                input.trigger("click");
+                input.on
+                console.log($('#input').files[0])
             } else {
                 socket.emit('new_message', {message : message.val()})
             }

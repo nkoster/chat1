@@ -106,7 +106,6 @@ $(function() {
                 input.attr('id', 'input');
                 input.attr('type', 'file');
                 input.bind('change', function() {
-                    console.log(this.files[0])
                     var f = this.files[0];
                     var reader = new FileReader();
                     reader.onload = function() {

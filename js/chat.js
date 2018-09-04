@@ -6,7 +6,7 @@ $(function() {
     }
     
     var
-        socket = io('/cyberworld'),
+        socket = io('/cheapchat'),
         cheap = $('#cheap'),
         channel = $('#channel'),
         message = $('#message'),
@@ -28,7 +28,7 @@ $(function() {
     socket.on("new_message", function(data) {
         checkAlarm();
         if (data.username === undefined) return;
-        myDate = new Date();
+        var myDate = new Date();
         chatroom.append('<div class="message"><span class="inside"><span class="mono">' + 
             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
             data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + 
@@ -38,7 +38,7 @@ $(function() {
 
     socket.on("server_message", function(data) {
         if (data.username === undefined) return;
-        myDate = new Date();
+        var myDate = new Date();
         chatroom.append('<div class="message" style="color:#043"><span class="inside"><span class="mono">' + 
             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
             data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + 
@@ -49,7 +49,7 @@ $(function() {
     socket.on("bold_message", function(data) {
         checkAlarm();
         if (data.username === undefined) return;
-        myDate = new Date();
+        var myDate = new Date();
         chatroom.append('<div class="message" style="color:#043"><span class="inside"><span class="mono">' + 
             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
             data.username.replace(/<(?:.|\n)*?>/gm, '') + ': &nbsp; ' + 
@@ -58,7 +58,7 @@ $(function() {
     });
 
     socket.on("topic", function(data) {
-        myDate = new Date();
+        var myDate = new Date();
         topic.html(data.topic);
     });
 
@@ -93,7 +93,7 @@ $(function() {
         event.preventDefault();
         if (event.keyCode === 13 && message.val() !== '') {
             if (message.val() === '/beep') {
-                myDate = new Date();
+                var myDate = new Date();
                 chatroom.append('<div class="message" style="color:#067"><span class="inside"><span class="mono">' + 
                     myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
                     '::</b> &nbsp; beep is set</span></div>');
@@ -103,11 +103,38 @@ $(function() {
                 var commands = message.val().split(' ');
                 var destUser = commands[1];
                 var input = $(document.createElement("input"));
-                input.attr("id", "input");
-                input.attr("type", "file");
+                input.attr('id', 'input');
+                input.attr('type', 'file');
+                input.bind('change', function() {
+                    console.log(this.files[0])
+                    var f = this.files[0];
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        console.log('sending ' + f.name + ' to ' + destUser);
+                        socket.emit('send_file',
+                            {
+                                destination: destUser,
+                                filename: f.name,
+                                username: username.html(),
+                                content: reader.result
+                            } );
+                    }
+                    if (f.size < 20000000) {
+                        myDate = new Date();
+                        chatroom.append('<div class="message" style="color:#663"><span class="inside"><span class="mono">' + 
+                            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
+                            '::</b> &nbsp; sending ' + f.name + ' to ' + destUser + '</span></div>');
+                        chatroom.scrollTop($('#chatroom')[0].scrollHeight);
+                        reader.readAsArrayBuffer(this.files[0]);
+                    } else {
+                        myDate = new Date();
+                        chatroom.append('<div class="message" style="color:#700"><span class="inside"><span class="mono">' + 
+                            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
+                            '::</b> &nbsp; file exceeds 20000000 bytes</span></div>');
+                        chatroom.scrollTop($('#chatroom')[0].scrollHeight);                        
+                    }
+                });
                 input.trigger("click");
-                input.on
-                console.log($('#input').files[0])
             } else {
                 socket.emit('new_message', {message : message.val()})
             }
@@ -131,7 +158,7 @@ $(function() {
             snd.play();
             console.log('BEEP!');
             alarm = false;
-            myDate = new Date();
+            var myDate = new Date();
             chatroom.append('<div class="message" style="color:#067"><span class="inside"><span class="mono">' + 
                 myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
                 '::</b> &nbsp; <b>beep!</b></span></div>');
@@ -161,6 +188,29 @@ $(function() {
         var u = data.user;
         u = u.substring(0, u.lastIndexOf('@')).substring(0, 32).replace(/ /g, '_');
         username.html(u);
+    });
+
+    socket.on('receive_file', function(data) {
+        console.log('receiving ' + data.filename);
+        var myDate = new Date();
+        chatroom.append('<div class="message" style="color:#663"><span class="inside"><span class="mono">' + 
+        myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
+        '::</b> &nbsp; receiving ' + data.filename + ' from ' + data.username + '</span></div>');
+        chatroom.scrollTop($('#chatroom')[0].scrollHeight);
+        var saveByteArray = (function () {
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+            return function (data, name) {
+                var blob = new Blob(data, {type: "octet/stream"}),
+                    url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.download = name;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+        }());
+        saveByteArray([data.content], data.filename);
     });
 
     socket.connect('http://192.168.1.33:9999');

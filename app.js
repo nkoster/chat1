@@ -132,12 +132,14 @@ io.on('connection', socket => {
 
     socket.on('send_file', data => {
         const destUser = data.destination;
+        const username = data.username;
         const filename = data.filename;
         console.log(destUser);
         sockets.forEach(s => {
             if (typeof s.username !== "undefined")
                 if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
                     s.emit('receive_file', {
+                        username: username,
                         filename: filename,
                         content: data.content
                     } );

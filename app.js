@@ -73,7 +73,7 @@ io.on('connection', socket => {
 
         if (firstInChannel(socket.channel)) {
             socket.mode = '+';
-            console.log('first in channel ' + socket.channel)
+            logger('first in channel ' + socket.channel)
         }
 
         if (socket.username === undefined) {
@@ -131,21 +131,26 @@ io.on('connection', socket => {
     })
 
     socket.on('send_file', data => {
-        const destUser = data.destination;
-        const username = data.username;
-        const filename = data.filename;
-        console.log(destUser);
-        sockets.forEach(s => {
-            if (typeof s.username !== "undefined")
-                if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
-                    s.emit('receive_file', {
-                        username: username,
-                        filename: filename,
-                        content: data.content
-                    } );
-                    logger('Send file to ' + data.destination)
-                }
-        })
+        if (socket.mode === '+') {
+            const destUser = data.destination;
+            const username = data.username;
+            const filename = data.filename;
+            sockets.forEach(s => {
+                if (typeof s.username !== "undefined")
+                    if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
+                        s.emit('receive_file', {
+                            username: username,
+                            filename: filename,
+                            content: data.content
+                        } );
+                        logger('Send file to ' + data.destination)
+                    }
+            })
+        } else {
+            socket.emit('server_message', {
+                message : 'you need to be an operator for this', username : ':'
+            })
+        }
     });
 
     socket.on('disconnect', () => {
@@ -216,7 +221,7 @@ io.on('connection', socket => {
                 for (i=0; i<users.length; i++) {
                     if (users[i].indexOf(socket.channel + '%%%%' + user) === 0) index = i
                 }
-                if (index > -1) console.log('ok');
+                // if (index > -1) console.log('ok');
                 users[index] = socket.channel + '%%%%' + name +
                     '@' + socket.handshake.headers['x-real-ip'] +
                     '%%%%' + socket.mode
@@ -405,7 +410,7 @@ io.on('connection', socket => {
                                 })            
                             } 
                         }
-                        console.log(users)
+                        // console.log(users)
                     } else {
                         logger('Wrong mode!! '+ socket.username)
                     }
@@ -417,7 +422,7 @@ io.on('connection', socket => {
                             if (users[i].indexOf(socket.channel + '%%%%' + opUser) === 0) {
                                 logger(shortUser + ' ops ' + opUser);
                                 users[i] = users[i].substring(0, users[i].length - 1) + '+';
-                                console.log(users[i][users[i].length - 1])
+                                // console.log(users[i][users[i].length - 1])
                                 io.to(socket.channel).emit('server_message',
                                     {message : shortUser + ' gives operator status to ' +
                                     opUser, username : ':'});

@@ -1,4 +1,5 @@
 const
+    socketBase = 'cheapchat',
     operKey = 'thepasswordis',
     MESSAGE_MAX_LENGTH = 240,
     USER_MAX_LENGTH = 32,
@@ -8,7 +9,7 @@ const
     app = express(),
     server = app.listen(9999),
     sio = require("socket.io")(server),
-    io = sio.of('/cyberworld');
+    io = sio.of(socketBase);
 
 let
     users = [],
@@ -25,7 +26,7 @@ app.use(express.static('public'));
 app.get('/', (req, res) => {
     queryUser = req.query.user ? req.query.user : '';
     queryUser = queryUser.substring(0, USER_MAX_LENGTH).replace(/ /g, '_');
-    queryChannel = req.query.channel ? req.query.channel : 'cyberworld';
+    queryChannel = req.query.channel ? req.query.channel : socketBase;
     queryChannel = queryChannel.substring(0, CHANNEL_MAX_LENGTH).replace(/ /g, '_');
     res.render('index')
 });
@@ -48,7 +49,7 @@ io.on('connection', socket => {
         if (queryChannel.length > 0) {
             socket.channel = queryChannel
         } else {
-            socket.channel = 'cyberworld'
+            socket.channel = socketBase
         }
     }
 
@@ -118,7 +119,7 @@ io.on('connection', socket => {
         io.to(socket.channel).emit('update_userlist', {userlist : u});
         io.to(socket.channel).emit('new_message', {message : user +
             ' connected to channel "' + socket.channel + '"', username : ':'});
-        if (socket.channel === 'cyberworld') {
+        if (socket.channel === socketBase) {
             socket.emit('server_message', {
                 message : 'this is the default channel', username : ':'
             });
@@ -129,11 +130,25 @@ io.on('connection', socket => {
         logger(users)
     })
 
+    socket.on('send_file', data => {
+        const destUser = data.destination;
+        const filename = data.filename;
+        console.log(destUser);
+        sockets.forEach(s => {
+            if (typeof s.username !== "undefined")
+                if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
+                    s.emit('receive_file', {
+                        filename: filename,
+                        content: data.content
+                    } );
+                    logger('Send file to ' + data.destination)
+                }
+        })
+    });
+
     socket.on('disconnect', () => {
         sockets.splice(sockets.indexOf(socket), 1);
         if (typeof socket.username === 'undefined') resetUser();
-        //     logger('Disconnect from undefined: ' + socket.handshake.headers['x-real-ip'])
-        // } else {
         let user = socket.username.split('%%%%')[1];
         logger('user ' + socket.username + ' disconnected');
         let index = -1;
@@ -155,7 +170,6 @@ io.on('connection', socket => {
             io.to(socket.channel).emit('server_message', {message : user +
                 ' disconnected', username : ':'});
         }
-        // }
     });
 
     socket.on('change_username', data => {
@@ -282,7 +296,7 @@ io.on('connection', socket => {
                         io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'});
                         io.to(socket.channel).emit('server_message',
                         {message : shortUser + ' changed topic to "' + socket.topic + '"', username : ':'});
-                        }
+                    }
                 }
                 if (commands[0] === '/MSG') {
                     let msgUser = commands[1];

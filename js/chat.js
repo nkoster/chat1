@@ -107,18 +107,18 @@ $(function() {
                 input.attr('type', 'file');
                 input.bind('change', function() {
                     var f = this.files[0];
-                    var reader = new FileReader();
-                    reader.onload = function() {
-                        console.log('sending ' + f.name + ' to ' + destUser);
-                        socket.emit('send_file',
-                            {
-                                destination: destUser,
-                                filename: f.name,
-                                username: username.html(),
-                                content: reader.result
-                            } );
-                    }
                     if (f.size < 20000000) {
+                        var reader = new FileReader();
+                        reader.onload = function() {
+                            console.log('sending ' + f.name + ' to ' + destUser);
+                            socket.emit('send_file',
+                                {
+                                    destination: destUser,
+                                    filename: f.name,
+                                    username: username.html(),
+                                    content: reader.result
+                                } );
+                        }
                         myDate = new Date();
                         chatroom.append('<div class="message" style="color:#663"><span class="inside"><span class="mono">' + 
                             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
@@ -130,7 +130,7 @@ $(function() {
                         chatroom.append('<div class="message" style="color:#700"><span class="inside"><span class="mono">' + 
                             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
                             '::</b> &nbsp; file exceeds 20000000 bytes</span></div>');
-                        chatroom.scrollTop($('#chatroom')[0].scrollHeight);                        
+                        chatroom.scrollTop($('#chatroom')[0].scrollHeight); 
                     }
                 });
                 input.trigger("click");

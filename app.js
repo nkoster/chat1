@@ -30,6 +30,13 @@ app.get('/', (req, res) => {
     queryChannel = queryChannel.substring(0, CHANNEL_MAX_LENGTH).replace(/ /g, '_');
     res.render('index')
 });
+app.get('*', (req, res) => {
+    const url = req.url.split('/');
+    let u = '/?user=' + url[1];
+    if (url.length > 2) u += '&channel=' + url[2];
+    console.log(url);
+    res.redirect(u)
+});
 
 function firstInChannel(c) {
     let counter = 0;
@@ -124,7 +131,7 @@ io.on('connection', socket => {
                 message : 'this is the default channel', username : ':'
             });
             socket.emit('server_message', {
-                message : 'try http://cheapchat.nl/?user=MyNickName&channel=MyChannel', username : ':'
+                message : 'try http://cheapchat.nl/MyNickName/OurChannel', username : ':'
             })
         }
         logger(users)

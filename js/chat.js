@@ -85,8 +85,8 @@ $(function() {
         socket.emit('change_username', {username : username.val()})
     });
 
-    message.bind("keypress", function() {
-        socket.emit('typing')
+    message.bind("keypress", function(event) {
+        socket.emit('typing');
     });
 
     message.bind("keyup", function(event) {
@@ -170,16 +170,18 @@ $(function() {
         var user = data.username.replace(/<(?:.|\n)*?>/gm, '');
         var all = document.getElementsByClassName(user);
         for (var i = 0; i < all.length; i++) {
+            all[i].style.transition = 'all 0.2s';
             all[i].style.color = 'gray';
             all[i].style.fontStyle = 'italic';
         }
         setTimeout(function() {
             var all = document.getElementsByClassName(user);
             for (var i = 0; i < all.length; i++) {
+                all[i].style.transition = 'all 0.2s';
                 all[i].style.color = 'black';
                 all[i].style.fontStyle = 'normal';
             }
-        }, 500)
+        }, 700)
     });
 
     socket.on('confirm_username', function(data) {

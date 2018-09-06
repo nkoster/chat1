@@ -137,6 +137,42 @@ io.on('connection', socket => {
         logger(users)
     })
 
+    socket.on('send_file_request', data => {
+        const srcUser = data.username;
+        const destUser = data.destination;
+        sockets.forEach(s => {
+            if (typeof s.username !== "undefined")
+                if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
+                    s.emit('send_file_request', { username: srcUser, destination: destUser } );
+                    logger('Send file request from ' + srcUser + ' to ' + destUser)
+                }   
+        })
+    });
+
+    socket.on('accept_file', data => {
+        const srcUser = data.username;
+        const destUser = data.destination;
+        sockets.forEach(s => {
+            if (typeof s.username !== "undefined")
+                if (s.username.indexOf(socket.channel + '%%%%' + srcUser + '@') === 0) {
+                    s.emit('accept_file', { username: srcUser, destination: destUser } );
+                    logger('Accept file request from ' + srcUser + ' to ' + destUser)
+                }
+        })
+    });
+
+    socket.on('refuse_file', data => {
+        const srcUser = data.username;
+        const destUser = data.destination;
+        sockets.forEach(s => {
+            if (typeof s.username !== "undefined")
+                if (s.username.indexOf(socket.channel + '%%%%' + srcUser + '@') === 0) {
+                    s.emit('refuse_file', { username: srcUser, destination: destUser } );
+                    logger('Refused file request from ' + srcUser + ' to ' + destUser)
+                }
+        })
+    });
+
     socket.on('send_file', data => {
         if (socket.mode === '+') {
             const destUser = data.destination;

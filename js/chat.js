@@ -81,11 +81,7 @@ $(function() {
         userlist.html(list)
     });
 
-    send_username.click(function() {
-        socket.emit('change_username', {username : username.val()})
-    });
-
-    message.bind("keypress", function(event) {
+    message.bind("keypress", function() {
         socket.emit('typing');
     });
 
@@ -102,43 +98,83 @@ $(function() {
             } else if (message.val().split(' ')[0] === '/send') {
                 var commands = message.val().split(' ');
                 var destUser = commands[1];
-                var input = $(document.createElement("input"));
-                input.attr('id', 'input');
-                input.attr('type', 'file');
-                input.bind('change', function() {
-                    var f = this.files[0];
-                    if (f.size < 20000000) {
-                        var reader = new FileReader();
-                        reader.onload = function() {
-                            console.log('sending ' + f.name + ' to ' + destUser);
-                            socket.emit('send_file',
-                                {
-                                    destination: destUser,
-                                    filename: f.name,
-                                    username: username.html(),
-                                    content: reader.result
-                                } );
-                        }
-                        myDate = new Date();
-                        chatroom.append('<div class="message" style="color:#663"><span class="inside"><span class="mono">' + 
-                            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                            '::</b> &nbsp; sending ' + f.name + ' to ' + destUser + '</span></div>');
-                        chatroom.scrollTop($('#chatroom')[0].scrollHeight);
-                        reader.readAsArrayBuffer(this.files[0]);
-                    } else {
-                        myDate = new Date();
-                        chatroom.append('<div class="message" style="color:#700"><span class="inside"><span class="mono">' + 
-                            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                            '::</b> &nbsp; file exceeds 20000000 bytes</span></div>');
-                        chatroom.scrollTop($('#chatroom')[0].scrollHeight); 
-                    }
-                });
-                input.trigger("click");
+                socket.emit('send_file_request',
+                    {
+                        destination: destUser,
+                        username: username.html()
+                    });
+                var myDate = new Date();
+                chatroom.append('<div class="message" style="color:#660"><span class="inside"><span class="mono">' + 
+                    myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
+                    '::</b> &nbsp; send file request to ' + destUser + '</span></div>');
+                chatroom.scrollTop($('#chatroom')[0].scrollHeight);
             } else {
                 socket.emit('new_message', {message : message.val()})
             }
             message.val('')
         }
+    });
+
+    socket.on('send_file_request', function(data) {
+        if (confirm(data.username + ' wants to send a file to you. Accept?')) {
+            socket.emit('accept_file', { username: data.username, destination: data.destination })
+        } else {
+            socket.emit('refuse_file', { username: data.username, destination: data.destination })
+        }
+    });
+
+    socket.on('refuse_file', function(data) {
+        myDate = new Date();
+        chatroom.append('<div class="message" style="color:#663"><span class="inside"><span class="mono">' + 
+            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
+            '::</b> &nbsp; request refused by ' + data.destination + '</span></div>');
+        chatroom.scrollTop($('#chatroom')[0].scrollHeight);
+        reader.readAsArrayBuffer(this.files[0]);
+    })
+
+    socket.on('accept_file', function(data) {
+        console.log('ACCEPT');
+        var destUser = data.destination;
+        myDate = new Date();
+        chatroom.append('<div class="message" style="color:#663"><span class="inside"><span class="mono">' + 
+            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
+            '::</b> &nbsp; <input class="input" type="file"/></span></div>');
+        chatroom.scrollTop($('#chatroom')[0].scrollHeight);
+        // var input = $(document.createElement("input"));
+        // input.attr('id', 'input');
+        // input.attr('type', 'file');
+        var input = $('.input');
+        input.bind('change', function() {
+            console.log('OPEN DIALOG');
+            var f = this.files[0];
+            if (f.size < 20000000) {
+                var reader = new FileReader();
+                reader.onload = function() {
+                    console.log('sending ' + f.name + ' to ' + destUser);
+                    socket.emit('send_file',
+                        {
+                            destination: destUser,
+                            filename: f.name,
+                            username: username.html(),
+                            content: reader.result
+                        } );
+                }
+                myDate = new Date();
+                chatroom.append('<div class="message" style="color:#663"><span class="inside"><span class="mono">' + 
+                    myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
+                    '::</b> &nbsp; sending ' + f.name + ' to ' + destUser + '</span></div>');
+                chatroom.scrollTop($('#chatroom')[0].scrollHeight);
+                reader.readAsArrayBuffer(this.files[0]);
+            } else {
+                myDate = new Date();
+                chatroom.append('<div class="message" style="color:#700"><span class="inside"><span class="mono">' + 
+                    myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
+                    '::</b> &nbsp; file exceeds 20000000 bytes</span></div>');
+                chatroom.scrollTop($('#chatroom')[0].scrollHeight); 
+            }
+        });
+        // console.log('CLICK');
+        // input.trigger('click');
     });
 
     username.keypress(function(e) {

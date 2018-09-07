@@ -133,19 +133,14 @@ $(function() {
     })
 
     socket.on('accept_file', function(data) {
-        console.log('ACCEPT');
         var destUser = data.destination;
         myDate = new Date();
         chatroom.append('<div class="message" style="color:#663"><span class="inside"><span class="mono">' + 
             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-            '::</b> &nbsp; <input class="input" type="file"/></span></div>');
+            '::</b> &nbsp; <input id="input" type="file"/></span></div>');
         chatroom.scrollTop($('#chatroom')[0].scrollHeight);
-        // var input = $(document.createElement("input"));
-        // input.attr('id', 'input');
-        // input.attr('type', 'file');
-        var input = $('.input');
+        var input = $('#input');
         input.bind('change', function() {
-            console.log('OPEN DIALOG');
             var f = this.files[0];
             if (f.size < 20000000) {
                 var reader = new FileReader();
@@ -165,6 +160,8 @@ $(function() {
                     '::</b> &nbsp; sending ' + f.name + ' to ' + destUser + '</span></div>');
                 chatroom.scrollTop($('#chatroom')[0].scrollHeight);
                 reader.readAsArrayBuffer(this.files[0]);
+                var replaced = $('#input').parent().html().replace(/(<input ([^>]+)>)/, 'file selected');
+                $('#input').parent().html(replaced)
             } else {
                 myDate = new Date();
                 chatroom.append('<div class="message" style="color:#700"><span class="inside"><span class="mono">' + 
@@ -172,9 +169,7 @@ $(function() {
                     '::</b> &nbsp; file exceeds 20000000 bytes</span></div>');
                 chatroom.scrollTop($('#chatroom')[0].scrollHeight); 
             }
-        });
-        // console.log('CLICK');
-        // input.trigger('click');
+        })
     });
 
     username.keypress(function(e) {
@@ -259,7 +254,7 @@ $(function() {
 
     $(window).bind('beforeunload', function() {
         return 'Leave site?'
-    })
+    });
 
     setTimeout(function() { 
         cheap.css({transition : 'all 0.8s ease-in-out'});

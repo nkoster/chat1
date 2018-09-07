@@ -1,6 +1,6 @@
 const
+    fs = require('fs'),
     socketBase = 'cheapchat',
-    operKey = 'thepasswordis',
     MESSAGE_MAX_LENGTH = 240,
     USER_MAX_LENGTH = 32,
     CHANNEL_MAX_LENGTH = 32,
@@ -15,7 +15,14 @@ let
     users = [],
     banned = [],
     queryUser = '', queryChannel = '',
-    sockets = [];
+    sockets = [],
+    operKey = '';
+
+fs.readFile('operkey', 'utf8', (err, data) => {
+    if (err) throw err;
+    operKey = data;
+    console.log(operKey)
+});
 
 function logger(msg) {
     console.log((new Date).toLocaleString() + ' :: ' + msg)
@@ -76,8 +83,7 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('hello', () => {
-
+    function initUser() {
         if (firstInChannel(socket.channel)) {
             socket.mode = '+';
             logger('first in channel ' + socket.channel)
@@ -135,7 +141,11 @@ io.on('connection', socket => {
             })
         }
         logger(users)
-    })
+    }
+
+    socket.on('hello', () => {
+        initUser()
+    });
 
     socket.on('send_file_request', data => {
         const srcUser = data.username;
@@ -198,7 +208,7 @@ io.on('connection', socket => {
 
     socket.on('disconnect', () => {
         sockets.splice(sockets.indexOf(socket), 1);
-        if (typeof socket.username === 'undefined') resetUser();
+        if (typeof socket.username === 'undefined') initUser();
         let user = socket.username.split('%%%%')[1];
         logger('user ' + socket.username + ' disconnected');
         let index = -1;
@@ -224,7 +234,7 @@ io.on('connection', socket => {
 
     socket.on('change_username', data => {
         if (socket.username === undefined) {
-            resetUser()
+            initUser()
         }
         let name = data.username
             .replace(/<(?:.|\n)*?>/gm, '')
@@ -290,11 +300,16 @@ io.on('connection', socket => {
     });
 
     function resetUser() {
+        // initUser();
         socket.username = socket.channel + '%%%%' +
             Math.random().toString(36).substring(2, 15) +
             '@' + socket.handshake.headers['x-real-ip'] +
             '%%%%' + socket.mode;
         socket.join(socket.channel);
+        if (firstInChannel(socket.channel)) {
+            socket.mode = '+';
+            logger('first in channel ' + socket.channel)
+        }
         let user = socket.username.split('%%%%')[1];
         socket.emit('confirm_username', { user: user, channel: socket.channel } );
         users.push(socket.username);
@@ -308,8 +323,21 @@ io.on('connection', socket => {
             }
         }
         io.to(socket.channel).emit('update_userlist', {userlist : u});
-        io.to(socket.channel).emit('server_message', {message : user +
-            ' connected to channel "' + socket.channel + '"', username : ':'});
+        io.to(socket.channel).emit('server_message',
+        {
+            message : 'your connection has been reset',
+            username : ':'
+        });
+        io.to(socket.channel).emit('new_message',
+            {
+                message : user + ' connected to channel "' + socket.channel + '"',
+                username : ':'
+            });
+        socket.emit('server_message',
+            {
+                message : 'this is the default channel',
+                username : ':'
+            });
         logger('resetUser: ' + socket.handshake.headers['x-real-ip']);
         logger(users)
     }
@@ -318,7 +346,7 @@ io.on('connection', socket => {
         if (socket.username === undefined) {
             logger('Sending message from undefined@' +
                 socket.handshake.headers['x-real-ip'] + ' in channel ' + socket.channel);
-            resetUser()
+            initUser()
         }
         if (banned.indexOf(socket.handshake.headers['x-real-ip'] + '@' + socket.channel) === 0) {
             logger('BANNED: ' + socket.handshake.headers['x-real-ip'] + '@' + socket.channel);
@@ -503,7 +531,7 @@ io.on('connection', socket => {
     socket.on('typing', () => {
         if (socket.username === undefined) {
             logger('"typing" to undefined in channel ' + socket.channel);
-            resetUser()
+            initUser()
         }
         let user = socket.username.split('%%%%')[1];
         socket.broadcast.to(socket.channel).emit('typing', {username : user})

@@ -264,10 +264,11 @@ io.on('connection', socket => {
                 for (i=0; i<users.length; i++) {
                     if (users[i].indexOf(socket.channel + '%%%%' + user) === 0) index = i
                 }
-                // if (index > -1) console.log('ok');
-                users[index] = socket.channel + '%%%%' + name +
-                    '@' + socket.handshake.headers['x-real-ip'] +
-                    '%%%%' + socket.mode
+                if (index > -1) {
+                    users[index] = socket.channel + '%%%%' + name +
+                        '@' + socket.handshake.headers['x-real-ip'] +
+                        '%%%%' + socket.mode
+                }
                 let u = [];
                 for (let i=0; i<users.length; i++) {
                     if (users[i].indexOf(socket.channel) === 0) {
@@ -430,7 +431,6 @@ io.on('connection', socket => {
                             if (users[i].indexOf(socket.channel + '%%%%' + deopUser) === 0) {
                                 logger(shortUser + ' deops ' + deopUser);
                                 users[i] = users[i].substring(0, users[i].length - 1) + '-';
-                                console.log(users[i][users[i].length - 1])
                                 io.to(socket.channel).emit('server_message',
                                     {message : shortUser + ' removes operator status from ' +
                                     deopUser, username : ':'});
@@ -453,7 +453,6 @@ io.on('connection', socket => {
                                 })            
                             } 
                         }
-                        // console.log(users)
                     } else {
                         logger('Wrong mode!! '+ socket.username)
                     }
@@ -465,7 +464,6 @@ io.on('connection', socket => {
                             if (users[i].indexOf(socket.channel + '%%%%' + opUser) === 0) {
                                 logger(shortUser + ' ops ' + opUser);
                                 users[i] = users[i].substring(0, users[i].length - 1) + '+';
-                                // console.log(users[i][users[i].length - 1])
                                 io.to(socket.channel).emit('server_message',
                                     {message : shortUser + ' gives operator status to ' +
                                     opUser, username : ':'});

@@ -14,14 +14,14 @@ const
 let
     users = [],
     banned = [],
-    queryUser = '', queryChannel = '',
+    queryUser = '',
+    queryChannel = '',
     sockets = [],
     operKey = '';
 
 fs.readFile('operkey', 'utf8', (err, data) => {
     if (err) throw err;
     operKey = data;
-    console.log(operKey)
 });
 
 function logger(msg) {
@@ -52,13 +52,9 @@ function firstInChannel(c) {
 }
 
 io.on('connection', socket => {
-
     socket.mode = '-';
-
     sockets.push(socket);
-
     logger(`Client connected [id=${socket.id}]`);
-
     if (socket.channel === undefined) {
         if (queryChannel.length > 0) {
             socket.channel = queryChannel
@@ -66,16 +62,12 @@ io.on('connection', socket => {
             socket.channel = socketBase
         }
     }
-
     if (banned.indexOf(socket.handshake.headers['x-real-ip'] + '@' + socket.channel) === 0) {
         logger('BANNED: ' + socket.handshake.headers['x-real-ip'] + '@' + socket.channel);
         return
     }
-
     socket.join(socket.channel);
-
     io.to(socket.channel).emit('get_topic', '');
-
     socket.on('send_topic', function(data) {
         socket.topic = data.topic;
         if (socket.topic.length > 0) {
@@ -84,6 +76,7 @@ io.on('connection', socket => {
     });
 
     function initUser() {
+
         if (firstInChannel(socket.channel)) {
             socket.mode = '+';
             logger('first in channel ' + socket.channel)
@@ -117,9 +110,11 @@ io.on('connection', socket => {
                 logger(`connection from: "${socket.username}" to channel "${socket.channel}".`)
             }
         }
+
         let user = socket.username.split('%%%%')[1];
         socket.emit('confirm_username', { user: user, channel: socket.channel } );
         users.push(socket.username);
+
         let u = [];
         for (let i=0; i<users.length; i++) {
             if (users[i].indexOf(socket.channel) === 0) {
@@ -130,14 +125,25 @@ io.on('connection', socket => {
             }
         }
         io.to(socket.channel).emit('update_userlist', {userlist : u});
+
+        socket.emit('server_message',
+            {
+                message : 'cheapchat 0.9 (beta!)',
+                username : ':'
+            });
+
         io.to(socket.channel).emit('new_message', {message : user +
             ' connected to channel "' + socket.channel + '"', username : ':'});
         if (socket.channel === socketBase) {
-            socket.emit('server_message', {
-                message : 'this is the default channel', username : ':'
+            socket.emit('server_message',
+            {
+                message : 'this is the default channel',
+                username : ':'
             });
-            socket.emit('server_message', {
-                message : 'try http://cheapchat.nl/MyNickName/OurChannel', username : ':'
+            socket.emit('server_message',
+            {
+                message : 'try http://cheapchat.nl/MyNickName/OurChannel',
+                username : ':'
             })
         }
         logger(users)
@@ -238,7 +244,7 @@ io.on('connection', socket => {
         }
         let name = data.username
             .replace(/<(?:.|\n)*?>/gm, '')
-            .replace(/[&@]/g, '-')
+            .replace(/[&@;!#]/g, '_')
             .substring(0, USER_MAX_LENGTH)
             .replace(/ /g, '_');
         let user = socket.username.split('%%%%')[1];
@@ -264,10 +270,12 @@ io.on('connection', socket => {
             if (newUserExists) {
                 logger(`${name} already exists.`);
                 socket.emit('confirm_username', { user: user, channel: socket.channel } );
-            } else if (name.length < 1) {
-                logger('Too small.')
+            } else if (name.length < 2) {
+                logger('Too small.');
+                socket.emit('confirm_username', { user: user, channel: socket.channel } );
             } else if (name.indexOf(':') > -1) {
-                logger('Reserved.')
+                logger('Reserved.');
+                socket.emit('confirm_username', { user: user, channel: socket.channel } );
             } else {
                 logger(`user "${user}" → "${name}" (${socket.username})`);
                 let index = -1;
@@ -298,49 +306,6 @@ io.on('connection', socket => {
             }
         }
     });
-
-    function resetUser() {
-        // initUser();
-        socket.username = socket.channel + '%%%%' +
-            Math.random().toString(36).substring(2, 15) +
-            '@' + socket.handshake.headers['x-real-ip'] +
-            '%%%%' + socket.mode;
-        socket.join(socket.channel);
-        if (firstInChannel(socket.channel)) {
-            socket.mode = '+';
-            logger('first in channel ' + socket.channel)
-        }
-        let user = socket.username.split('%%%%')[1];
-        socket.emit('confirm_username', { user: user, channel: socket.channel } );
-        users.push(socket.username);
-        let u = [];
-        for (let i=0; i<users.length; i++) {
-            if (users[i].indexOf(socket.channel) === 0) {
-                u[i] = users[i].split('%%%%')[1];
-                if (users[i].split('%%%%')[2] === '+') {
-                    u[i] = '@' + u[i]
-                }
-            }
-        }
-        io.to(socket.channel).emit('update_userlist', {userlist : u});
-        io.to(socket.channel).emit('server_message',
-        {
-            message : 'your connection has been reset',
-            username : ':'
-        });
-        io.to(socket.channel).emit('new_message',
-            {
-                message : user + ' connected to channel "' + socket.channel + '"',
-                username : ':'
-            });
-        socket.emit('server_message',
-            {
-                message : 'this is the default channel',
-                username : ':'
-            });
-        logger('resetUser: ' + socket.handshake.headers['x-real-ip']);
-        logger(users)
-    }
 
     socket.on('new_message', data => {
         if (socket.username === undefined) {

@@ -16,6 +16,7 @@ $(function() {
         chatroom = $('#chatroom'),
         userlist = $('#userlist'),
         topic = $('#topic'),
+        yes = $('#yes'), no = $('#no'),
         alarm = false;
 
     send_message.click(function() {
@@ -116,10 +117,11 @@ $(function() {
     });
 
     socket.on('send_file_request', function(data) {
-        if (confirm(data.username + ' wants to send a file to you. Accept?')) {
-            socket.emit('accept_file', { username: data.username, destination: data.destination })
-        } else {
-            socket.emit('refuse_file', { username: data.username, destination: data.destination })
+        if (!socket.sendFileLock) {
+            socket.sendFileLock = true;
+            socket.srcUser = data.username;
+            socket.destUser = data.destination;
+            openDialog(data);
         }
     });
 
@@ -129,7 +131,6 @@ $(function() {
             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
             '::</b> &nbsp; request refused by ' + data.destination + '</span></div>');
         chatroom.scrollTop($('#chatroom')[0].scrollHeight);
-        reader.readAsArrayBuffer(this.files[0]);
     })
 
     socket.on('accept_file', function(data) {
@@ -244,6 +245,61 @@ $(function() {
         }());
         saveByteArray([data.content], data.filename);
     });
+
+    function openDialog(data) {
+        document.getElementsByClassName('title')[0].innerHTML = 
+            data.username + ' wants to send a file to you. Accept?';
+        window.setTimeout(function(){
+            document.getElementsByClassName('dialog')[0]
+            .style.transition = 'all 0.5s';
+            document.getElementsByClassName('dialog')[0]
+            .style.height = '200px';
+            document.getElementsByClassName('dialog')[0]
+            .style.opacity = '1';
+            document.getElementsByClassName('dialog')[0]
+            .style.marginTop = '-100px';
+            window.setTimeout(function() {
+                document.getElementsByClassName('content')[0]
+                .style.transition = 'all 0.5s';
+                document.getElementsByClassName('content')[0]
+                .style.opacity = '0.8';
+            }, 500)
+        }, 500)
+        yes.bind('click', function() {
+            socket.emit('accept_file', { username:socket.srcUser, destination: socket.destUser });
+            closeDialog()
+        })
+        no.bind('click', function() {
+            socket.emit('refuse_file', { username:socket.srcUser, destination: socket.destUser });
+            closeDialog()
+        });
+        window.setTimeout(function() {
+            socket.emit('refuse_file', { username:socket.srcUser, destination: socket.destUser });
+            closeDialog()
+        }, 60000)
+    }
+
+    function closeDialog() {
+        window.setTimeout(function(){
+            document.getElementsByClassName('content')[0]
+            .style.transition = 'all 0.5s';
+            document.getElementsByClassName('content')[0]
+            .style.opacity = '0';
+            window.setTimeout(function() {
+                document.getElementsByClassName('dialog')[0]
+                .style.transition = 'all 0.5s';
+                document.getElementsByClassName('dialog')[0]
+                .style.height = '0';
+                document.getElementsByClassName('dialog')[0]
+                .style.opacity = '0';
+                document.getElementsByClassName('dialog')[0]
+                .style.marginTop = '0';
+            }, 500)
+        }, 200);
+        socket.srcUser = '';
+        socket.destUser = '';
+        socket.sendFileLock = false
+    }
 
     socket.connect('http://192.168.1.33:9999');
 

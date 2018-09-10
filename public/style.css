@@ -206,7 +206,7 @@ input#message {
     top: 50%;
     left: 50%;
     margin-top: 0; /* Negative half of height. */
-    margin-left: -250; /* Negative half of width. */
+    margin-left: -250px; /* Negative half of width. */
     background: #222;
     color: #eee;
     opacity: 0;

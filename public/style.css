@@ -230,14 +230,6 @@ input#message {
     font-weight: bold;
 }
 
-button {
-    margin: 20px;
-    cursor: pointer;
-    padding: 5px;
-    font-size: 110%;
-    font-weight: bold;
-}
-
 .btn {
     position: relative;
     display: inline-block;

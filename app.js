@@ -154,15 +154,21 @@ io.on('connection', socket => {
     });
 
     socket.on('send_file_request', data => {
-        const srcUser = data.username;
-        const destUser = data.destination;
-        sockets.forEach(s => {
-            if (typeof s.username !== "undefined")
-                if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
-                    s.emit('send_file_request', { username: srcUser, destination: destUser } );
-                    logger('Send file request from ' + srcUser + ' to ' + destUser)
-                }   
-        })
+        if (socket.mode === '+') {
+            const srcUser = data.username;
+            const destUser = data.destination;
+            sockets.forEach(s => {
+                if (typeof s.username !== "undefined")
+                    if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
+                        s.emit('send_file_request', { username: srcUser, destination: destUser } );
+                        logger('Send file request from ' + srcUser + ' to ' + destUser)
+                    }   
+            })
+        } else {
+            socket.emit('server_message', {
+                message : 'you need to be an operator for this', username : ':'
+            })
+        }
     });
 
     socket.on('accept_file', data => {

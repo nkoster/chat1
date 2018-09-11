@@ -205,8 +205,8 @@ input#message {
     height: 0;
     top: 50%;
     left: 50%;
-    margin-top: 0; /* Negative half of height. */
-    margin-left: -250px; /* Negative half of width. */
+    margin-top: 0;
+    margin-left: -250px;
     background: #222;
     color: #eee;
     opacity: 0;
@@ -214,6 +214,8 @@ input#message {
     overflow: hidden;
     z-index: 100;
     padding: 20px;
+    /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
 }
 
 .content {
@@ -225,6 +227,10 @@ input#message {
     margin-bottom: 40px;
     font-weight: bold;
 }
+
 button {
     margin: 20px;
+    padding: 5px;
+    font-size: 110%;
+    font-weight: bold;
 }

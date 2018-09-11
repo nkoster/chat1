@@ -226,6 +226,7 @@ $(function() {
     });
 
     function openDialog(data) {
+        var timedOut;
         document.getElementsByClassName('title')[0].innerHTML = 
             data.username + ' wants to send a file to you. Accept?';
         window.setTimeout(function(){
@@ -246,16 +247,24 @@ $(function() {
             }, 500)
         }, 500)
         yes.bind('click', function() {
-            socket.emit('accept_file', { username:socket.srcUser, destination: socket.destUser });
+            socket.emit('accept_file', { username: socket.srcUser, destination: socket.destUser });
+            clearTimeout(timedOut);
             closeDialog()
         })
         no.bind('click', function() {
-            socket.emit('refuse_file', { username:socket.srcUser, destination: socket.destUser });
-            closeDialog()
+            if (typeof socket.srcUser != 'undefined' && socket.srcUser != '') {
+                chat('send file request from ' + socket.srcUser + ' refused', ':', '#840', false, false)
+                socket.emit('refuse_file', { username: socket.srcUser, destination: socket.destUser })
+            }
+            clearTimeout(timedOut);
+            closeDialog();
         });
-        window.setTimeout(function() {
-            socket.emit('refuse_file', { username:socket.srcUser, destination: socket.destUser });
-            closeDialog()
+        timedOut = setTimeout(function() {
+            if (typeof socket.srcUser != 'undefined' && socket.srcUser != '') {
+                chat('send file request from ' + socket.srcUser + ' timed out', ':', '#840', false, false)
+                socket.emit('refuse_file', { username: socket.srcUser, destination: socket.destUser })
+            }
+            closeDialog();
         }, 60000)
     }
 
@@ -278,7 +287,8 @@ $(function() {
         }, 200);
         socket.srcUser = '';
         socket.destUser = '';
-        socket.sendFileLock = false
+        socket.sendFileLock = false;
+        message.focus()
     }
 
     socket.connect('http://192.168.1.33:9999');

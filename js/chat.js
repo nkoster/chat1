@@ -32,40 +32,46 @@ $(function() {
         }
     });
 
+    function chat(msg, usr, color, bold, html) {
+        var myDate = new Date();
+        var b1 = '</b>', b2 = '';
+        var m = msg;
+        if (bold) {
+            b1 = '';
+            b2 = '</b>'
+        }
+        if (!html) {
+            m = urlify(msg.replace(/<(?:.|\n)*?>/gm, ''))
+        }
+        chatroom.append('<div class="message" style="color:' + color + '"><span class="inside"><span class="mono">' + 
+            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b>  ' + 
+            usr.replace(/<(?:.|\n)*?>/gm, '') + ':' + b1 + ' &nbsp; ' + 
+            m + b2 +'</span></div>');
+        chatroom.scrollTop($('#chatroom')[0].scrollHeight)
+        return
+    }
+
     socket.on("new_message", function(data) {
         checkAlarm();
-        if (data.username === undefined) return;
-        var myDate = new Date();
-        chatroom.append('<div class="message"><span class="inside"><span class="mono">' + 
-            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-            data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + 
-            urlify(data.message.replace(/<(?:.|\n)*?>/gm, '')) + '</span></div>');
-        chatroom.scrollTop($('#chatroom')[0].scrollHeight)
+        if (typeof data.username != 'undefined') {
+            chat(data.message, data.username, 'black', false, false)
+        }
     });
 
     socket.on("server_message", function(data) {
-        if (data.username === undefined) return;
-        var myDate = new Date();
-        chatroom.append('<div class="message" style="color:#043"><span class="inside"><span class="mono">' + 
-            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-            data.username.replace(/<(?:.|\n)*?>/gm, '') + ':</b> &nbsp; ' + 
-            urlify(data.message.replace(/<(?:.|\n)*?>/gm, '')) + '</span></div>');
-        chatroom.scrollTop($('#chatroom')[0].scrollHeight)
+        if (typeof data.username != 'undefined') {
+            chat(data.message, data.username, '#043', false, false)
+        }
     });
 
     socket.on("bold_message", function(data) {
         checkAlarm();
-        if (data.username === undefined) return;
-        var myDate = new Date();
-        chatroom.append('<div class="message" style="color:#043"><span class="inside"><span class="mono">' + 
-            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-            data.username.replace(/<(?:.|\n)*?>/gm, '') + ': &nbsp; ' + 
-            urlify(data.message.replace(/<(?:.|\n)*?>/gm, '')) + '</b></span></div>');
-        chatroom.scrollTop($('#chatroom')[0].scrollHeight)
+        if (typeof data.username != 'undefined') {
+            chat(data.message, data.username, '#043', true, false)
+        }
     });
 
     socket.on("topic", function(data) {
-        var myDate = new Date();
         topic.html(data.topic);
     });
 
@@ -96,11 +102,7 @@ $(function() {
         event.preventDefault();
         if (event.keyCode === 13 && message.val() !== '') {
             if (message.val() === '/beep') {
-                var myDate = new Date();
-                chatroom.append('<div class="message" style="color:#067"><span class="inside"><span class="mono">' + 
-                    myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                    '::</b> &nbsp; beep is set</span></div>');
-                chatroom.scrollTop($('#chatroom')[0].scrollHeight);
+                chat('beep is set', ':', '#067', false, false);
                 alarm = true
             } else if (message.val().split(' ')[0] === '/send') {
                 var commands = message.val().split(' ');
@@ -110,11 +112,7 @@ $(function() {
                         destination: destUser,
                         username: username.html()
                     });
-                var myDate = new Date();
-                chatroom.append('<div class="message" style="color:#660"><span class="inside"><span class="mono">' + 
-                    myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                    '::</b> &nbsp; send file request to ' + destUser + '</span></div>');
-                chatroom.scrollTop($('#chatroom')[0].scrollHeight);
+                chat('send file request to ' + destUser, ':', '#660', false, false)
             } else {
                 socket.emit('new_message', {message : message.val()})
             }
@@ -132,20 +130,12 @@ $(function() {
     });
 
     socket.on('refuse_file', function(data) {
-        myDate = new Date();
-        chatroom.append('<div class="message" style="color:#663"><span class="inside"><span class="mono">' + 
-            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-            '::</b> &nbsp; request refused by ' + data.destination + '</span></div>');
-        chatroom.scrollTop($('#chatroom')[0].scrollHeight);
+        chat('request refused by ' + data.destination, ':', '#663', false, false)
     })
 
     socket.on('accept_file', function(data) {
         var destUser = data.destination;
-        myDate = new Date();
-        chatroom.append('<div class="message" style="color:#663"><span class="inside"><span class="mono">' + 
-            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-            '::</b> &nbsp; <input id="input" type="file"/></span></div>');
-        chatroom.scrollTop($('#chatroom')[0].scrollHeight);
+        chat('<input id="input" type="file"/>', ':', '#663', false, true);
         var input = $('#input');
         input.bind('change', function() {
             var f = this.files[0];
@@ -161,20 +151,12 @@ $(function() {
                             content: reader.result
                         } );
                 }
-                myDate = new Date();
-                chatroom.append('<div class="message" style="color:#663"><span class="inside"><span class="mono">' + 
-                    myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                    '::</b> &nbsp; sending ' + f.name + ' to ' + destUser + '</span></div>');
-                chatroom.scrollTop($('#chatroom')[0].scrollHeight);
+                chat('sending ' + f.name + ' to ' + destUser, ':', '#663', false, false);
                 reader.readAsArrayBuffer(this.files[0]);
                 var replaced = $('#input').parent().html().replace(/(<input ([^>]+)>)/, 'file selected');
                 $('#input').parent().html(replaced)
             } else {
-                myDate = new Date();
-                chatroom.append('<div class="message" style="color:#700"><span class="inside"><span class="mono">' + 
-                    myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                    '::</b> &nbsp; file exceeds 20000000 bytes</span></div>');
-                chatroom.scrollTop($('#chatroom')[0].scrollHeight); 
+                chat('file exceeds 20000000 bytes', ':', '#700', false, false)
             }
         })
     });
@@ -194,11 +176,7 @@ $(function() {
             beep();
             console.log('BEEP!');
             alarm = false;
-            var myDate = new Date();
-            chatroom.append('<div class="message" style="color:#067"><span class="inside"><span class="mono">' + 
-                myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-                '::</b> &nbsp; <b>beep!</b></span></div>');
-            chatroom.scrollTop($('#chatroom')[0].scrollHeight);
+            chat('beep!', ':', '#067', true, false)
         }
     }
 
@@ -230,11 +208,7 @@ $(function() {
 
     socket.on('receive_file', function(data) {
         console.log('receiving ' + data.filename);
-        var myDate = new Date();
-        chatroom.append('<div class="message" style="color:#663"><span class="inside"><span class="mono">' + 
-        myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b> ' + 
-        '::</b> &nbsp; receiving ' + data.filename + ' from ' + data.username + '</span></div>');
-        chatroom.scrollTop($('#chatroom')[0].scrollHeight);
+        chat('receiving ' + data.filename + ' from ' + data.username, ':', '#663', false, false)
         var saveByteArray = (function () {
             var a = document.createElement("a");
             document.body.appendChild(a);

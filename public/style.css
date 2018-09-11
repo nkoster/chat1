@@ -81,6 +81,7 @@ input {
     right: 170px;
     overflow-x: hidden;
     border-right: 5px solid #555;
+    cursor: auto;
 }
 
 #userlist {
@@ -146,6 +147,7 @@ input#message {
     display: table-cell;
     vertical-align: middle;
     clear: both;
+    user-select: text;
 }
 
 #channel, #picture, #topic, #username {
@@ -230,6 +232,7 @@ input#message {
 
 button {
     margin: 20px;
+    cursor: pointer;
     padding: 5px;
     font-size: 110%;
     font-weight: bold;

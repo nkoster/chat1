@@ -21,10 +21,12 @@ $(function() {
         if (offsetRight < (container.width() - 5) && offsetRight > 5) {
             left.css('right', offsetRight);
             right.css('width', offsetRight);
-            handle.css('right', offsetRight)
+            handle.css('right', offsetRight);
+            $('.inside').css('user-select', 'text')
         }
         return false
     }).on('mouseup', function(e) {
+        $('.inside').css('cursor', 'auto');
         isResizing = false
     })
 });

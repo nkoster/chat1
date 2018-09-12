@@ -113,10 +113,14 @@ $(function() {
                         username: username.html()
                     });
                 chat('send file request to ' + destUser, ':', '#660', false, false)
-            } else if (message.val().split(' ')[0] === '/user') {
+            } else if (message.val().split(' ')[0] === '/user' || message.val().split(' ')[0] === '/nick') {
                 var commands = message.val().split(' ');
                 var newUser = commands[1];
                 socket.emit('change_username', { username: newUser })
+            } else if (message.val().split(' ')[0] === '/join') {
+                var commands = message.val().split(' ');
+                var channel = commands[1];
+                window.open('http://cheapchat.nl/' + username.html() + '/' + channel, '_blank');
             } else {
                 socket.emit('new_message', {message : message.val()})
             }

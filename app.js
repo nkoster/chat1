@@ -308,6 +308,11 @@ io.on('connection', socket => {
                 socket.username = socket.channel + '%%%%' + name +
                     '@' + socket.handshake.headers['x-real-ip'] +
                     '%%%%' + socket.mode;
+                socket.emit('confirm_username',
+                    {
+                        user: socket.username.split('%%%%')[1],
+                        channel: socket.channel
+                    })
                 logger(users)
             }
         }

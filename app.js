@@ -346,6 +346,12 @@ io.on('connection', socket => {
                         io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'});
                         io.to(socket.channel).emit('server_message',
                         {message : shortUser + ' changed topic to "' + socket.topic + '"', username : ':'});
+                    } else {
+                        socket.emit('server_message',
+                        {
+                            message : 'you need to be an operator for this',
+                            username : ':'
+                        })
                     }
                 }
                 if (commands[0] === '/MSG') {

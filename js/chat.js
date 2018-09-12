@@ -113,6 +113,10 @@ $(function() {
                         username: username.html()
                     });
                 chat('send file request to ' + destUser, ':', '#660', false, false)
+            } else if (message.val().split(' ')[0] === '/user') {
+                var commands = message.val().split(' ');
+                var newUser = commands[1];
+                socket.emit('change_username', { username: newUser })
             } else {
                 socket.emit('new_message', {message : message.val()})
             }

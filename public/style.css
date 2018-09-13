@@ -251,3 +251,8 @@ input#message {
 .btn:active {
     background: #666;
 }
+
+pre {
+    display: inline;
+    font-family: 'UbuntuMono', monospace;
+}

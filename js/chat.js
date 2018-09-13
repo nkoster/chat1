@@ -18,12 +18,28 @@ $(function() {
         message = $('#message'),
         username = $('#username'),
         send_message = $('#send_message'),
-        send_username = $('#send_username'),
         chatroom = $('#chatroom'),
         userlist = $('#userlist'),
         topic = $('#topic'),
         yes = $('#yes'), no = $('#no'),
-        alarm = false;
+        alarm = false,
+        help = [
+            '<pre>----  operator commands</pre>',
+            '<pre>  /op &lt;user&gt;                 give operator status to a user</pre>',
+            '<pre>  /deop &lt;user&gt;               remove operator status from a user</pre>',
+            '<pre>  /topic &lt;a topic&gt;           set the channel topic</pre>',
+            '<pre>  /msg &lt;user&gt; &lt;some text&gt;    send a private message to a user</pre>',
+            '<pre>  /send &lt;user&gt;               send a file, max 20mb</pre>',
+            '<pre>  /kick &lt;user&gt;               kick somebody from the channel',
+            '<pre>  /ban &lt;user&gt;                ban somebody from the channel',
+            '<pre>  /unban &lt;ip@channel&gt;        remove a ban',
+            '<pre>----  generic commands</pre>',
+            '<pre>  /user &lt;name&gt;               change your name (/nick works too)</pre>',
+            '<pre>  /join &lt;channel&gt;            join a channel in a new tab</pre>',
+            '<pre>  /lol                       prints "hahaha" to the channel</pre>',
+            '<pre>  /me &lt;some text&gt;            prints your name + some text in bold to the channel</pre>',
+            '<pre>  /beep                      set activity alarm</pre>'
+        ];
 
     send_message.click(function() {
         if (message.val() !== '') {
@@ -101,7 +117,11 @@ $(function() {
     message.bind("keyup", function(event) {
         event.preventDefault();
         if (event.keyCode === 13 && message.val() !== '') {
-            if (message.val() === '/beep') {
+            if (message.val() === '/help') {
+                help.forEach(function(h) {
+                    chat(h, ':', '#052', false, true)
+                })
+            } else if (message.val() === '/beep') {
                 chat('beep is set', ':', '#067', false, false);
                 alarm = true
             } else if (message.val().split(' ')[0] === '/send') {

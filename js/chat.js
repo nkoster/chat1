@@ -24,21 +24,21 @@ $(function() {
         yes = $('#yes'), no = $('#no'),
         alarm = false,
         help = [
+            '<pre>----  generic commands</pre>',
+            '<pre>  /user &lt;name&gt;               change your name (/nick works too)</pre>',
+            '<pre>  /join &lt;channel&gt;            join a channel in a new tab</pre>',
+            '<pre>  /msg &lt;user&gt; &lt;some text&gt;    send a private message to a user</pre>',
+            '<pre>  /me &lt;some text&gt;            prints your name + some text in bold to the channel</pre>',
+            '<pre>  /beep                      set activity alarm</pre>',
+            '<pre>  /lol                       prints "hahaha" to the channel</pre>',
             '<pre>----  operator commands</pre>',
             '<pre>  /op &lt;user&gt;                 give operator status to a user</pre>',
             '<pre>  /deop &lt;user&gt;               remove operator status from a user</pre>',
             '<pre>  /topic &lt;a topic&gt;           set the channel topic</pre>',
-            '<pre>  /msg &lt;user&gt; &lt;some text&gt;    send a private message to a user</pre>',
             '<pre>  /send &lt;user&gt;               send a file, max 20mb</pre>',
             '<pre>  /kick &lt;user&gt;               kick somebody from the channel',
             '<pre>  /ban &lt;user&gt;                ban somebody from the channel',
-            '<pre>  /unban &lt;ip@channel&gt;        remove a ban',
-            '<pre>----  generic commands</pre>',
-            '<pre>  /user &lt;name&gt;               change your name (/nick works too)</pre>',
-            '<pre>  /join &lt;channel&gt;            join a channel in a new tab</pre>',
-            '<pre>  /lol                       prints "hahaha" to the channel</pre>',
-            '<pre>  /me &lt;some text&gt;            prints your name + some text in bold to the channel</pre>',
-            '<pre>  /beep                      set activity alarm</pre>'
+            '<pre>  /unban &lt;ip@channel&gt;        remove a ban'
         ];
 
     send_message.click(function() {

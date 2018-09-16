@@ -153,7 +153,7 @@ $(function() {
             socket.sendFileLock = true;
             socket.srcUser = data.username;
             socket.destUser = data.destination;
-            openDialog(data);
+            openFileDialog(data);
         }
     });
 
@@ -253,7 +253,7 @@ $(function() {
         saveByteArray([data.content], data.filename);
     });
 
-    function openDialog(data) {
+    function openFileDialog(data) {
         var timedOut;
         document.getElementsByClassName('title')[0].innerHTML = 
             data.username + ' wants to send a file to you. Accept?';
@@ -277,7 +277,7 @@ $(function() {
         yes.bind('click', function() {
             socket.emit('accept_file', { username: socket.srcUser, destination: socket.destUser });
             clearTimeout(timedOut);
-            closeDialog()
+            closeFileDialog()
         })
         no.bind('click', function() {
             if (typeof socket.srcUser != 'undefined' && socket.srcUser != '') {
@@ -285,18 +285,84 @@ $(function() {
                 socket.emit('refuse_file', { username: socket.srcUser, destination: socket.destUser })
             }
             clearTimeout(timedOut);
-            closeDialog();
+            closeFileDialog();
         });
         timedOut = setTimeout(function() {
             if (typeof socket.srcUser != 'undefined' && socket.srcUser != '') {
                 chat('send file request from ' + socket.srcUser + ' timed out', ':', '#840', false, false)
                 socket.emit('refuse_file', { username: socket.srcUser, destination: socket.destUser })
             }
-            closeDialog();
+            closeFileDialog();
         }, 60000)
     }
 
-    function closeDialog() {
+    function closeFileDialog() {
+        window.setTimeout(function(){
+            document.getElementsByClassName('content')[0]
+            .style.transition = 'all 0.5s';
+            document.getElementsByClassName('content')[0]
+            .style.opacity = '0';
+            window.setTimeout(function() {
+                document.getElementsByClassName('dialog')[0]
+                .style.transition = 'all 0.5s';
+                document.getElementsByClassName('dialog')[0]
+                .style.height = '0';
+                document.getElementsByClassName('dialog')[0]
+                .style.opacity = '0';
+                document.getElementsByClassName('dialog')[0]
+                .style.marginTop = '0';
+            }, 500)
+        }, 200);
+        socket.srcUser = '';
+        socket.destUser = '';
+        socket.sendFileLock = false;
+        message.focus()
+    }
+
+    function openVideoDialog(data) {
+        var timedOut;
+        document.getElementsByClassName('title')[0].innerHTML = 
+            data.username + ' wants to send a file to you. Accept?';
+        window.setTimeout(function(){
+            document.getElementsByClassName('dialog')[0]
+            .style.transition = 'all 0.5s';
+            document.getElementsByClassName('dialog')[0]
+            .style.height = '250px';
+            document.getElementsByClassName('dialog')[0]
+            .style.opacity = '0.9';
+            document.getElementsByClassName('dialog')[0]
+            .style.marginTop = '-125px';
+            window.setTimeout(function() {
+                beep();
+                document.getElementsByClassName('content')[0]
+                .style.transition = 'all 0.5s';
+                document.getElementsByClassName('content')[0]
+                .style.opacity = '0.9';
+            }, 500)
+        }, 500)
+        stream_video_accept.bind('click', function() {
+            socket.emit('stream_video_accept', { username: socket.srcUser, destination: socket.destUser });
+            clearTimeout(timedOut);
+            closeFileDialog()
+        })
+        stream_video_refuse.bind('click', function() {
+            if (typeof socket.srcUser != 'undefined' && socket.srcUser != '') {
+                chat('video stream request from ' + socket.srcUser + ' refused', ':', '#840', false, false)
+                socket.emit('stream_video_refuse', { username: socket.srcUser, destination: socket.destUser })
+            }
+            clearTimeout(timedOut);
+            closeFileDialog();
+        });
+        timedOut = setTimeout(function() {
+            if (typeof socket.srcUser != 'undefined' && socket.srcUser != '') {
+                chat('video stream request from ' + socket.srcUser + ' timed out', ':', '#840', false, false)
+                socket.emit('stream_video_refuse', { username: socket.srcUser, destination: socket.destUser })
+            }
+            closeVideoDialog();
+        }, 60000)
+    }
+
+    function closeVideoDialog() {
         window.setTimeout(function(){
             document.getElementsByClassName('content')[0]
             .style.transition = 'all 0.5s';

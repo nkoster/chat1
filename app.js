@@ -510,6 +510,67 @@ io.on('connection', socket => {
         }
     });
 
+    socket.on('stream_video_request', data => {
+        if (socket.mode === '+') {
+            const srcUser = data.username;
+            const destUser = data.destination;
+            sockets.forEach(s => {
+                if (typeof s.username !== "undefined")
+                    if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
+                        s.emit('stream_video_request', { username: srcUser, destination: destUser } );
+                        logger('Stream video request from ' + srcUser + ' to ' + destUser)
+                    }   
+            })
+        } else {
+            socket.emit('server_message', {
+                message : 'you need to be an operator for this', username : ':'
+            })
+        }
+    });
+
+    socket.on('stream_video_accept', data => {
+        const srcUser = data.username;
+        const destUser = data.destination;
+        sockets.forEach(s => {
+            if (typeof s.username !== "undefined")
+                if (s.username.indexOf(socket.channel + '%%%%' + srcUser + '@') === 0) {
+                    s.emit('stream_video_accept', { username: srcUser, destination: destUser } );
+                    logger('Accept video stream: ' + srcUser + ' <-> ' + destUser)
+                }
+        })
+    });
+
+    socket.on('stream_video_refuse', data => {
+        const srcUser = data.username;
+        const destUser = data.destination;
+        sockets.forEach(s => {
+            if (typeof s.username !== "undefined")
+                if (s.username.indexOf(socket.channel + '%%%%' + srcUser + '@') === 0) {
+                    s.emit('stream_video_refuse', { username: srcUser, destination: destUser } );
+                    logger('Refused video stream request from ' + srcUser + ' to ' + destUser)
+                }
+        })
+    });
+
+    socket.on('stream_video', data => {
+        if (socket.mode === '+') {
+            const destUser = data.destination;
+            const username = data.username;
+            const image = data.image;
+            sockets.forEach(s => {
+                if (typeof s.username !== "undefined")
+                    if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
+                        s.emit('stream_video',image);
+                        logger('Stream video to ' + data.destination)
+                    }
+            })
+        } else {
+            socket.emit('server_message', {
+                message : 'you need to be an operator for this', username : ':'
+            })
+        }
+    });
+    
     socket.on('typing', () => {
         if (socket.username === undefined) {
             logger('"typing" to undefined in channel ' + socket.channel);

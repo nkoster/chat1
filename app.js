@@ -535,6 +535,7 @@ io.on('connection', socket => {
             if (typeof s.username !== "undefined")
                 if (s.username.indexOf(socket.channel + '%%%%' + srcUser + '@') === 0) {
                     s.emit('stream_video_accept', { username: srcUser, destination: destUser } );
+                    socket.emit('stream_video_accept', { username: srcUser, destination: destUser } );
                     logger('Accept video stream: ' + srcUser + ' <-> ' + destUser)
                 }
         })

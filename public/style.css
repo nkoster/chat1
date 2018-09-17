@@ -261,12 +261,12 @@ input#message {
 
 .video-stream-dialog {
     position: fixed;
-    width: 500px;
+    width: 600px;
     height: 0;
     top: 50%;
     left: 50%;
     margin-top: 0;
-    margin-left: -250px;
+    margin-left: -300px;
     background: white;
     color: #222;
     opacity: 0;
@@ -287,6 +287,28 @@ input#message {
     margin-bottom: 40px;
     font-weight: bold;
 }
+
+#video-stream {
+    display: block;
+    height: 200px;
+    width: 260px;
+    border: 1px solid black;
+}
+
+#video-stream {
+    display: inline-block;
+    height: 200px;
+    width: 260px;
+    border: 1px solid black;
+}
+
+#camera-stream {
+    display: inline-block;
+    height: 200px;
+    width: 260px;
+    border: 1px solid black;
+}
+
 
 .btn {
     position: relative;

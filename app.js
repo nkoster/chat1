@@ -554,22 +554,13 @@ io.on('connection', socket => {
     });
 
     socket.on('stream_video', data => {
-        if (socket.mode === '+') {
-            const destUser = data.destination;
-            const username = data.username;
-            const image = data.image;
-            sockets.forEach(s => {
-                if (typeof s.username !== "undefined")
-                    if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
-                        s.emit('stream_video',image);
-                        logger('Stream video to ' + data.destination)
-                    }
-            })
-        } else {
-            socket.emit('server_message', {
-                message : 'you need to be an operator for this', username : ':'
-            })
-        }
+        const destUser = data.destination;
+        sockets.forEach(s => {
+            if (typeof s.username !== "undefined")
+                if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
+                    s.emit('stream_video', data.image)
+                }
+        })
     });
     
     socket.on('typing', () => {

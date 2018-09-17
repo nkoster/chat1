@@ -398,18 +398,17 @@ $(function() {
     }
 
     function openVideoStreamDialog(data) {
-        var timedOut;
         document.getElementsByClassName('video-stream-title')[0].innerHTML = 
             'video stream: ' + data.username + ' and ' + data.destination;
         window.setTimeout(function(){
             document.getElementsByClassName('video-stream-dialog')[0]
             .style.transition = 'all 0.5s';
             document.getElementsByClassName('video-stream-dialog')[0]
-            .style.height = '250px';
+            .style.height = '450px';
             document.getElementsByClassName('video-stream-dialog')[0]
             .style.opacity = '0.9';
             document.getElementsByClassName('video-stream-dialog')[0]
-            .style.marginTop = '-125px';
+            .style.marginTop = '-225px';
             window.setTimeout(function() {
                 beep();
                 document.getElementsByClassName('video-stream-content')[0]
@@ -423,16 +422,8 @@ $(function() {
                 chat('video stream canceled', ':', '#840', false, false)
                 socket.emit('stream_video_refuse', { username: socket.srcUser, destination: socket.destUser })
             }
-            clearTimeout(timedOut);
             closeVideoStreamDialog();
         });
-        timedOut = setTimeout(function() {
-            if (typeof socket.srcUser != 'undefined' && socket.srcUser != '') {
-                chat('video stream request from ' + socket.srcUser + ' timed out', ':', '#840', false, false)
-                socket.emit('stream_video_refuse', { username: socket.srcUser, destination: socket.destUser })
-            }
-            closeVideoStreamDialog();
-        }, 60000)
     }
 
     function closeVideoStreamDialog() {
@@ -477,11 +468,57 @@ $(function() {
         }
     });
 
+    socket.on('stream_video', function(image){
+        $('#video-stream').attr('src', image)
+    });
+
     socket.connect('http://192.168.1.33:9999');
 
     socket.emit('hello', { username: username.html(), channel: channel.html() } );
     socket.on('reset', function() {
         socket.emit('hello', { username: username.html(), channel: channel.html() } );
+    });
+
+    var canvas = document.getElementById("preview");
+    var context = canvas.getContext('2d');
+
+    canvas.width = 260;
+    canvas.height = 200;
+
+    context.width = canvas.width;
+    context.height = canvas.height;
+
+    var video = document.getElementById("camera-stream");
+
+    function loadCamera(stream){
+        video.src = window.URL.createObjectURL(stream);
+        console.log("Camera connected");
+    }
+
+    function loadFail(){
+        console.log("Camera not connected");
+    }
+
+    function viewVideo(video,context){
+        context.drawImage(video, 0, 0, context.width, context.height);
+        socket.emit('stream_video',
+        {
+            destination: socket.destUser,
+            image: canvas.toDataURL('image/jpeg')
+        });
+    }
+
+    $(function(){
+        console.log('Test if camera available');
+        navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msgGetUserMedia );
+    
+        if(navigator.getUserMedia){
+            navigator.getUserMedia({video: true, audio: false},loadCamera,loadFail);
+        }
+
+        setInterval(function(){
+            viewVideo(video,context);
+        }, 50);
     });
 
     $(window).bind('beforeunload', function() {

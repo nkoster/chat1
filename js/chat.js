@@ -443,6 +443,7 @@ $(function() {
                 .style.marginTop = '0';
             }, 500)
         }, 200);
+        socket.video = false;
         socket.srcUser = '';
         socket.destUser = '';
         socket.streamVideoLock = false;
@@ -459,6 +460,7 @@ $(function() {
     });
 
     socket.on('stream_video_accept', function(data) {
+        socket.video = true;
         chat('video stream accepted', ':', '#663', false, false);
         if (!socket.streamVideoLock) {
             socket.streamVideoLock = true;
@@ -500,12 +502,14 @@ $(function() {
     }
 
     function viewVideo(video,context){
-        context.drawImage(video, 0, 0, context.width, context.height);
-        socket.emit('stream_video',
-        {
-            destination: socket.destUser,
-            image: canvas.toDataURL('image/jpeg')
-        });
+        if (socket.video) {
+            context.drawImage(video, 0, 0, context.width, context.height);
+            socket.emit('stream_video',
+            {
+                destination: socket.destUser,
+                image: canvas.toDataURL('image/jpeg')
+            });
+        }
     }
 
     $(function(){

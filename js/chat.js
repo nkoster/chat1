@@ -506,6 +506,7 @@ $(function() {
             context.drawImage(video, 0, 0, context.width, context.height);
             socket.emit('stream_video',
             {
+                username: socket.srcUser,
                 destination: socket.destUser,
                 image: canvas.toDataURL('image/jpeg')
             });

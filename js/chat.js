@@ -26,7 +26,7 @@ $(function() {
         request_video_refuse = $('#request_video_refuse'),
         stream_video_cancel = $('#stream_video_cancel'),
         alarm = false,
-        streaming,
+        streaming, camera = false,
         help = [
             '<pre>----  generic commands</pre>',
             '<pre>  /user &lt;name&gt;               change your name (/nick works too)</pre>',
@@ -444,7 +444,7 @@ $(function() {
                 .style.marginTop = '0';
             }, 500)
         }, 200);
-        clearInterval(streaming);
+        if (camera) clearInterval(streaming);
         socket.srcUser = '';
         socket.destUser = '';
         socket.streamVideoLock = false;
@@ -468,9 +468,9 @@ $(function() {
             socket.srcUser = data.username;
             socket.destUser = data.destination;
             openVideoStreamDialog(data);
-            streaming = setInterval(function(){
+            if (camera) streaming = setInterval(function(){
                 viewVideo(video,context);
-            }, 50);
+            }, 56);
         }
     });
 
@@ -498,6 +498,7 @@ $(function() {
 
     function loadCamera(stream) {
         video.src = window.URL.createObjectURL(stream);
+        camera = true;
         console.log("Camera connected");
     }
 

@@ -582,7 +582,7 @@ io.on('connection', socket => {
             }
         }
     });
-    
+
     socket.on('typing', () => {
         if (socket.username === undefined) {
             logger('"typing" to undefined in channel ' + socket.channel);

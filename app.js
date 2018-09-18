@@ -554,13 +554,34 @@ io.on('connection', socket => {
     });
 
     socket.on('stream_video', data => {
-        const destUser = data.destination;
-        sockets.forEach(s => {
-            if (typeof s.username !== "undefined")
-                if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
-                    s.emit('stream_video', data.image)
-                }
-        })
+
+        if (typeof socket.username != "undefined") {
+            const destUser = data.destination;
+            const srcUser = data.username;
+            var ignore = false;
+            if (socket.username.indexOf(socket.channel + '%%%%' + destUser + '@') != 0) {
+                sockets.forEach(s => {
+                    if (typeof s.username !== "undefined")
+                        if (s.username.indexOf(socket.channel + '%%%%' + destUser + '@') === 0) {
+                            if (!ignore) {
+                                ignore = true;
+                                s.emit('stream_video', data.image)
+                            }
+                        }
+                })
+            }
+            if (socket.username.indexOf(socket.channel + '%%%%' + srcUser + '@') != 0) {
+                sockets.forEach(s => {
+                    if (typeof s.username !== "undefined")
+                        if (s.username.indexOf(socket.channel + '%%%%' + srcUser + '@') === 0) {
+                            if (!ignore) {
+                                ignore = true;
+                                s.emit('stream_video', data.image)
+                            }
+                        }
+                })
+            }    
+        }       
     });
     
     socket.on('typing', () => {

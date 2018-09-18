@@ -554,7 +554,6 @@ io.on('connection', socket => {
     });
 
     socket.on('stream_video', data => {
-
         if (typeof socket.username != "undefined") {
             const destUser = data.destination;
             const srcUser = data.username;
@@ -580,8 +579,8 @@ io.on('connection', socket => {
                             }
                         }
                 })
-            }    
-        }       
+            }
+        }
     });
     
     socket.on('typing', () => {

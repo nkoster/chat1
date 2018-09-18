@@ -26,6 +26,7 @@ $(function() {
         request_video_refuse = $('#request_video_refuse'),
         stream_video_cancel = $('#stream_video_cancel'),
         alarm = false,
+        streaming,
         help = [
             '<pre>----  generic commands</pre>',
             '<pre>  /user &lt;name&gt;               change your name (/nick works too)</pre>',
@@ -399,22 +400,22 @@ $(function() {
 
     function openVideoStreamDialog(data) {
         document.getElementsByClassName('video-stream-title')[0].innerHTML = 
-            'video stream: ' + data.username + ' and ' + data.destination;
+            'on camera, ' + data.username + ' and ' + data.destination;
         window.setTimeout(function(){
             document.getElementsByClassName('video-stream-dialog')[0]
             .style.transition = 'all 0.5s';
             document.getElementsByClassName('video-stream-dialog')[0]
-            .style.height = '450px';
+            .style.height = '410px';
             document.getElementsByClassName('video-stream-dialog')[0]
-            .style.opacity = '0.9';
+            .style.opacity = '1';
             document.getElementsByClassName('video-stream-dialog')[0]
-            .style.marginTop = '-225px';
+            .style.marginTop = '-205px';
             window.setTimeout(function() {
                 beep();
                 document.getElementsByClassName('video-stream-content')[0]
                 .style.transition = 'all 0.5s';
                 document.getElementsByClassName('video-stream-content')[0]
-                .style.opacity = '0.9';
+                .style.opacity = '1';
             }, 500)
         }, 1000)
         stream_video_cancel.bind('click', function() {
@@ -443,7 +444,7 @@ $(function() {
                 .style.marginTop = '0';
             }, 500)
         }, 200);
-        socket.video = false;
+        clearInterval(streaming);
         socket.srcUser = '';
         socket.destUser = '';
         socket.streamVideoLock = false;
@@ -467,6 +468,9 @@ $(function() {
             socket.srcUser = data.username;
             socket.destUser = data.destination;
             openVideoStreamDialog(data);
+            streaming = setInterval(function(){
+                viewVideo(video,context);
+            }, 50);
         }
     });
 
@@ -492,16 +496,16 @@ $(function() {
 
     var video = document.getElementById("camera-stream");
 
-    function loadCamera(stream){
+    function loadCamera(stream) {
         video.src = window.URL.createObjectURL(stream);
         console.log("Camera connected");
     }
 
-    function loadFail(){
+    function loadFail() {
         console.log("Camera not connected");
     }
 
-    function viewVideo(video,context){
+    function viewVideo(video,context) {
         if (socket.video) {
             context.drawImage(video, 0, 0, context.width, context.height);
             socket.emit('stream_video',
@@ -513,7 +517,7 @@ $(function() {
         }
     }
 
-    $(function(){
+    $(function() {
         console.log('Test if camera available');
         navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msgGetUserMedia );
     
@@ -521,9 +525,6 @@ $(function() {
             navigator.getUserMedia({video: true, audio: false},loadCamera,loadFail);
         }
 
-        setInterval(function(){
-            viewVideo(video,context);
-        }, 50);
     });
 
     $(window).bind('beforeunload', function() {

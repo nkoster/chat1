@@ -142,7 +142,7 @@ io.on('connection', socket => {
             });
             socket.emit('server_message',
             {
-                message : 'try http://cheapchat.nl/MyNickName/OurChannel',
+                message : 'try /help',
                 username : ':'
             })
         }

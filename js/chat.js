@@ -40,9 +40,12 @@ $(function() {
             '<pre>  /deop &lt;user&gt;               remove operator status from a user</pre>',
             '<pre>  /topic &lt;a topic&gt;           set the channel topic</pre>',
             '<pre>  /send &lt;user&gt;               send a file, max 20mb</pre>',
-            '<pre>  /kick &lt;user&gt;               kick somebody from the channel',
-            '<pre>  /ban &lt;user&gt;                ban somebody from the channel',
-            '<pre>  /unban &lt;ip@channel&gt;        remove a ban'
+            '<pre>  /kick &lt;user&gt;               kick somebody from the channel</pre>',
+            '<pre>  /ban &lt;user&gt;                ban somebody from the channel</pre>',
+            '<pre>  /unban &lt;ip@channel&gt;        remove a ban</pre>',
+            '<pre>---- URL format</pre>',
+            '<pre>  one can type a URL like http://cheapchat.nl/MyNickName/OurChannel</pre>',
+            '<pre>  to directly open a specific channel with a specific nick</pre>'
         ];
 
     send_message.click(function() {

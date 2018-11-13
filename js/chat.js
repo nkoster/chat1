@@ -202,14 +202,16 @@ $(function() {
         })
     });
 
-    username.keypress(function(e) {
+    username.bind("keyup", function(e) {
         if (e.keyCode === 13) {
             var u = username.html().substring(0, 32).replace(/ /g, '_');
             socket.emit('change_username', {username : u});
             username.html(u);
-            message.focus()
+            message.focus();
+            return false
+        } else {
+            return e.which != 13
         }
-        return e.which != 13
     });
 
     function checkAlarm() {
@@ -478,6 +480,10 @@ $(function() {
         $('#video-stream').attr('src', image)
     });
 
+    socket.on('stream_audio', function(data) {
+        if (data) console.log('audio data!')
+    });
+
     socket.connect('http://192.168.1.33:9999');
 
     socket.emit('hello', { username: username.html(), channel: channel.html() } );
@@ -520,10 +526,13 @@ $(function() {
 
     $(function() {
         console.log('Test if camera available');
-        navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msgGetUserMedia );
+        navigator.getUserMedia = ( navigator.getUserMedia
+            || navigator.webkitGetUserMedia
+            || navigator.mozGetUserMedia
+            || navigator.msgGetUserMedia );
     
         if(navigator.getUserMedia){
-            navigator.getUserMedia({video: true, audio: false},loadCamera,loadFail);
+            navigator.getUserMedia({video: true, audio: true},loadCamera,loadFail);
         }
 
     });

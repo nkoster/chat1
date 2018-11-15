@@ -39,8 +39,8 @@ app.get('/', (req, res) => {
 });
 app.get('*', (req, res) => {
     const url = req.url.split('/');
-    let u = '/?user=' + url[1];
-    if (url.length > 2) u += '&channel=' + url[2];
+    let u = '/?user=' + url[2];
+    if (url.length > 2) u += '&channel=' + url[1];
     console.log(url);
     res.redirect(u)
 });

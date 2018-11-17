@@ -137,12 +137,7 @@ io.on('connection', socket => {
         if (socket.channel === socketBase) {
             socket.emit('server_message',
             {
-                message : 'this is the default channel',
-                username : ':'
-            });
-            socket.emit('server_message',
-            {
-                message : 'try /help',
+                message : 'this is the default channel. Try /help',
                 username : ':'
             })
         }

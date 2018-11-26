@@ -44,8 +44,8 @@ $(function() {
             '<pre>  /ban &lt;user&gt;                ban somebody from the channel</pre>',
             '<pre>  /unban &lt;ip@channel&gt;        remove a ban</pre>',
             '<pre>---- URL format</pre>',
-            '<pre>  one can type a URL like http://cheapchat.nl/OurChannel/MyNickName</pre>',
-            '<pre>  to directly open a specific channel with a specific nick</pre>'
+            '<pre>  you can use a URL like "http://cheapchat.nl/foo/bar" in the browser</pre>',
+            '<pre>  to directly open a channel "foo" as user "bar"</pre>'
         ];
 
     send_message.click(function() {

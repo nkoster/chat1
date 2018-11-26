@@ -254,9 +254,10 @@ io.on('connection', socket => {
         if (socket.username === undefined) {
             initUser()
         }
+        
         let name = data.username
             .replace(/<(?:.|\n)*?>/gm, '')
-            .replace(/[&@;!#]/g, '_')
+            .replace(/[&@;!#<>]/g, '_')
             .substring(0, USER_MAX_LENGTH)
             .replace(/ /g, '_');
         let user = socket.username.split('%%%%')[1];

@@ -39,8 +39,14 @@ app.get('/', (req, res) => {
 });
 app.get('*', (req, res) => {
     const url = req.url.split('/');
-    let u = '/?user=' + url[2];
-    if (url.length > 2) u += '&channel=' + url[1];
+    let u;
+    if (url.length === 2) {
+        u = '/?channel=' + url[1] + 
+            '&user=' + Math.random().toString(36).substring(2, 15);
+    }
+    if (url.length > 2) {
+        u = '/?channel=' + url[1] + '&user=' + url[2]
+    }
     console.log(url);
     res.redirect(u)
 });
@@ -137,7 +143,12 @@ io.on('connection', socket => {
         if (socket.channel === socketBase) {
             socket.emit('server_message',
             {
-                message : 'this is the default channel. Try /help',
+                message : 'this is the default channel',
+                username : ':'
+            });
+            socket.emit('server_message',
+            {
+                message : 'try /help',
                 username : ':'
             })
         }

@@ -101,13 +101,15 @@ io.on('connection', socket => {
                     '%%%%' + socket.mode;
             }
             let userExists = false;
+            let user = socket.username.split('%%%%')[1];
+            let shortUser = user.substring(0, user.lastIndexOf('@'));
             users.forEach(u => {
-                if (u.indexOf(socket.username.substring(0, socket.username.length - 1)) === 0) {
-                    userExists = true
-                }
+                let s = u.split('%%%%')[1];
+                s = s.substring(0, s.lastIndexOf('@'));
+                if (s === shortUser) userExists = true;
             });
             if (userExists) {
-                logger(`${socket.username} already exists.`);
+                logger(`${shortUser} already exists.`);
                 socket.username = socket.channel + '%%%%' +
                     Math.random().toString(36).substring(2, 15) +
                     '@' + socket.handshake.headers['x-real-ip'] +
@@ -262,7 +264,7 @@ io.on('connection', socket => {
             .replace(/ /g, '_');
         let user = socket.username.split('%%%%')[1];
         let shortUser = user.substring(0, user.lastIndexOf('@'));
-
+        console.log('******' + name + ' ' + user + ' '+ shortUser + ' ');
         let userExists = false;
         users.forEach(u => {
             if (u.indexOf(socket.username === 0)) {
@@ -274,10 +276,9 @@ io.on('connection', socket => {
 
             let newUserExists = false;
             users.forEach(u => {
-                if (u.indexOf(socket.channel + '%%%%' + name +
-                '@' + socket.handshake.headers['x-real-ip']) === 0) {
-                    newUserExists = true
-                }
+                let s = u.split('%%%%')[1];
+                s = s.substring(0, s.lastIndexOf('@'));
+                if (s === name) newUserExists = true;
             });
 
             if (newUserExists) {

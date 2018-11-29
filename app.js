@@ -110,14 +110,8 @@ io.on('connection', socket => {
                     '@' + socket.handshake.headers['x-real-ip'] +
                     '%%%%' + socket.mode;
             }
-            // let userExists = false;
             let user = socket.username.split('%%%%')[1];
             let shortUser = user.substring(0, user.lastIndexOf('@'));
-            // users.forEach(u => {
-            //     let s = u.split('%%%%')[1];
-            //     s = s.substring(0, s.lastIndexOf('@'));
-            //     if (s === shortUser) userExists = true;
-            // });
             if (userExists(users, shortUser)) {
                 logger(`${shortUser} already exists.`);
                 socket.username = socket.channel + '%%%%' +

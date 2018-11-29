@@ -57,6 +57,16 @@ function firstInChannel(c) {
     return counter === 0 ? true : false
 }
 
+function userExists(userList, user) {
+    let exist = false;
+    userList.forEach(u => {
+        let s = u.split('%%%%')[1];
+        s = s.substring(0, s.lastIndexOf('@'));
+        if (s === user) exist = true;
+    });
+    return exist
+}
+
 io.on('connection', socket => {
     socket.mode = '-';
     sockets.push(socket);
@@ -100,15 +110,15 @@ io.on('connection', socket => {
                     '@' + socket.handshake.headers['x-real-ip'] +
                     '%%%%' + socket.mode;
             }
-            let userExists = false;
+            // let userExists = false;
             let user = socket.username.split('%%%%')[1];
             let shortUser = user.substring(0, user.lastIndexOf('@'));
-            users.forEach(u => {
-                let s = u.split('%%%%')[1];
-                s = s.substring(0, s.lastIndexOf('@'));
-                if (s === shortUser) userExists = true;
-            });
-            if (userExists) {
+            // users.forEach(u => {
+            //     let s = u.split('%%%%')[1];
+            //     s = s.substring(0, s.lastIndexOf('@'));
+            //     if (s === shortUser) userExists = true;
+            // });
+            if (userExists(users, shortUser)) {
                 logger(`${shortUser} already exists.`);
                 socket.username = socket.channel + '%%%%' +
                     Math.random().toString(36).substring(2, 15) +
@@ -264,24 +274,8 @@ io.on('connection', socket => {
             .replace(/ /g, '_');
         let user = socket.username.split('%%%%')[1];
         let shortUser = user.substring(0, user.lastIndexOf('@'));
-        console.log('******' + name + ' ' + user + ' '+ shortUser + ' ');
-        let userExists = false;
-        users.forEach(u => {
-            if (u.indexOf(socket.username === 0)) {
-                userExists = true
-            }
-        });
-
-        if (userExists) {
-
-            let newUserExists = false;
-            users.forEach(u => {
-                let s = u.split('%%%%')[1];
-                s = s.substring(0, s.lastIndexOf('@'));
-                if (s === name) newUserExists = true;
-            });
-
-            if (newUserExists) {
+        if (userExists(users, shortUser)) {
+            if (userExists(users, name)) {
                 logger(`${name} already exists.`);
                 socket.emit('confirm_username', { user: user, channel: socket.channel } );
             } else if (name.length < 2) {

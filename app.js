@@ -272,6 +272,7 @@ io.on('connection', socket => {
             if (userExists(users, name)) {
                 logger(`${name} already exists.`);
                 socket.emit('confirm_username', { user: user, channel: socket.channel } );
+                socket.emit('server_message', {message : '"' + name + '" already in use', username : ':'});
             } else if (name.length < 2) {
                 logger('Too small.');
                 socket.emit('confirm_username', { user: user, channel: socket.channel } );

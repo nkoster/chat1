@@ -44,7 +44,7 @@ $(function() {
             '<pre>  /ban &lt;user&gt;                ban somebody from the channel</pre>',
             '<pre>  /unban &lt;ip@channel&gt;        remove a ban</pre>',
             '<pre>---- URL format</pre>',
-            '<pre>  you can use a URL like "http://cheapchat.nl/foo/bar" in the browser</pre>',
+            '<pre>  you can use a URL like "https://cheapchat.nl/foo/bar" in the browser</pre>',
             '<pre>  to directly open a channel "foo" as user "bar"</pre>'
         ];
 
@@ -118,7 +118,7 @@ $(function() {
     });
 
     message.bind("keypress", function() {
-        socket.emit('typing');
+        socket.emit('typing', { username: username.html() });
     });
 
     message.bind("keyup", function(event) {
@@ -147,7 +147,7 @@ $(function() {
             } else if (message.val().split(' ')[0] === '/join') {
                 var commands = message.val().split(' ');
                 var channel = commands[1];
-                window.open('http://cheapchat.nl/' + channel + '/' + username.html(), '_blank');
+                window.open('https://cheapchat.nl/' + channel + '/' + username.html(), '_blank');
             } else if (message.val().split(' ')[0] === '/camera') {
                 var commands = message.val().split(' ');
                 var destUser = commands[1];
@@ -544,7 +544,7 @@ $(function() {
         return 'Leave site?'
     });
 
-    setTimeout(function() { 
+    setTimeout(function() {
         cheap.css({transition : 'all 0.8s ease-in-out'});
         cheap.css({opacity: 0.9, height: '100%'});
         setTimeout(function() {

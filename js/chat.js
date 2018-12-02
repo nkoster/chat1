@@ -246,7 +246,8 @@ $(function() {
     });
 
     socket.on('confirm_username', function(data) {
-        channel.html(data.channel.substring(0, 32).replace(/ /g, '_'));
+        var c = data.channel.substring(0, 32).replace(/ /g, '_');
+        channel.html('<span title="channel: ' + c + '">' + c + '</span>');
         var u = data.user;
         u = u.substring(0, u.lastIndexOf('@')).substring(0, 32).replace(/ /g, '_');
         username.html(u);

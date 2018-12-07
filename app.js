@@ -1,4 +1,5 @@
 const
+    HAL = 'HAL',
     fs = require('fs'),
     socketBase = 'cheapchat',
     MESSAGE_MAX_LENGTH = 240,
@@ -12,7 +13,9 @@ const
     io = sio.of(socketBase);
 
 let
-    users = [],
+    users = [
+        'cheapchat%%%%' + HAL + '@217.169.226.66%%%%+'
+    ],
     banned = [],
     queryUser = '',
     queryChannel = '',
@@ -65,6 +68,18 @@ function userExists(userList, user) {
         if (s === user) exist = true;
     });
     return exist
+}
+
+function hal(username, message) {
+    let msg = {
+        message: username,
+        username: HAL
+    }
+    if (message.search(/time|tijd|laat/i) !== -1) {
+        const moment = new Date();
+        msg.message = 'hey ' + username + ', de tijd is nu "' + moment + '"'
+    }
+    return msg
 }
 
 io.on('connection', socket => {
@@ -260,8 +275,8 @@ io.on('connection', socket => {
         if (socket.username === undefined) {
             initUser()
         }
-        
-        let name = data.username
+        let name = data.username || '';
+        name = name
             .replace(/<(?:.|\n)*?>/gm, '')
             .replace(/[&@;!#<>]/g, '_')
             .substring(0, USER_MAX_LENGTH)
@@ -272,7 +287,7 @@ io.on('connection', socket => {
             if (userExists(users, name)) {
                 logger(`${name} already exists.`);
                 socket.emit('confirm_username', { user: user, channel: socket.channel } );
-                socket.emit('server_message', {message : '"' + name + '" already in use', username : ':'});
+                socket.emit('server_message', {message : '"' + name + '" is already in use', username : ':'});
             } else if (name.length < 2) {
                 logger('Too small.');
                 socket.emit('confirm_username', { user: user, channel: socket.channel } );
@@ -503,7 +518,20 @@ io.on('connection', socket => {
             if (message.length > MESSAGE_MAX_LENGTH) {
                 message = message.substring(0, MESSAGE_MAX_LENGTH) + '... &larr; TRUNCATED'
             }
-            io.to(socket.channel).emit('new_message', {message : message, username : shortUser});
+            io.to(socket.channel).emit('new_message', {
+                message : message, username : shortUser
+            });
+            if (message.search(/hal/i) !== -1) {
+                let halTyper = setInterval(function() {
+                    socket.broadcast.to(socket.channel).emit('typing', {
+                        username : 'HAL'
+                    });
+                }, 200);
+                setTimeout(function() {
+                    clearInterval(halTyper);
+                    io.to(socket.channel).emit('new_message', hal(shortUser, message))
+                }, Math.random() * Math.floor(3000))
+            }
         }
     });
 

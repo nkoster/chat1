@@ -532,7 +532,7 @@ io.on('connection', socket => {
                 }, Math.random() * Math.floor(3000))
             }
 
-            if (message.search(/vuur|hell|666|satan/i) !== -1) {
+            if (message.search(/vuur|hell|666|satan|hel!|\ hel$|\ hel\ /i) !== -1) {
                 let halTyper = setInterval(function() {
                     io.to(socket.channel).emit('typing', {
                         username : HAL + '@217.169.226.66'
@@ -562,6 +562,20 @@ io.on('connection', socket => {
                 }, Math.random() * Math.floor(3000))
             }
         
+            if (message.search(/haha|hehe|hihi|hehe/i) !== -1) {
+                let halTyper = setInterval(function() {
+                    io.to(socket.channel).emit('typing', {
+                        username : HAL + '@217.169.226.66'
+                    });
+                }, 200);
+                setTimeout(function() {
+                    clearInterval(halTyper);
+                    io.to(socket.channel).emit('new_message', {
+                        username: HAL,
+                        message: '(:'
+                    })
+                }, Math.random() * Math.floor(3000))
+            }
         }
     });
 

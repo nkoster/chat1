@@ -1,5 +1,5 @@
 const
-    HAL = 'HAL',
+    HAL = 'hal',
     fs = require('fs'),
     socketBase = 'cheapchat',
     MESSAGE_MAX_LENGTH = 240,
@@ -68,19 +68,6 @@ function userExists(userList, user) {
         if (s === user) exist = true;
     });
     return exist
-}
-
-function hal(username, message) {
-    let msg = {
-        message: message || username,
-        username: HAL
-    }
-    if (message.search(/time|tijd|laat/i) !== -1) {
-        const moment = new Date();
-        msg.message = 'hey ' + username + ', het is "' +
-            moment + '" (' + Date.now() + ')'
-    }
-    return msg
 }
 
 io.on('connection', socket => {
@@ -523,7 +510,17 @@ io.on('connection', socket => {
                 message : message, username : shortUser
             });
 
+            // HAL stuff
             if (message.search(/hal/i) !== -1) {
+                let msg = {
+                    message: shortUser,
+                    username: HAL
+                };
+                if (message.search(/time|tijd|laat/i) !== -1) {
+                    const moment = new Date();
+                    msg.message = 'hey ' + shortUser + ', het is "' +
+                        moment + '" (' + Date.now() + ')'
+                }
                 let halTyper = setInterval(function() {
                     io.to(socket.channel).emit('typing', {
                         username : HAL + '@217.169.226.66'
@@ -531,8 +528,7 @@ io.on('connection', socket => {
                 }, 200);
                 setTimeout(function() {
                     clearInterval(halTyper);
-                    io.to(socket.channel).emit('new_message',
-                        hal(shortUser, shortUser))
+                    io.to(socket.channel).emit('new_message', msg)
                 }, Math.random() * Math.floor(3000))
             }
 
@@ -544,8 +540,25 @@ io.on('connection', socket => {
                 }, 200);
                 setTimeout(function() {
                     clearInterval(halTyper);
-                    io.to(socket.channel).emit('new_message', 
-                        hal(shortUser, '🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥'))
+                    io.to(socket.channel).emit('new_message', {
+                        username: HAL,
+                        message: '🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥'
+                    })
+                }, Math.random() * Math.floor(3000))
+            }
+
+            if (message.search(/huu/i) !== -1) {
+                let halTyper = setInterval(function() {
+                    io.to(socket.channel).emit('typing', {
+                        username : HAL + '@217.169.226.66'
+                    });
+                }, 200);
+                setTimeout(function() {
+                    clearInterval(halTyper);
+                    io.to(socket.channel).emit('new_message', {
+                        username: HAL,
+                        message: 'huuuuuuuuuu (:'
+                    })
                 }, Math.random() * Math.floor(3000))
             }
         

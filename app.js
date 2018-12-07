@@ -72,12 +72,13 @@ function userExists(userList, user) {
 
 function hal(username, message) {
     let msg = {
-        message: username,
+        message: message || username,
         username: HAL
     }
     if (message.search(/time|tijd|laat/i) !== -1) {
         const moment = new Date();
-        msg.message = 'hey ' + username + ', de tijd is nu "' + moment + '"'
+        msg.message = 'hey ' + username + ', het is "' +
+            moment + '" (' + Date.now() + ')'
     }
     return msg
 }
@@ -521,17 +522,33 @@ io.on('connection', socket => {
             io.to(socket.channel).emit('new_message', {
                 message : message, username : shortUser
             });
+
             if (message.search(/hal/i) !== -1) {
                 let halTyper = setInterval(function() {
-                    socket.broadcast.to(socket.channel).emit('typing', {
-                        username : 'HAL'
+                    io.to(socket.channel).emit('typing', {
+                        username : HAL + '@217.169.226.66'
                     });
                 }, 200);
                 setTimeout(function() {
                     clearInterval(halTyper);
-                    io.to(socket.channel).emit('new_message', hal(shortUser, message))
+                    io.to(socket.channel).emit('new_message',
+                        hal(shortUser, shortUser))
                 }, Math.random() * Math.floor(3000))
             }
+
+            if (message.search(/vuur|hell|666|satan/i) !== -1) {
+                let halTyper = setInterval(function() {
+                    io.to(socket.channel).emit('typing', {
+                        username : HAL + '@217.169.226.66'
+                    });
+                }, 200);
+                setTimeout(function() {
+                    clearInterval(halTyper);
+                    io.to(socket.channel).emit('new_message', 
+                        hal(shortUser, '🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥'))
+                }, Math.random() * Math.floor(3000))
+            }
+        
         }
     });
 

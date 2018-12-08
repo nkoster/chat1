@@ -613,6 +613,22 @@ io.on('connection', socket => {
                     })
                 }, Math.random() * Math.floor(3000))
             }
+
+            if (message.search(/hal/i) !== -1 &&
+                message.search(/lul|klootzak|hufter|lief|dom|slim|gek/i) !== -1) {
+                let halTyper = setInterval(function() {
+                    io.to(socket.channel).emit('typing', {
+                        username : HAL + '@217.169.226.66'
+                    });
+                }, 200);
+                setTimeout(function() {
+                    clearInterval(halTyper);
+                    io.to(socket.channel).emit('new_message', {
+                        username: HAL,
+                        message: message.replace(HAL, '').replace('je', 'jij')
+                    })
+                }, Math.random() * Math.floor(3000))
+            }
         }
     });
 

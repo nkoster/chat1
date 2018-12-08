@@ -615,17 +615,24 @@ io.on('connection', socket => {
             }
 
             if (message.search(/hal/i) !== -1 &&
-                message.search(/lul|klootzak|hufter|lief|dom|slim|gek/i) !== -1) {
+                message.search(/lul|klootzak|hufter|lief|dom|slim|gek|slecht/i) !== -1) {
                 let halTyper = setInterval(function() {
                     io.to(socket.channel).emit('typing', {
                         username : HAL + '@217.169.226.66'
                     });
                 }, 200);
+                let msg = message;
+                if (message.search(/hal/i) === 0) {
+                    msg = message.replace(HAL, shortUser)
+                } else {
+                    msg = message.replace(HAL, '')
+                }
+                msg = msg.replace('je', 'jij');
                 setTimeout(function() {
                     clearInterval(halTyper);
                     io.to(socket.channel).emit('new_message', {
                         username: HAL,
-                        message: message.replace(HAL, '').replace('je', 'jij')
+                        message: msg
                     })
                 }, Math.random() * Math.floor(3000))
             }

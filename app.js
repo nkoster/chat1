@@ -655,7 +655,10 @@ io.on('connection', socket => {
                     let parser = new Parser();
                     let expr;
                     try {
-                        expr = parser.parse(message.replace(/.*hoeveel is|==\ /i, '').replace(/hal/i, ''));
+                        expr = parser.parse(message
+                            .replace(/.*hoeveel is|==\ /i, '')
+                            .replace(/hal/i, '')
+                            .replace('?', ''));
                     }
                     catch(error) {
                         logger(error)

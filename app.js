@@ -653,7 +653,13 @@ io.on('connection', socket => {
 
                 if (message.search(/hoeveel is/i) !== -1) {
                     let parser = new Parser();
-                    let expr = parser.parse(message.replace(/.*hoeveel is/i, ''));
+                    let expr;
+                    try {
+                        expr = parser.parse(message.replace(/.*hoeveel is/i, '').replace(/hal/i, ''));
+                    }
+                    catch(error) {
+                        //
+                    }
                     let result = 'niets';
                     try {
                         result = String(expr.evaluate({}))

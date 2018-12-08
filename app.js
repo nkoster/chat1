@@ -614,8 +614,13 @@ io.on('connection', socket => {
                 }, Math.random() * Math.floor(3000))
             }
 
+            emotions = new RegExp([
+                '/lul|klootzak|hufter|lief|dom|slim|gek',
+                'slecht|boos|kwaad|gestoord|geil'
+            ].join(), 'i');
+
             if (message.search(/hal/i) !== -1 &&
-                message.search(/lul|klootzak|hufter|lief|dom|slim|gek|slecht/i) !== -1) {
+                message.search(emotions) !== -1) {
                 let halTyper = setInterval(function() {
                     io.to(socket.channel).emit('typing', {
                         username : HAL + '@217.169.226.66'

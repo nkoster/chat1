@@ -629,7 +629,8 @@ io.on('connection', socket => {
                 ].join(), 'i');
 
                 if (message.search(/hal/i) !== -1 &&
-                    message.search(emotions) !== -1) {
+                    message.search(emotions) !== -1 &&
+                    message.search(/hoeveel is|==\ /i) === -1) {
                     let halTyper = setInterval( () => {
                         io.to(socket.channel).emit('typing', {
                             username : HAL + '@217.169.226.66'

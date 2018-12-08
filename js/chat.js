@@ -226,6 +226,25 @@ $(function() {
         }
     }
 
+    socket.on('hal_lion', function() {
+        setTimeout(function() {
+            cheap.css({transition : 'all 0.8s ease-in-out'});
+            cheap.css({opacity: 0.4, height: '100%'});
+            setTimeout(function() {
+                cheap.css({transition : 'all 2s ease-in-out'});
+                cheap.css({opacity: 0.3, height: '100%'});
+                setTimeout(function() {
+                    cheap.css({transition : 'all 0.8s ease-in-out'});
+                    cheap.css({opacity: 0.9, height: '100%'});
+                    setTimeout(function() {
+                        cheap.css({transition : 'all 2s ease-in-out'});
+                        cheap.css({opacity: 1, height: '100%'})
+                    }, 3000)
+                }, 0.5);        
+            }, 3000)
+        }, 0.5);
+    });
+
     socket.on('typing', function(data) {
         checkAlarm();
         var user = data.username.replace(/<(?:.|\n)*?>/gm, '');

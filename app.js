@@ -651,21 +651,21 @@ io.on('connection', socket => {
                     }, Math.random() * Math.floor(3000))
                 }
 
-                if (message.search(/hoeveel is/i) !== -1) {
+                if (message.search(/hoeveel is|==\ /i) !== -1) {
                     let parser = new Parser();
                     let expr;
                     try {
-                        expr = parser.parse(message.replace(/.*hoeveel is/i, '').replace(/hal/i, ''));
+                        expr = parser.parse(message.replace(/.*hoeveel is|==\ /i, '').replace(/hal/i, ''));
                     }
                     catch(error) {
-                        //
+                        logger(error)
                     }
                     let result = 'niets';
                     try {
                         result = String(expr.evaluate({}))
                     }
                     catch(error) {
-                        //result = 'niets'
+                        logger(error)
                     }
                     let halTyper = setInterval( () => {
                         io.to(socket.channel).emit('typing', {

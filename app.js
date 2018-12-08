@@ -511,7 +511,7 @@ io.on('connection', socket => {
             });
 
             // HAL stuff
-            if (message.search(/hal/i) !== -1) {
+            if (message.search(/hal|217\.169\.[23]/i) !== -1) {
                 let msg = {
                     message: shortUser,
                     username: HAL
@@ -520,6 +520,13 @@ io.on('connection', socket => {
                     const moment = new Date();
                     msg.message = 'hey ' + shortUser + ', het is "' +
                         moment + '" (' + Date.now() + ')'
+                }
+                if (message.search(/217\.169\.[23]/i) !== -1) {
+                    if (Math.random() * 100 <= 66) {
+                        msg.message = 'Leve de Koning, ' + user
+                    } else {
+                        msg.message = 'omerta, ' + user
+                    }
                 }
                 let halTyper = setInterval(function() {
                     io.to(socket.channel).emit('typing', {
@@ -573,6 +580,36 @@ io.on('connection', socket => {
                     io.to(socket.channel).emit('new_message', {
                         username: HAL,
                         message: '(:'
+                    })
+                }, Math.random() * Math.floor(3000))
+            }
+
+            if (message.search(/kut/i) !== -1) {
+                let halTyper = setInterval(function() {
+                    io.to(socket.channel).emit('typing', {
+                        username : HAL + '@217.169.226.66'
+                    });
+                }, 200);
+                setTimeout(function() {
+                    clearInterval(halTyper);
+                    io.to(socket.channel).emit('new_message', {
+                        username: HAL,
+                        message: 'kut vagina'
+                    })
+                }, Math.random() * Math.floor(3000))
+            }
+
+            if (message.search(/kan niet/i) !== -1) {
+                let halTyper = setInterval(function() {
+                    io.to(socket.channel).emit('typing', {
+                        username : HAL + '@217.169.226.66'
+                    });
+                }, 200);
+                setTimeout(function() {
+                    clearInterval(halTyper);
+                    io.to(socket.channel).emit('new_message', {
+                        username: HAL,
+                        message: 'kan wel'
                     })
                 }, Math.random() * Math.floor(3000))
             }

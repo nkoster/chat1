@@ -147,7 +147,7 @@ $(function() {
             } else if (message.val().split(' ')[0] === '/join') {
                 var commands = message.val().split(' ');
                 var channel = commands[1];
-                window.open('https://cheapchat.nl/' + channel + '/' + username.html(), '_blank');
+                window.open('https://cheapchat.nl/' + channel, '_blank');
             } else if (message.val().split(' ')[0] === '/camera') {
                 var commands = message.val().split(' ');
                 var destUser = commands[1];

@@ -534,8 +534,11 @@ io.on('connection', socket => {
                         }
                     }
                     if (message.search(/leeuw|leon|lion/i) !== -1) {
-                        msg.message = '🦁 (:'
+                        msg.message = '🦁'
                         io.to(socket.channel).emit('hal_lion')
+                    }
+                    if (message.search(/hali/i) !== -1) {
+                        msg.message += ' huuuu (:'
                     }
                     let halTyper = setInterval( () => {
                         io.to(socket.channel).emit('typing', {
@@ -625,7 +628,8 @@ io.on('connection', socket => {
 
                 emotions = new RegExp([
                     'lul|klootzak|hufter|lief|dom|slim|gek',
-                    'slecht|boos|kwaad|gestoord|geil'
+                    'slecht|boos|kwaad|gestoord|geil|homo|',
+                    'tering|flikker|mafkees'
                 ].join(), 'i');
 
                 if (message.search(/hal/i) !== -1 &&
@@ -678,6 +682,7 @@ io.on('connection', socket => {
                     }, 200);
                     setTimeout( () => {
                         clearInterval(halTyper);
+                        if (result === '666') result = 'satan (666)';
                         io.to(socket.channel).emit('new_message', {
                             username: HAL,
                             message: 'dat is ' + result

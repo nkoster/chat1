@@ -675,6 +675,12 @@ io.on('connection', socket => {
                     catch(error) {
                         logger(error)
                     }
+                    if (result === 'true') {
+                        result = 'waar'
+                    }
+                    if (result === 'false') {
+                        result = 'niet waar'
+                    }
                     let halTyper = setInterval( () => {
                         io.to(socket.channel).emit('typing', {
                             username : HAL + '@217.169.226.66'

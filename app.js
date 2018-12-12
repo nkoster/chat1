@@ -645,6 +645,7 @@ io.on('connection', socket => {
                     msg = message.replace(HAL, '')
                         .replace('ik vind je', 'ik vind jou')
                         .replace('vindt je', 'vindt jou')
+                        .replace('vind je', 'vindt jou')
                         .replace('je', 'jij');
                     setTimeout( () => {
                         clearInterval(halTyper);

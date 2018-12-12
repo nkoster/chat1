@@ -515,6 +515,7 @@ io.on('connection', socket => {
 
             if ( socket.channel === 'cheapchat' ) {
                 let emotions;
+                let response = false;
 
                 if (message.search(/hal|217\.169\.[23]/i) !== -1) {
                     let msg = {
@@ -522,11 +523,13 @@ io.on('connection', socket => {
                         username: HAL
                     };
                     if (message.search(/time|tijd|laat|datum|date/i) !== -1) {
+                        response = true;
                         const moment = new Date();
                         msg.message = 'hey ' + shortUser + ', het is "' +
                             moment + '" (' + Date.now() + ')'
                     }
                     if (message.search(/217\.169\.[23]/i) !== -1) {
+                        response = true;
                         if (Math.random() * 100 <= 66) {
                             msg.message = 'Leve de Koning, ' + user
                         } else {
@@ -534,10 +537,12 @@ io.on('connection', socket => {
                         }
                     }
                     if (message.search(/leeuw|leon|lion/i) !== -1) {
+                        response = true;
                         msg.message = '🦁'
                         io.to(socket.channel).emit('hal_lion')
                     }
                     if (message.search(/hali/i) !== -1) {
+                        response = true;
                         msg.message += ' huuuu (:'
                     }
                     let halTyper = setInterval( () => {
@@ -628,13 +633,14 @@ io.on('connection', socket => {
 
                 emotions = new RegExp([
                     'lul|klootzak|hufter|lief|dom|slim|gek|',
-                    'slecht|boos|kwaad|gestoord|geil|homo|',
-                    'tering|flikker|mafkees|hoer|kanker|',
-                    'slet|bitch|slut|slet|ziek|sloer'
+                    'slecht|boos|kwaad|gestoord|geil|homo|eik[eo]l|',
+                    'tering|flikker|mafkee[sz]|hoer|kanker|neuk|',
+                    'slet|bitch|slut|slet|ziek|sloer|vieze|vies'                    
                 ].join(), 'i');
 
                 if (message.search(/hal/i) !== -1 &&
-                    message.search(emotions) !== -1 &&
+                    response === false &&
+                    //message.search(emotions) !== -1 &&
                     message.search(/hoeveel is|==\ /i) === -1) {
                     let halTyper = setInterval( () => {
                         io.to(socket.channel).emit('typing', {
@@ -643,10 +649,14 @@ io.on('connection', socket => {
                     }, 200);
                     let msg = message;
                     msg = message.replace(HAL, '')
+                        .replace(/,.*$/, '')
                         .replace('ik vind je', 'ik vind jou')
                         .replace('vindt je', 'vindt jou')
                         .replace('vind je', 'vindt jou')
                         .replace('je', 'jij');
+                    if (msg.search(/dank|thank/i) !== -1) {
+                        msg = '❤️❤️❤️'
+                    }
                     setTimeout( () => {
                         clearInterval(halTyper);
                         io.to(socket.channel).emit('new_message', {

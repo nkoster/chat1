@@ -630,7 +630,7 @@ io.on('connection', socket => {
                     'lul|klootzak|hufter|lief|dom|slim|gek|',
                     'slecht|boos|kwaad|gestoord|geil|homo|',
                     'tering|flikker|mafkees|hoer|kanker|',
-                    'slet|bitch|slut|slet|sloer'
+                    'slet|bitch|slut|slet|ziek|sloer'
                 ].join(), 'i');
 
                 if (message.search(/hal/i) !== -1 &&

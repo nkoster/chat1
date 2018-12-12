@@ -627,9 +627,10 @@ io.on('connection', socket => {
                 }
 
                 emotions = new RegExp([
-                    'lul|klootzak|hufter|lief|dom|slim|gek',
+                    'lul|klootzak|hufter|lief|dom|slim|gek|',
                     'slecht|boos|kwaad|gestoord|geil|homo|',
-                    'tering|flikker|mafkees'
+                    'tering|flikker|mafkees|hoer|kanker|',
+                    'slet|bitch|slut|slet|sloer'
                 ].join(), 'i');
 
                 if (message.search(/hal/i) !== -1 &&
@@ -641,12 +642,10 @@ io.on('connection', socket => {
                         });
                     }, 200);
                     let msg = message;
-                    if (message.search(/hal/i) === 0) {
-                        msg = message.replace(HAL, shortUser)
-                    } else {
-                        msg = message.replace(HAL, '')
-                    }
-                    msg = msg.replace('je', 'jij');
+                    msg = message.replace(HAL, '')
+                        .replace('ik vind je', 'ik vind jou')
+                        .replace('vindt je', 'vindt jou')
+                        .replace('je', 'jij');
                     setTimeout( () => {
                         clearInterval(halTyper);
                         io.to(socket.channel).emit('new_message', {

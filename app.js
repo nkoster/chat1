@@ -653,11 +653,15 @@ io.on('connection', socket => {
                         .replace('ik vind je', 'ik vind jou')
                         .replace('vindt je', 'vindt jou')
                         .replace('vind je', 'vindt jou')
-                        .replace('je', 'jij')
+                        .replace('met je', 'met jou')
+                        .replace('ben je', 'ben jij')
+                        .replace('aan je', 'aan jou')
                         .replace('je bent', 'jij bent')
                         .replace('je hebt', 'jij hebt')
-                    if (msg.search(/dank|thank|top|cool|ok dan|super|nice/i) !== -1) {
-                            msg = '❤️❤️❤️'
+                        .replace(/\s$/, '') + '!'
+                    if (msg.search(/dank|thank|top|cool|ok dan|super|nice|gappie/i) !== -1) {
+                        let hearts = [ '💕', '❤️❤️', '😍', '💖💖' ];
+                        msg = hearts[Math.floor(Math.random() * 4)];
                     }
                     setTimeout( () => {
                         clearInterval(halTyper);

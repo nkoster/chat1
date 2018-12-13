@@ -660,14 +660,15 @@ io.on('connection', socket => {
                         .replace('met je', 'met jou')
                         .replace('ben je', 'ben jij')
                         .replace('aan je', 'aan jou')
+                        .replace('dat je', 'dat jij')
                         .replace('je bent', 'jij bent')
                         .replace('je hebt', 'jij hebt')
-                        .replace(/\s$/, '') + '!'
+                        .replace(/\s+$/, '') + '!'
                     if (msg.search(/dank|thank|top|cool|ok dan|super|nice|gappie/i) !== -1) {
                         let hearts = [ '💕', '❤️❤️', '😍', '💖💖' ];
                         msg = hearts[Math.floor(Math.random() * 4)];
                     }
-                    if (msg.split(' ').length > 2) {
+                    if (msg.split(' ').length > 1) {
                         msg = msg.replace(HAL, '')
                     } else {
                         msg = msg.replace(HAL, shortUser)

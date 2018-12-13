@@ -653,6 +653,7 @@ io.on('connection', socket => {
                         .replace('ik vind je', 'ik vind jou')
                         .replace('vindt je', 'vindt jou')
                         .replace('vind je', 'vindt jou')
+                        .replace('weet je', 'weet jij')
                         .replace('met je', 'met jou')
                         .replace('ben je', 'ben jij')
                         .replace('aan je', 'aan jou')

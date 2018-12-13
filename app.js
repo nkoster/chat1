@@ -672,6 +672,9 @@ io.on('connection', socket => {
                     } else {
                         msg = msg.replace(HAL, shortUser)
                     }
+                    if (msg === shortUser + '!') {
+                        msg = 'zeg het maar...'
+                    }
                     setTimeout( () => {
                         clearInterval(halTyper);
                         io.to(socket.channel).emit('new_message', {

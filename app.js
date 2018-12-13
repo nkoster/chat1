@@ -522,6 +522,9 @@ io.on('connection', socket => {
                         message: shortUser,
                         username: HAL
                     };
+                    if (Math.random() * 100 > 75) {
+                        msg.message += ' (:'
+                    }
                     if (message.search(/time|tijd|laat|datum|date/i) !== -1) {
                         response = true;
                         const moment = new Date();
@@ -648,7 +651,7 @@ io.on('connection', socket => {
                         });
                     }, 200);
                     let msg = message;
-                    msg = message.replace(HAL, '')
+                    msg = message
                         .replace(/,.*$/, '')
                         .replace('ik vind je', 'ik vind jou')
                         .replace('vindt je', 'vindt jou')
@@ -663,6 +666,11 @@ io.on('connection', socket => {
                     if (msg.search(/dank|thank|top|cool|ok dan|super|nice|gappie/i) !== -1) {
                         let hearts = [ '💕', '❤️❤️', '😍', '💖💖' ];
                         msg = hearts[Math.floor(Math.random() * 4)];
+                    }
+                    if (msg.split(' ').length > 2) {
+                        msg = msg.replace(HAL, '')
+                    } else {
+                        msg = msg.replace(HAL, shortUser)
                     }
                     setTimeout( () => {
                         clearInterval(halTyper);

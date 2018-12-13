@@ -653,7 +653,9 @@ io.on('connection', socket => {
                         .replace('ik vind je', 'ik vind jou')
                         .replace('vindt je', 'vindt jou')
                         .replace('vind je', 'vindt jou')
-                        .replace('je', 'jij');
+                        .replace('je bent', 'jij bent')
+                        .replace('je hebt', 'jij hebt')
+                        //.replace('je', 'jou');
                     if (msg.search(/dank|thank/i) !== -1) {
                         msg = '❤️❤️❤️'
                     }

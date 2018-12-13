@@ -653,9 +653,11 @@ io.on('connection', socket => {
                         .replace('ik vind je', 'ik vind jou')
                         .replace('vindt je', 'vindt jou')
                         .replace('vind je', 'vindt jou')
-                        .replace('je', 'jij');
+                        .replace('je', 'jij')
+                        .replace('je bent', 'jij bent')
+                        .replace('je hebt', 'jij hebt')
                     if (msg.search(/dank|thank|top|cool|ok dan|super|nice/i) !== -1) {
-                        msg = '❤️❤️❤️'
+                            msg = '❤️❤️❤️'
                     }
                     setTimeout( () => {
                         clearInterval(halTyper);

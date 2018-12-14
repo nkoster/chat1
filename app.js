@@ -669,7 +669,7 @@ io.on('connection', socket => {
                         msg = hearts[Math.floor(Math.random() * 4)];
                     }
                     if (msg.split(' ').length > 1) {
-                        msg = msg.replace(HAL, '')
+                        msg = msg.replace(' ' + HAL, '').replace(HAL, '')
                     } else {
                         msg = msg.replace(HAL, shortUser)
                     }

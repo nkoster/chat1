@@ -663,6 +663,8 @@ io.on('connection', socket => {
                         .replace('dat je', 'dat jij')
                         .replace('je bent', 'jij bent')
                         .replace('je hebt', 'jij hebt')
+                        .replace("you're", 'you are')
+                        .replace(/hey/i, '')
                         .replace(/\s+$/, '') + '!'
                     if (msg.search(/dank|thank|top|cool|ok dan|super|nice|gappie/i) !== -1) {
                         let hearts = [ '💕', '❤️❤️', '😍', '💖💖' ];

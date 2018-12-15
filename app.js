@@ -514,215 +514,236 @@ io.on('connection', socket => {
             // HAL stuff
 
             if ( socket.channel === 'cheapchat' ) {
-                let response = false;
-                message = message.replace(',', ' ');
 
-                if (message.search(/hal|217\.169\.[23]/i) !== -1) {
-                    let msg = {
-                        message: shortUser,
-                        username: HAL
-                    };
-                    if (Math.random() * 100 > 50) {
-                        msg.message += ' (:'
+                // wait a second
+                setTimeout( () => {
+
+                    let response = false;
+                    message = message.replace(',', ' ');
+
+                    if (message.search(/hal|217\.169\.[23]/i) !== -1) {
+                        let msg = {
+                            message: shortUser,
+                            username: HAL
+                        };
+                        if (Math.random() * 100 > 50) {
+                            msg.message += ' (:'
+                        }
+                        if (message.search(/time|tijd|laat|datum|date/i) !== -1) {
+                            response = true;
+                            const moment = new Date();
+                            msg.message = 'hey ' + shortUser + ', het is "' +
+                                moment + '" (' + Date.now() + ')'
+                        }
+                        if (message.search(/217\.169\.[23]/i) !== -1) {
+                            response = true;
+                            if (Math.random() * 100 <= 66) {
+                                msg.message = 'Leve de Koning, ' + user
+                            } else {
+                                msg.message = 'omerta, ' + user
+                            }
+                        }
+                        if (message.search(/leeuw|leon|lion/i) !== -1) {
+                            response = true;
+                            msg.message = '🦁'
+                            io.to(socket.channel).emit('hal_lion')
+                        }
+                        if (message.search(/hali/i) !== -1) {
+                            response = true;
+                            msg.message += ' huuuu (:'
+                        }
+                        let halTyper = setInterval( () => {
+                            io.to(socket.channel).emit('typing', {
+                                username : HAL + '@217.169.226.66'
+                            });
+                        }, 200);
+                        setTimeout( () => {
+                            clearInterval(halTyper);
+                            io.to(socket.channel).emit('new_message', msg)
+                        }, Math.random() * Math.floor(3000))
                     }
-                    if (message.search(/time|tijd|laat|datum|date/i) !== -1) {
-                        response = true;
-                        const moment = new Date();
-                        msg.message = 'hey ' + shortUser + ', het is "' +
-                            moment + '" (' + Date.now() + ')'
+
+                    if (message.search(/vuur|hell|666|satan|hel!|\ hel$|\ hel\ /i) !== -1) {
+                        let halTyper = setInterval( () => {
+                            io.to(socket.channel).emit('typing', {
+                                username : HAL + '@217.169.226.66'
+                            });
+                        }, 200);
+                        setTimeout( () => {
+                            clearInterval(halTyper);
+                            io.to(socket.channel).emit('new_message', {
+                                username: HAL,
+                                message: '🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥'
+                            })
+                        }, Math.random() * Math.floor(3000))
                     }
-                    if (message.search(/217\.169\.[23]/i) !== -1) {
-                        response = true;
-                        if (Math.random() * 100 <= 66) {
-                            msg.message = 'Leve de Koning, ' + user
+
+                    if (message.search(/huu/i) !== -1) {
+                        let halTyper = setInterval( () => {
+                            io.to(socket.channel).emit('typing', {
+                                username : HAL + '@217.169.226.66'
+                            });
+                        }, 200);
+                        setTimeout( () => {
+                            clearInterval(halTyper);
+                            io.to(socket.channel).emit('new_message', {
+                                username: HAL,
+                                message: 'huuuuuuuuuu (:'
+                            })
+                        }, Math.random() * Math.floor(3000))
+                    }
+                
+                    if (message.search(/haha|hehe|hihi|hehe|\([:;]|\(-[:;]|[:;]\)|[:;]-\)/i) === 0) {
+                        let halTyper = setInterval( () => {
+                            io.to(socket.channel).emit('typing', {
+                                username : HAL + '@217.169.226.66'
+                            });
+                        }, 200);
+                        setTimeout( () => {
+                            clearInterval(halTyper);
+                            io.to(socket.channel).emit('new_message', {
+                                username: HAL,
+                                message: '(:'
+                            })
+                        }, Math.random() * Math.floor(3000))
+                    }
+
+                    if (message.search(/kut/i) !== -1) {
+                        let halTyper = setInterval( () => {
+                            io.to(socket.channel).emit('typing', {
+                                username : HAL + '@217.169.226.66'
+                            });
+                        }, 200);
+                        setTimeout( () => {
+                            clearInterval(halTyper);
+                            io.to(socket.channel).emit('new_message', {
+                                username: HAL,
+                                message: 'kut vagina'
+                            })
+                        }, Math.random() * Math.floor(3000))
+                    }
+
+                    if (message.search(/tiet|tepel/i) !== -1) {
+                        let halTyper = setInterval( () => {
+                            io.to(socket.channel).emit('typing', {
+                                username : HAL + '@217.169.226.66'
+                            });
+                        }, 200);
+                        setTimeout( () => {
+                            clearInterval(halTyper);
+                            io.to(socket.channel).emit('new_message', {
+                                username: HAL,
+                                message: 'dikke tieten'
+                            })
+                        }, Math.random() * Math.floor(3000))
+                    }
+
+                    if (message.search(/kan niet/i) !== -1) {
+                        let halTyper = setInterval( () => {
+                            io.to(socket.channel).emit('typing', {
+                                username : HAL + '@217.169.226.66'
+                            });
+                        }, 200);
+                        setTimeout( () => {
+                            clearInterval(halTyper);
+                            io.to(socket.channel).emit('new_message', {
+                                username: HAL,
+                                message: 'kan wel'
+                            })
+                        }, Math.random() * Math.floor(3000))
+                    }
+
+                    if (message.search(/hal/i) !== -1 &&
+                        response === false &&
+                        message.search(/hoeveel is|==\ /i) === -1) {
+                        let halTyper = setInterval( () => {
+                            io.to(socket.channel).emit('typing', {
+                                username : HAL + '@217.169.226.66'
+                            });
+                        }, 200);
+                        let msg = message;
+                        msg = message
+                            .replace(/,.*$/, '')
+                            .replace('ik vind je', 'ik vind jou')
+                            .replace('vindt je', 'vindt jou')
+                            .replace('vind je', 'vindt jou')
+                            .replace('weet je', 'weet jij')
+                            .replace('kan je', 'kan jij')
+                            .replace('met je', 'met jou')
+                            .replace('ben je', 'ben jij')
+                            .replace('aan je', 'aan jou')
+                            .replace('dat je', 'dat jij')
+                            .replace('je bent', 'jij bent')
+                            .replace('je hebt', 'jij hebt')
+                            .replace("you're", 'you are')
+                            .replace(/\s+$/, '') + '!';
+                        if (msg.split(/\s+/).length > 2) {
+                            msg = msg.replace(/hey/i, '')
+                        }
+                        if (msg.search(/dank|thank|top|cool|ok dan|super|nice|gappie/i) !== -1) {
+                            let hearts = [ '💕', '❤️❤️', '😍', '💖💖', '🍺' ];
+                            msg = hearts[Math.floor(Math.random() * 5)];
+                        }
+                        if (msg.split(' ').length > 1) {
+                            msg = msg.replace(' ' + HAL, '').replace(HAL, '')
                         } else {
-                            msg.message = 'omerta, ' + user
+                            msg = msg.replace(HAL, shortUser)
                         }
-                    }
-                    if (message.search(/leeuw|leon|lion/i) !== -1) {
-                        response = true;
-                        msg.message = '🦁'
-                        io.to(socket.channel).emit('hal_lion')
-                    }
-                    if (message.search(/hali/i) !== -1) {
-                        response = true;
-                        msg.message += ' huuuu (:'
-                    }
-                    let halTyper = setInterval( () => {
-                        io.to(socket.channel).emit('typing', {
-                            username : HAL + '@217.169.226.66'
-                        });
-                    }, 200);
-                    setTimeout( () => {
-                        clearInterval(halTyper);
-                        io.to(socket.channel).emit('new_message', msg)
-                    }, Math.random() * Math.floor(3000))
-                }
-
-                if (message.search(/vuur|hell|666|satan|hel!|\ hel$|\ hel\ /i) !== -1) {
-                    let halTyper = setInterval( () => {
-                        io.to(socket.channel).emit('typing', {
-                            username : HAL + '@217.169.226.66'
-                        });
-                    }, 200);
-                    setTimeout( () => {
-                        clearInterval(halTyper);
-                        io.to(socket.channel).emit('new_message', {
-                            username: HAL,
-                            message: '🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥'
-                        })
-                    }, Math.random() * Math.floor(3000))
-                }
-
-                if (message.search(/huu/i) !== -1) {
-                    let halTyper = setInterval( () => {
-                        io.to(socket.channel).emit('typing', {
-                            username : HAL + '@217.169.226.66'
-                        });
-                    }, 200);
-                    setTimeout( () => {
-                        clearInterval(halTyper);
-                        io.to(socket.channel).emit('new_message', {
-                            username: HAL,
-                            message: 'huuuuuuuuuu (:'
-                        })
-                    }, Math.random() * Math.floor(3000))
-                }
-            
-                if (message.search(/haha|hehe|hihi|hehe|\([:;]|\(-[:;]|[:;]\)|[:;]-\)/i) === 0) {
-                    let halTyper = setInterval( () => {
-                        io.to(socket.channel).emit('typing', {
-                            username : HAL + '@217.169.226.66'
-                        });
-                    }, 200);
-                    setTimeout( () => {
-                        clearInterval(halTyper);
-                        io.to(socket.channel).emit('new_message', {
-                            username: HAL,
-                            message: '(:'
-                        })
-                    }, Math.random() * Math.floor(3000))
-                }
-
-                if (message.search(/kut/i) !== -1) {
-                    let halTyper = setInterval( () => {
-                        io.to(socket.channel).emit('typing', {
-                            username : HAL + '@217.169.226.66'
-                        });
-                    }, 200);
-                    setTimeout( () => {
-                        clearInterval(halTyper);
-                        io.to(socket.channel).emit('new_message', {
-                            username: HAL,
-                            message: 'kut vagina'
-                        })
-                    }, Math.random() * Math.floor(3000))
-                }
-
-                if (message.search(/kan niet/i) !== -1) {
-                    let halTyper = setInterval( () => {
-                        io.to(socket.channel).emit('typing', {
-                            username : HAL + '@217.169.226.66'
-                        });
-                    }, 200);
-                    setTimeout( () => {
-                        clearInterval(halTyper);
-                        io.to(socket.channel).emit('new_message', {
-                            username: HAL,
-                            message: 'kan wel'
-                        })
-                    }, Math.random() * Math.floor(3000))
-                }
-
-                if (message.search(/hal/i) !== -1 &&
-                    response === false &&
-                    message.search(/hoeveel is|==\ /i) === -1) {
-                    let halTyper = setInterval( () => {
-                        io.to(socket.channel).emit('typing', {
-                            username : HAL + '@217.169.226.66'
-                        });
-                    }, 200);
-                    let msg = message;
-                    msg = message
-                        .replace(/,.*$/, '')
-                        .replace('ik vind je', 'ik vind jou')
-                        .replace('vindt je', 'vindt jou')
-                        .replace('vind je', 'vindt jou')
-                        .replace('weet je', 'weet jij')
-                        .replace('kan je', 'kan jij')
-                        .replace('met je', 'met jou')
-                        .replace('ben je', 'ben jij')
-                        .replace('aan je', 'aan jou')
-                        .replace('dat je', 'dat jij')
-                        .replace('je bent', 'jij bent')
-                        .replace('je hebt', 'jij hebt')
-                        .replace("you're", 'you are')
-                        .replace(/hey/i, '')
-                        .replace(/\s+$/, '') + '!'
-                    if (msg.search(/dank|thank|top|cool|ok dan|super|nice|gappie/i) !== -1) {
-                        let hearts = [ '💕', '❤️❤️', '😍', '💖💖', '🍺' ];
-                        msg = hearts[Math.floor(Math.random() * 5)];
-                    }
-                    if (msg.split(' ').length > 1) {
-                        msg = msg.replace(' ' + HAL, '').replace(HAL, '')
-                    } else {
-                        msg = msg.replace(HAL, shortUser)
-                    }
-                    if (msg === shortUser + '!') {
-                        msg = 'maak me gek..'
-                        if (Math.random() * 10 > 5) {
-                            msg = '🚬'
+                        if (msg === shortUser + '!') {
+                            msg = 'maak me gek..'
+                            if (Math.random() * 10 > 5) {
+                                msg = '🚬'
+                            }
                         }
+                        setTimeout( () => {
+                            clearInterval(halTyper);
+                            io.to(socket.channel).emit('new_message', {
+                                username: HAL,
+                                message: msg
+                            })
+                        }, Math.random() * Math.floor(3000))
                     }
-                    setTimeout( () => {
-                        clearInterval(halTyper);
-                        io.to(socket.channel).emit('new_message', {
-                            username: HAL,
-                            message: msg
-                        })
-                    }, Math.random() * Math.floor(3000))
-                }
 
-                if (message.search(/hoeveel is|==\ /i) !== -1) {
-                    let parser = new Parser();
-                    let expr;
-                    try {
-                        expr = parser.parse(message
-                            .replace(/.*hoeveel is|==\ /i, '')
-                            .replace(/hal/i, '')
-                            .replace('?', ''));
+                    if (message.search(/hoeveel is|==\ /i) !== -1) {
+                        let parser = new Parser();
+                        let expr;
+                        try {
+                            expr = parser.parse(message
+                                .replace(/.*hoeveel is|==\ /i, '')
+                                .replace(/hal/i, '')
+                                .replace('?', ''));
+                        }
+                        catch(error) {
+                            logger(error)
+                        }
+                        let result = 'niets';
+                        try {
+                            result = String(expr.evaluate({}))
+                        }
+                        catch(error) {
+                            logger(error)
+                        }
+                        if (result === 'true') {
+                            result = 'waar'
+                        }
+                        if (result === 'false') {
+                            result = 'niet waar'
+                        }
+                        let halTyper = setInterval( () => {
+                            io.to(socket.channel).emit('typing', {
+                                username : HAL + '@217.169.226.66'
+                            });
+                        }, 200);
+                        setTimeout( () => {
+                            clearInterval(halTyper);
+                            if (result === '666') result = 'satan (666)';
+                            io.to(socket.channel).emit('new_message', {
+                                username: HAL,
+                                message: 'dat is ' + result
+                            })
+                        }, Math.random() * Math.floor(3000))
                     }
-                    catch(error) {
-                        logger(error)
-                    }
-                    let result = 'niets';
-                    try {
-                        result = String(expr.evaluate({}))
-                    }
-                    catch(error) {
-                        logger(error)
-                    }
-                    if (result === 'true') {
-                        result = 'waar'
-                    }
-                    if (result === 'false') {
-                        result = 'niet waar'
-                    }
-                    let halTyper = setInterval( () => {
-                        io.to(socket.channel).emit('typing', {
-                            username : HAL + '@217.169.226.66'
-                        });
-                    }, 200);
-                    setTimeout( () => {
-                        clearInterval(halTyper);
-                        if (result === '666') result = 'satan (666)';
-                        io.to(socket.channel).emit('new_message', {
-                            username: HAL,
-                            message: 'dat is ' + result
-                        })
-                    }, Math.random() * Math.floor(3000))
-                }
-
+                }, Math.random() * 3000 + 2000) // wait a second
             }
         }
     });

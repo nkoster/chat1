@@ -514,15 +514,15 @@ io.on('connection', socket => {
             // HAL stuff
 
             if ( socket.channel === 'cheapchat' ) {
-                let emotions;
                 let response = false;
+                message = message.replace(',', ' ');
 
                 if (message.search(/hal|217\.169\.[23]/i) !== -1) {
                     let msg = {
                         message: shortUser,
                         username: HAL
                     };
-                    if (Math.random() * 100 > 75) {
+                    if (Math.random() * 100 > 50) {
                         msg.message += ' (:'
                     }
                     if (message.search(/time|tijd|laat|datum|date/i) !== -1) {
@@ -589,7 +589,7 @@ io.on('connection', socket => {
                     }, Math.random() * Math.floor(3000))
                 }
             
-                if (message.search(/haha|hehe|hihi|hehe/i) !== -1) {
+                if (message.search(/haha|hehe|hihi|hehe|\([:;]|\(-[:;]|[:;]\)|[:;]-\)/i) === 0) {
                     let halTyper = setInterval( () => {
                         io.to(socket.channel).emit('typing', {
                             username : HAL + '@217.169.226.66'
@@ -634,16 +634,8 @@ io.on('connection', socket => {
                     }, Math.random() * Math.floor(3000))
                 }
 
-                emotions = new RegExp([
-                    'lul|klootzak|hufter|lief|dom|slim|gek|',
-                    'slecht|boos|kwaad|gestoord|geil|homo|eik[eo]l|',
-                    'tering|flikker|mafkee[sz]|hoer|kanker|neuk|',
-                    'slet|bitch|slut|slet|ziek|sloer|vieze|vies'                    
-                ].join(), 'i');
-
                 if (message.search(/hal/i) !== -1 &&
                     response === false &&
-                    //message.search(emotions) !== -1 &&
                     message.search(/hoeveel is|==\ /i) === -1) {
                     let halTyper = setInterval( () => {
                         io.to(socket.channel).emit('typing', {
@@ -657,6 +649,7 @@ io.on('connection', socket => {
                         .replace('vindt je', 'vindt jou')
                         .replace('vind je', 'vindt jou')
                         .replace('weet je', 'weet jij')
+                        .replace('kan je', 'kan jij')
                         .replace('met je', 'met jou')
                         .replace('ben je', 'ben jij')
                         .replace('aan je', 'aan jou')
@@ -667,8 +660,8 @@ io.on('connection', socket => {
                         .replace(/hey/i, '')
                         .replace(/\s+$/, '') + '!'
                     if (msg.search(/dank|thank|top|cool|ok dan|super|nice|gappie/i) !== -1) {
-                        let hearts = [ '💕', '❤️❤️', '😍', '💖💖' ];
-                        msg = hearts[Math.floor(Math.random() * 4)];
+                        let hearts = [ '💕', '❤️❤️', '😍', '💖💖', '🍺' ];
+                        msg = hearts[Math.floor(Math.random() * 5)];
                     }
                     if (msg.split(' ').length > 1) {
                         msg = msg.replace(' ' + HAL, '').replace(HAL, '')
@@ -676,7 +669,10 @@ io.on('connection', socket => {
                         msg = msg.replace(HAL, shortUser)
                     }
                     if (msg === shortUser + '!') {
-                        msg = 'zeg het maar...'
+                        msg = 'maak me gek..'
+                        if (Math.random() * 10 > 5) {
+                            msg = '🚬'
+                        }
                     }
                     setTimeout( () => {
                         clearInterval(halTyper);

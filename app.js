@@ -678,7 +678,6 @@ io.on('connection', socket => {
                             .replace('je bent', 'jij bent')
                             .replace('je hebt', 'jij hebt')
                             .replace("you're", 'you are')
-                            //.replace(/\s+$/, '') + '!';
                         if (msg.search(/[A-Za-z]$/i) !== -1) {
                             msg += '!'
                         }
@@ -687,7 +686,7 @@ io.on('connection', socket => {
                         }
                         nice = new RegExp([
                             'dank|thank|top|cool|ok dan|super|',
-                            'nice|gap|vriend|thnx|tnx|hou van jou'                    
+                            'nice|gap|vriend|thnx|t[nh]x|hou van jou'                    
                         ].join(), 'i');
                         if (msg.search(nice) !== -1) {
                             let hearts = [ '💕', '❤️❤️', '😍', '💖💖', '🍺' ];
@@ -699,9 +698,9 @@ io.on('connection', socket => {
                             msg = msg.replace(HAL, shortUser)
                         }
                         if (msg === shortUser + '!') {
-                            msg = 'maak me gek..'
+                            msg = 'hey...'
                             if (Math.random() * 10 > 5) {
-                                msg = '🚬'
+                                msg = 'yo'
                             }
                         }
                         setTimeout( () => {

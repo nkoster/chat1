@@ -665,9 +665,11 @@ io.on('connection', socket => {
                         msg = message
                             .replace(/,.*$/, '')
                             .replace('ik vind je', 'ik vind jou')
+                            .replace('ik maak je', 'ik maak jou')
                             .replace('vindt je', 'vindt jou')
                             .replace('vind je', 'vindt jou')
                             .replace('weet je', 'weet jij')
+                            .replace('doe je', 'doe jij')
                             .replace('kan je', 'kan jij')
                             .replace('met je', 'met jou')
                             .replace('ben je', 'ben jij')
@@ -676,11 +678,18 @@ io.on('connection', socket => {
                             .replace('je bent', 'jij bent')
                             .replace('je hebt', 'jij hebt')
                             .replace("you're", 'you are')
-                            .replace(/\s+$/, '') + '!';
+                            //.replace(/\s+$/, '') + '!';
+                        if (msg.search(/[A-Za-z]$/i) !== -1) {
+                            msg += '!'
+                        }
                         if (msg.split(/\s+/).length > 2) {
                             msg = msg.replace(/hey/i, '')
                         }
-                        if (msg.search(/dank|thank|top|cool|ok dan|super|nice|gappie/i) !== -1) {
+                        nice = new RegExp([
+                            'dank|thank|top|cool|ok dan|super|',
+                            'nice|gap|vriend|thnx|tnx|hou van jou'                    
+                        ].join(), 'i');
+                        if (msg.search(nice) !== -1) {
                             let hearts = [ '💕', '❤️❤️', '😍', '💖💖', '🍺' ];
                             msg = hearts[Math.floor(Math.random() * 5)];
                         }

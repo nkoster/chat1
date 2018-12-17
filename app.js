@@ -535,7 +535,7 @@ io.on('connection', socket => {
                             msg.message = 'hey ' + shortUser + ', het is "' +
                                 moment + '" (' + Date.now() + ')'
                         }
-                        if (message.search(/217\.169\.[23]/i) !== -1) {
+                        if (message.search(/217\.169\.[23]|mivd|aivd|mindef\.nl|overheid/i) !== -1) {
                             response = true;
                             if (Math.random() * 100 <= 66) {
                                 msg.message = 'Leve de Koning, ' + user
@@ -593,7 +593,7 @@ io.on('connection', socket => {
                         }, Math.random() * Math.floor(3000))
                     }
                 
-                    if (message.search(/haha|hehe|hihi|hehe|\([:;]|\(-[:;]|[:;]\)|[:;]-\)/i) === 0) {
+                    if (message.search(/haha|hehe|hihi|hehe|[:;]D|\([:;]|\(-[:;]|[:;]\)|[:;]-\)/i) === 0) {
                         let halTyper = setInterval( () => {
                             io.to(socket.channel).emit('typing', {
                                 username : HAL + '@217.169.226.66'
@@ -623,7 +623,7 @@ io.on('connection', socket => {
                         }, Math.random() * Math.floor(3000))
                     }
 
-                    if (message.search(/tiet|tepel/i) !== -1) {
+                    if (message.search(/tiet|tepel|nippel|borst/i) !== -1) {
                         let halTyper = setInterval( () => {
                             io.to(socket.channel).emit('typing', {
                                 username : HAL + '@217.169.226.66'
@@ -675,6 +675,7 @@ io.on('connection', socket => {
                             .replace('ben je', 'ben jij')
                             .replace('aan je', 'aan jou')
                             .replace('dat je', 'dat jij')
+                            .replace('met me', 'met mij')
                             .replace('je bent', 'jij bent')
                             .replace('je hebt', 'jij hebt')
                             .replace("you're", 'you are')

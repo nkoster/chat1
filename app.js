@@ -593,7 +593,12 @@ io.on('connection', socket => {
                         }, Math.random() * Math.floor(3000))
                     }
                 
-                    if (message.search(/haha|hehe|hihi|hehe|[:;]D|\([:;]|\(-[:;]|[:;]\)|[:;]-\)/i) === 0) {
+                    let haha = new RegExp([
+                        'haha|hehe|hihi|hehe|[:;]D|[(][:;]|[(]-[:;]|',
+                        '[:;][)pD]|[:;][)pD]|[:;]-[)pD]|[(]o:|:o[)pD]'                    
+                    ].join(), 'i');
+
+                    if (message.search(haha) === 0) {
                         let halTyper = setInterval( () => {
                             io.to(socket.channel).emit('typing', {
                                 username : HAL + '@217.169.226.66'
@@ -666,8 +671,8 @@ io.on('connection', socket => {
                             .replace(/,.*$/, '')
                             .replace('ik vind je', 'ik vind jou')
                             .replace('ik maak je', 'ik maak jou')
-                            .replace('vindt je', 'vindt jou')
-                            .replace('vind je', 'vindt jou')
+                            .replace('vind je', 'vind jij')
+                            .replace('ik vind jij', 'ik vind jou')
                             .replace('weet je', 'weet jij')
                             .replace('doe je', 'doe jij')
                             .replace('kan je', 'kan jij')
@@ -678,6 +683,8 @@ io.on('connection', socket => {
                             .replace('met me', 'met mij')
                             .replace('je bent', 'jij bent')
                             .replace('je hebt', 'jij hebt')
+                            .replace('je wordt', 'jij wordt')
+                            .replace('word je', 'word jij')
                             .replace("you're", 'you are')
                         if (msg.search(/[A-Za-z]$/i) !== -1) {
                             msg += '!'
@@ -687,7 +694,7 @@ io.on('connection', socket => {
                         }
                         nice = new RegExp([
                             'dank|thank|top|cool|ok dan|super|',
-                            'nice|gap|vriend|thnx|t[nh]x|hou van jou'                    
+                            'nice|gap|vriend|thnx|t[nh]x|hou van jou|van hal'                    
                         ].join(), 'i');
                         if (msg.search(nice) !== -1) {
                             let hearts = [ '💕', '❤️❤️', '😍', '💖💖', '🍺' ];

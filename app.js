@@ -363,16 +363,22 @@ io.on('connection', socket => {
                 if (commands[0] === '/MSG') {
                     let msgUser = commands[1];
                     let msg = message.substring(message.indexOf(msgUser) + msgUser.length + 1);
-                    sockets.forEach(s => {
-                        if (typeof s.username !== "undefined")
-                            if (s.username.indexOf(socket.channel + '%%%%' + msgUser + '@') === 0) {
-                                s.emit('bold_message', {message: 'message from ' +
-                                    shortUser + ': ' + msg, username: ':'});
-                                socket.emit('bold_message', {message: 'message to ' +
-                                msgUser + ': ' + msg, username: ':'});
-                                logger('message "' + msg + '" to ' + s.username)
-                            }
-                    })
+                    if (msgUser === HAL) {
+                        socket.emit('bold_message', {message: 'message to ' +
+                            msgUser + ': ' + msg, username: ':'});
+                        socket.emit('bold_message', {message: 'message from hal: burp (:', username: ':'})
+                    } else {
+                        sockets.forEach(s => {
+                            if (typeof s.username !== "undefined")
+                                if (s.username.indexOf(socket.channel + '%%%%' + msgUser + '@') === 0) {
+                                    s.emit('bold_message', {message: 'message from ' +
+                                        shortUser + ': ' + msg, username: ':'});
+                                    socket.emit('bold_message', {message: 'message to ' +
+                                    msgUser + ': ' + msg, username: ':'});
+                                    logger('message "' + msg + '" to ' + s.username)
+                                }
+                        })
+                    }
                 }
                 if (commands[0] === '/KICK') {
                     if (socket.mode === '+') {
@@ -676,6 +682,7 @@ io.on('connection', socket => {
                             .replace('weet je', 'weet jij')
                             .replace('doe je', 'doe jij')
                             .replace('kan je', 'kan jij')
+                            .replace('mag je', 'mag jij')
                             .replace('met je', 'met jou')
                             .replace('ben je', 'ben jij')
                             .replace('aan je', 'aan jou')
@@ -684,6 +691,8 @@ io.on('connection', socket => {
                             .replace('je bent', 'jij bent')
                             .replace('je hebt', 'jij hebt')
                             .replace('je wordt', 'jij wordt')
+                            .replace('je mag', 'jij mag')
+                            .replace('je kan', 'jij kan')
                             .replace('word je', 'word jij')
                             .replace("you're", 'you are')
                         if (msg.search(/[A-Za-z]$/i) !== -1) {
@@ -706,7 +715,7 @@ io.on('connection', socket => {
                             msg = msg.replace(HAL, shortUser)
                         }
                         if (msg === shortUser + '!') {
-                            msg = 'hey...'
+                            msg = 'hey!'
                             if (Math.random() * 10 > 5) {
                                 msg = 'yo'
                             }

@@ -66,10 +66,14 @@ $(function() {
         if (!html) {
             m = urlify(msg.replace(/<(?:.|\n)*?>/gm, ''))
         }
+        //m = m.replace('(:', '\u1F600');
         chatroom.append('<div class="message" style="color:' + color + '"><span class="inside"><span class="mono">' + 
             myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b>  ' + 
             usr.replace(/<(?:.|\n)*?>/gm, '') + ':' + b1 + ' &nbsp; ' + 
-            m + b2 +'</span></div>');
+            m
+                .replace(':)', '😀')
+                .replace(/:P/i, '😋')
+            + b2 +'</span></div>');
         chatroom.scrollTop($('#chatroom')[0].scrollHeight)
         return
     }

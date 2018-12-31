@@ -5,7 +5,7 @@ var gutil = require('gulp-util');
 
 gulp.task('concat', function() {
 return gulp.src(['./js/jquery.min.js', './js/socket.io.js',
-    './js/chat.js', './js/drag.js'])
+    './js/emoji.js', './js/chat.js', './js/drag.js'])
     .pipe(concat('chat.js'))
     .pipe(uglify())
     .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })

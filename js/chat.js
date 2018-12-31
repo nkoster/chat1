@@ -97,7 +97,7 @@ $(function() {
     });
 
     socket.on("topic", function(data) {
-        topic.html(data.topic);
+        topic.html(emoji(data.topic));
     });
 
     socket.on('get_topic', function() {

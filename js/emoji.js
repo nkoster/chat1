@@ -511,6 +511,7 @@ function emoji(someString) {
         .replace(':newspaper:', '📰')
         .replace(':ng:', '🆖')
         .replace(':nine:', '9️⃣')
+        .replace(':nl:', '🇳🇱')
         .replace(':no_bell:', '🔕')
         .replace(':no_bicycles:', '🚳')
         .replace(':no_entry:', '⛔️')

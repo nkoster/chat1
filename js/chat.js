@@ -33,6 +33,7 @@ $(function() {
             '<pre>  /join &lt;channel&gt;            join a channel in a new tab</pre>',
             '<pre>  /msg &lt;user&gt; &lt;some text&gt;    send a private message to a user</pre>',
             '<pre>  /me &lt;some text&gt;            prints your name + some text in bold to the channel</pre>',
+            '<pre>  /clear                     clear the chat (client)</pre>',
             '<pre>  /beep                      set activity alarm</pre>',
             '<pre>  /lol                       prints "hahaha" to the channel</pre>',
             '<pre>----  operator commands</pre>',
@@ -150,6 +151,8 @@ $(function() {
                 var commands = message.val().split(' ');
                 var channel = commands[1];
                 window.open('https://cheapchat.nl/' + channel, '_blank');
+            } else if (message.val().split(' ')[0] === '/clear') {
+                chatroom.html('')
             } else if (message.val().split(' ')[0] === '/camera') {
                 var commands = message.val().split(' ');
                 var destUser = commands[1];

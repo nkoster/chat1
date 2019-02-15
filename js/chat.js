@@ -162,12 +162,30 @@ $(function() {
                         username: username.html()
                     });
                 chat('send video stream request to ' + destUser, ':', '#660', false, false)
+            } else if (message.val().split(' ')[0] === '/tl') {
+                var commands = message.val().split(' ');
+                var lang = commands[1];
+                var text = message.val().substring(('/tl ' + lang).length + 1);
+                tl(lang, text, socket);
             } else {
                 socket.emit('new_message', {message : message.val()})
             }
             message.val('')
         }
     });
+
+    function tl(lang, text, socket) {
+        function processRequest(e) {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                socket.emit('new_message', {message : xhr.responseText.split('"')[1]})
+            }
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' +
+        'nl' + '&tl=' + lang + '&dt=t&q=' + text, true);
+        xhr.send();
+        xhr.onreadystatechange = processRequest;
+    }
 
     socket.on('send_file_request', function(data) {
         if (!socket.sendFileLock) {

@@ -38,7 +38,7 @@ $(function() {
             '<pre>  /lol                       prints "hahaha" to the channel</pre>',
             '<pre>  /tl &lt;lang[,lang]&gt; &lt;text&gt;   translate &lt;text&gt; to &lt;lang&gt;, and from [,lang] (tnx Google!)</pre>',
             '<pre>      lang codes: https://sites.google.com/site/tomihasa/google-language-codes</pre>',
-            '<pre>      warning: when omitting [.lang], the default is "nl", dutch.</pre>',
+            '<pre>      warning: when omitting [,lang], the default is "nl", dutch.</pre>',
             '<pre>----  operator commands</pre>',
             '<pre>  /op &lt;user&gt;                 give operator status to a user</pre>',
             '<pre>  /deop &lt;user&gt;               remove operator status from a user</pre>',

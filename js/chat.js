@@ -177,12 +177,16 @@ $(function() {
     function tl(lang, text, socket) {
         function processRequest(e) {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                socket.emit('new_message', {message : xhr.responseText.split('"')[1]})
+                if (o === 'nl') {
+                    socket.emit('new_message', {message : xhr.responseText.split('"')[1]})
+                } else {
+                    chat(xhr.responseText.split('"')[1], ':', '#663', false, false)
+                }
             }
         }
         var xhr = new XMLHttpRequest();
-        var l = 'en';
         var o;
+        var l = 'en';
         if (lang.indexOf(',' > -1)) {
             o = lang.split(',')[1];
             l = lang.split(',')[0];

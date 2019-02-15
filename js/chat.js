@@ -181,8 +181,17 @@ $(function() {
             }
         }
         var xhr = new XMLHttpRequest();
+        var l = 'en';
+        var o;
+        if (lang.indexOf(',' > -1)) {
+            o = lang.split(',')[1];
+            l = lang.split(',')[0];
+        }
+        if (!o) {
+            o = 'nl'
+        }
         xhr.open('GET', 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' +
-        'nl' + '&tl=' + lang + '&dt=t&q=' + text, true);
+        o + '&tl=' + l + '&dt=t&q=' + text, true);
         xhr.send();
         xhr.onreadystatechange = processRequest;
     }

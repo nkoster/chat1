@@ -36,7 +36,7 @@ $(function() {
             '<pre>  /clear                     clear the chat (client)</pre>',
             '<pre>  /beep                      set activity alarm</pre>',
             '<pre>  /lol                       prints "hahaha" to the channel</pre>',
-            '<pre>  /tl &lt;lang[,lang]&gt; &lt;text&gt;   translate &lt;text&gt; to &lt;lang&gt;, and from [,lang] (tnx Google!)</pre>',
+            '<pre>  /tr &lt;lang[,lang]&gt; &lt;text&gt;   translate &lt;text&gt; to &lt;lang&gt;, and from [,lang] (tnx Google!)</pre>',
             '<pre>      lang codes: https://sites.google.com/site/tomihasa/google-language-codes</pre>',
             '<pre>      warning: when omitting [,lang], the default is "nl", dutch.</pre>',
             '<pre>----  operator commands</pre>',
@@ -165,11 +165,11 @@ $(function() {
                         username: username.html()
                     });
                 chat('send video stream request to ' + destUser, ':', '#660', false, false)
-            } else if (message.val().split(' ')[0] === '/tl') {
+            } else if (message.val().split(' ')[0] === '/tr') {
                 var commands = message.val().split(' ');
                 var lang = commands[1];
-                var text = message.val().substring(('/tl ' + lang).length + 1);
-                tl(lang, text, socket);
+                var text = message.val().substring(('/tr ' + lang).length + 1);
+                tr(lang, text, socket);
             } else {
                 socket.emit('new_message', {message : message.val()})
             }
@@ -177,7 +177,7 @@ $(function() {
         }
     });
 
-    function tl(lang, text, socket) {
+    function tr(lang, text, socket) {
         function processRequest(e) {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 if (o === 'nl') {

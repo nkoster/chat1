@@ -182,7 +182,7 @@ $(function() {
     function tr(lang, text, socket) {
         function processRequest(e) {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                if (!translateBack) {
+                if (o === 'nl') {
                     socket.emit('new_message', {message : xhr.responseText.split('"')[1]})
                 } else {
                     chat(xhr.responseText.split('"')[1], ':', '#663', false, false)
@@ -192,9 +192,7 @@ $(function() {
         var xhr = new XMLHttpRequest();
         var o;
         var l = 'en';
-        var translateBack = false;
         if (lang.indexOf(',' > -1)) {
-            translateBack = true;
             o = lang.split(',')[1];
             l = lang.split(',')[0];
         }

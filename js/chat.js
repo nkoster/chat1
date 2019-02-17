@@ -170,6 +170,8 @@ $(function() {
                 var lang = commands[1];
                 var text = message.val().substring(('/tr ' + lang).length + 1);
                 tr(lang, text, socket);
+            } else if (message.val().split(' ')[0] === '/save') {
+                chat('save chatroom to file', ':', '#660', false, false)
             } else {
                 socket.emit('new_message', {message : message.val()})
             }
@@ -180,7 +182,7 @@ $(function() {
     function tr(lang, text, socket) {
         function processRequest(e) {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                if (o === 'nl') {
+                if (!translateBack) {
                     socket.emit('new_message', {message : xhr.responseText.split('"')[1]})
                 } else {
                     chat(xhr.responseText.split('"')[1], ':', '#663', false, false)
@@ -190,7 +192,9 @@ $(function() {
         var xhr = new XMLHttpRequest();
         var o;
         var l = 'en';
+        var translateBack = false;
         if (lang.indexOf(',' > -1)) {
+            translateBack = true;
             o = lang.split(',')[1];
             l = lang.split(',')[0];
         }

@@ -184,12 +184,18 @@ $(function() {
             message.val('');
         }
         if (event.keyCode === 38) {
-            if (messageBufferIndex > 0) messageBufferIndex -= 1;
+            //if (messageBufferIndex > 0) messageBufferIndex -= 1;
             message.val(messageBuffer[messageBufferIndex]);
+            if (messageBufferIndex > 0) messageBufferIndex -= 1;
         }
         if (event.keyCode === 40) {
-            if (messageBufferIndex < messageBuffer.length - 1) messageBufferIndex += 1;
-            message.val(messageBuffer[messageBufferIndex])
+            if (messageBufferIndex < messageBuffer.length - 1) {
+                messageBufferIndex += 1;
+                message.val(messageBuffer[messageBufferIndex])
+            } else {
+                messageBufferIndex = messageBuffer.length - 1;
+                message.val('')    
+            }
         }
         if (event.keyCode === 27) {
             messageBufferIndex = messageBuffer.length - 1;

@@ -191,6 +191,11 @@ $(function() {
             if (messageBufferIndex < messageBuffer.length - 1) messageBufferIndex += 1;
             message.val(messageBuffer[messageBufferIndex])
         }
+        if (event.keyCode === 27) {
+            messageBufferIndex = messageBuffer.length - 1;
+            message.val('')
+        }
+
     });
 
     function tr(lang, text, socket) {

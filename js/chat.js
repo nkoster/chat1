@@ -16,6 +16,8 @@ $(function() {
         cheap = $('#cheap'),
         channel = $('#channel'),
         message = $('#message'),
+        messageBuffer = [],
+        messageBufferIndex = 0,
         username = $('#username'),
         send_message = $('#send_message'),
         chatroom = $('#chatroom'),
@@ -130,6 +132,8 @@ $(function() {
     message.bind("keyup", function(event) {
         event.preventDefault();
         if (event.keyCode === 13 && message.val() !== '') {
+            messageBufferIndex = messageBuffer.length;
+            messageBuffer.push(message.val());
             if (message.val() === '/help') {
                 help.forEach(function(h) {
                     chat(h, ':', '#052', false, true)
@@ -172,10 +176,20 @@ $(function() {
                 tr(lang, text, socket);
             } else if (message.val().split(' ')[0] === '/save') {
                 chat('save chatroom to file', ':', '#660', false, false)
+            } else if (message.val().split(' ')[0] === '/wtf') {
+                socket.emit('wtf')
             } else {
                 socket.emit('new_message', {message : message.val()})
             }
-            message.val('')
+            message.val('');
+        }
+        if (event.keyCode === 38) {
+            if (messageBufferIndex > 0) messageBufferIndex -= 1;
+            message.val(messageBuffer[messageBufferIndex]);
+        }
+        if (event.keyCode === 40) {
+            if (messageBufferIndex < messageBuffer.length - 1) messageBufferIndex += 1;
+            message.val(messageBuffer[messageBufferIndex])
         }
     });
 

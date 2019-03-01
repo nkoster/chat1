@@ -361,11 +361,7 @@ io.on('connection', socket => {
                 }
             }
             if (commands[0] === '/TOPIC' && commands.length === 1) {
-                socket.emit('server_message',
-                    {
-                        message : socket.channel + ' topic: "' + socket.topic + '"',
-                        username : ':'
-                    })
+                socket.emit('show_topic', '')
             }
             if (commands[0] === '/MSG' && commands.length > 1) {
                 let msgUser = commands[1];

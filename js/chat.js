@@ -230,6 +230,10 @@ $(function() {
         xhr.onreadystatechange = processRequest;
     }
 
+    socket.on('show_topic', function(data) {
+        chat('topic: ' + topic.html(), ':', '#666', false, false)
+    });
+    
     socket.on('send_file_request', function(data) {
         if (!socket.sendFileLock) {
             socket.sendFileLock = true;

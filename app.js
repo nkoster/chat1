@@ -341,172 +341,178 @@ io.on('connection', socket => {
             if (commands[0] === '/LOL') {
                 io.to(socket.channel).emit('new_message', {message : 'hahaha', username : shortUser});
             }
-            if (commands.length > 1) {
-                if (commands[0] === '/ME') {
-                    io.to(socket.channel).emit('bold_message',
-                     {message : shortUser + ' ' + message.substring(4), username : ':'});
+            if (commands[0] === '/ME' && commands.length > 1) {
+                io.to(socket.channel).emit('bold_message',
+                    {message : shortUser + ' ' + message.substring(4), username : ':'});
+            }
+            if (commands[0] === '/TOPIC' && commands.length > 1) {
+                let topic = message.substring(7, TOPIC_MAX_LENGTH);
+                if (socket.mode === '+' || commands[2] === operKey) {
+                    socket.topic = topic;
+                    io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'});
+                    io.to(socket.channel).emit('server_message',
+                    {message : shortUser + ' changed topic to "' + socket.topic + '"', username : ':'});
+                } else {
+                    socket.emit('server_message',
+                    {
+                        message : 'you need to be an operator for this',
+                        username : ':'
+                    })
                 }
-                if (commands[0] === '/TOPIC') {
-                    if (socket.mode === '+' || commands[2] === operKey) {
-                        socket.topic = message.substring(7, TOPIC_MAX_LENGTH);
-                        io.to(socket.channel).emit('topic', {topic : socket.topic, username : ':'});
-                        io.to(socket.channel).emit('server_message',
-                        {message : shortUser + ' changed topic to "' + socket.topic + '"', username : ':'});
-                    } else {
-                        socket.emit('server_message',
-                        {
-                            message : 'you need to be an operator for this',
-                            username : ':'
-                        })
-                    }
+            }
+            if (commands[0] === '/TOPIC' && commands.length === 1) {
+                socket.emit('server_message',
+                    {
+                        message : socket.channel + ' topic: "' + socket.topic + '"',
+                        username : ':'
+                    })
+            }
+            if (commands[0] === '/MSG' && commands.length > 1) {
+                let msgUser = commands[1];
+                let msg = message.substring(message.indexOf(msgUser) + msgUser.length + 1);
+                if (msgUser === HAL) {
+                    socket.emit('bold_message', {message: 'message to ' +
+                        msgUser + ': ' + msg, username: ':'});
+                    socket.emit('bold_message', {message: 'message from hal: burp (:', username: ':'})
+                } else {
+                    sockets.forEach(s => {
+                        if (typeof s.username !== "undefined")
+                            if (s.username.indexOf(socket.channel + '%%%%' + msgUser + '@') === 0) {
+                                s.emit('bold_message', {message: 'message from ' +
+                                    shortUser + ': ' + msg, username: ':'});
+                                socket.emit('bold_message', {message: 'message to ' +
+                                msgUser + ': ' + msg, username: ':'});
+                                logger('message "' + msg + '" to ' + s.username)
+                            }
+                    })
                 }
-                if (commands[0] === '/MSG') {
-                    let msgUser = commands[1];
-                    let msg = message.substring(message.indexOf(msgUser) + msgUser.length + 1);
-                    if (msgUser === HAL) {
-                        socket.emit('bold_message', {message: 'message to ' +
-                            msgUser + ': ' + msg, username: ':'});
-                        socket.emit('bold_message', {message: 'message from hal: burp (:', username: ':'})
-                    } else {
-                        sockets.forEach(s => {
-                            if (typeof s.username !== "undefined")
-                                if (s.username.indexOf(socket.channel + '%%%%' + msgUser + '@') === 0) {
-                                    s.emit('bold_message', {message: 'message from ' +
-                                        shortUser + ': ' + msg, username: ':'});
-                                    socket.emit('bold_message', {message: 'message to ' +
-                                    msgUser + ': ' + msg, username: ':'});
-                                    logger('message "' + msg + '" to ' + s.username)
-                                }
-                        })
-                    }
-                }
-                if (commands[0] === '/KICK') {
-                    if (socket.mode === '+') {
-                        let kickedUser = commands[1];
-                        let msg = '';
-                        if (commands.length > 2)
-                            msg = ': ' + message.substring(7 + kickedUser.length);
+            }
+            if (commands[0] === '/KICK' && commands.length > 1) {
+                if (socket.mode === '+') {
+                    let kickedUser = commands[1];
+                    let msg = '';
+                    if (commands.length > 2)
+                        msg = ': ' + message.substring(7 + kickedUser.length);
 
-                        for (let i=0; i<sockets.length; i++) {
-                            if (typeof sockets[i].username !== "undefined") {
-                                if (sockets[i].username.indexOf(socket.channel + '%%%%' + kickedUser) === 0) {
-                                    io.to(socket.channel).emit('server_message',
-                                    {message : shortUser + ' kicks ' + kickedUser +
-                                        ' from channel ' + socket.channel + msg,
-                                        username : ':'});
-                                    sockets[i].disconnect();
-                                    logger(shortUser + ' kicks ' + kickedUser);
-                                }
+                    for (let i=0; i<sockets.length; i++) {
+                        if (typeof sockets[i].username !== "undefined") {
+                            if (sockets[i].username.indexOf(socket.channel + '%%%%' + kickedUser) === 0) {
+                                io.to(socket.channel).emit('server_message',
+                                {message : shortUser + ' kicks ' + kickedUser +
+                                    ' from channel ' + socket.channel + msg,
+                                    username : ':'});
+                                sockets[i].disconnect();
+                                logger(shortUser + ' kicks ' + kickedUser);
                             }
                         }
-                    } else {
-                        logger('Wrong mode!! ' + socket.username)
                     }
+                } else {
+                    logger('Wrong mode!! ' + socket.username)
                 }
-                if (commands[0] === '/BAN') {
-                    if (socket.mode === '+' || commands[2] === operKey) {
-                        let bannedUser = commands[1];
-                        for (let i=0; i<sockets.length; i++) {
-                            if (typeof sockets[i].username !== "undefined") {
-                                if (sockets[i].username.indexOf(socket.channel + '%%%%' + bannedUser) === 0) {
-                                    sockets[i].banned = true;
-                                    banned.push(sockets[i].handshake.headers['x-real-ip'] +
-                                        '@' + socket.channel)
-                                    io.to(socket.channel).emit('server_message',
-                                    {message : shortUser + ' bans ' + sockets[i].handshake.headers['x-real-ip'] + '@' +
-                                        socket.channel + ' (' + bannedUser + ')',
-                                        username : ':'});
-                                    sockets[i].disconnect();
-                                    logger(shortUser + ' bans ' + bannedUser);
-                                    logger(banned);
-                                }
+            }
+            if (commands[0] === '/BAN' && commands.length > 1) {
+                if (socket.mode === '+' || commands[2] === operKey) {
+                    let bannedUser = commands[1];
+                    for (let i=0; i<sockets.length; i++) {
+                        if (typeof sockets[i].username !== "undefined") {
+                            if (sockets[i].username.indexOf(socket.channel + '%%%%' + bannedUser) === 0) {
+                                sockets[i].banned = true;
+                                banned.push(sockets[i].handshake.headers['x-real-ip'] +
+                                    '@' + socket.channel)
+                                io.to(socket.channel).emit('server_message',
+                                {message : shortUser + ' bans ' + sockets[i].handshake.headers['x-real-ip'] + '@' +
+                                    socket.channel + ' (' + bannedUser + ')',
+                                    username : ':'});
+                                sockets[i].disconnect();
+                                logger(shortUser + ' bans ' + bannedUser);
+                                logger(banned);
                             }
                         }
-                    } else {
-                        logger('Wrong mode!! ' + socket.username)
                     }
+                } else {
+                    logger('Wrong mode!! ' + socket.username)
                 }
-                if (commands[0] === '/UNBAN') {
-                    if (socket.mode === '+' || commands[2] === operKey) {
-                        let unBannedUser = commands[1];
-                        if (banned.indexOf(unBannedUser) === 0) {
-                            banned.splice(banned.indexOf(unBannedUser), 1);
+            }
+            if (commands[0] === '/UNBAN' && commands.length > 1) {
+                if (socket.mode === '+' || commands[2] === operKey) {
+                    let unBannedUser = commands[1];
+                    if (banned.indexOf(unBannedUser) === 0) {
+                        banned.splice(banned.indexOf(unBannedUser), 1);
+                        io.to(socket.channel).emit('server_message',
+                        {message : shortUser + ' unbans ' + unBannedUser,
+                            username : ':'});
+                        logger(shortUser + ' unbans ' + unBannedUser);
+                        logger(banned);
+                    }
+                } else {
+                    logger('Wrong mode!! ' + socket.username)
+                }
+            }
+            if (commands[0] === '/DEOP' && commands.length > 1) {
+                if (socket.mode === '+' || commands[2] === operKey) {
+                    let deopUser = commands[1];
+                    for (i=0; i<users.length; i++) {
+                        if (users[i].indexOf(socket.channel + '%%%%' + deopUser) === 0) {
+                            logger(shortUser + ' deops ' + deopUser);
+                            users[i] = users[i].substring(0, users[i].length - 1) + '-';
                             io.to(socket.channel).emit('server_message',
-                            {message : shortUser + ' unbans ' + unBannedUser,
-                                username : ':'});
-                            logger(shortUser + ' unbans ' + unBannedUser);
-                            logger(banned);
-                        }
-                    } else {
-                        logger('Wrong mode!! ' + socket.username)
-                    }
-                }
-                if (commands[0] === '/DEOP') {
-                    if (socket.mode === '+' || commands[2] === operKey) {
-                        let deopUser = commands[1];
-                        for (i=0; i<users.length; i++) {
-                            if (users[i].indexOf(socket.channel + '%%%%' + deopUser) === 0) {
-                                logger(shortUser + ' deops ' + deopUser);
-                                users[i] = users[i].substring(0, users[i].length - 1) + '-';
-                                io.to(socket.channel).emit('server_message',
-                                    {message : shortUser + ' removes operator status from ' +
-                                    deopUser, username : ':'});
-                                let u = [];
-                                for (let i=0; i<users.length; i++) {
-                                    if (users[i].indexOf(socket.channel) === 0) {
-                                        u[i] = users[i].split('%%%%')[1];
-                                        if (users[i].split('%%%%')[2] === '+') {
-                                            u[i] = '@' + u[i]
-                                        }
+                                {message : shortUser + ' removes operator status from ' +
+                                deopUser, username : ':'});
+                            let u = [];
+                            for (let i=0; i<users.length; i++) {
+                                if (users[i].indexOf(socket.channel) === 0) {
+                                    u[i] = users[i].split('%%%%')[1];
+                                    if (users[i].split('%%%%')[2] === '+') {
+                                        u[i] = '@' + u[i]
                                     }
                                 }
-                                io.to(socket.channel).emit('update_userlist', {userlist : u});
-                                sockets.forEach(s => {
-                                    if (typeof s.username !== "undefined")
-                                        if (s.username.indexOf(socket.channel + '%%%%' + deopUser + '@') === 0) {
-                                            s.mode = '-';
-                                            s.username = s.username.substring(0, s.username.length - 1) + '-'; 
-                                        }
-                                })            
-                            } 
-                        }
-                    } else {
-                        logger('Wrong mode!! '+ socket.username)
+                            }
+                            io.to(socket.channel).emit('update_userlist', {userlist : u});
+                            sockets.forEach(s => {
+                                if (typeof s.username !== "undefined")
+                                    if (s.username.indexOf(socket.channel + '%%%%' + deopUser + '@') === 0) {
+                                        s.mode = '-';
+                                        s.username = s.username.substring(0, s.username.length - 1) + '-'; 
+                                    }
+                            })            
+                        } 
                     }
+                } else {
+                    logger('Wrong mode!! '+ socket.username)
                 }
-                if (commands[0] === '/OP') {
-                    if (socket.mode === '+' || commands[2] === operKey) {
-                        let opUser = commands[1];
-                        for (i=0; i<users.length; i++) {
-                            if (users[i].indexOf(socket.channel + '%%%%' + opUser) === 0) {
-                                logger(shortUser + ' ops ' + opUser);
-                                users[i] = users[i].substring(0, users[i].length - 1) + '+';
-                                io.to(socket.channel).emit('server_message',
-                                    {message : shortUser + ' gives operator status to ' +
-                                    opUser, username : ':'});
-                                let u = [];
-                                for (let i=0; i<users.length; i++) {
-                                    if (users[i].indexOf(socket.channel) === 0) {
-                                        u[i] = users[i].split('%%%%')[1];
-                                        if (users[i].split('%%%%')[2] === '+') {
-                                            u[i] = '@' + u[i]
-                                        }
+            }
+            if (commands[0] === '/OP' && commands.length > 1) {
+                if (socket.mode === '+' || commands[2] === operKey) {
+                    let opUser = commands[1];
+                    for (i=0; i<users.length; i++) {
+                        if (users[i].indexOf(socket.channel + '%%%%' + opUser) === 0) {
+                            logger(shortUser + ' ops ' + opUser);
+                            users[i] = users[i].substring(0, users[i].length - 1) + '+';
+                            io.to(socket.channel).emit('server_message',
+                                {message : shortUser + ' gives operator status to ' +
+                                opUser, username : ':'});
+                            let u = [];
+                            for (let i=0; i<users.length; i++) {
+                                if (users[i].indexOf(socket.channel) === 0) {
+                                    u[i] = users[i].split('%%%%')[1];
+                                    if (users[i].split('%%%%')[2] === '+') {
+                                        u[i] = '@' + u[i]
                                     }
                                 }
-                                io.to(socket.channel).emit('update_userlist', {userlist : u});
-                                sockets.forEach(s => {
-                                    if (typeof s.username !== "undefined")
-                                        if (s.username.indexOf(socket.channel + '%%%%' + opUser + '@') === 0) {
-                                            s.mode = '+';
-                                            s.username = s.username.substring(0, s.username.length - 1) + '+'; 
-                                        }
-                                })            
-                            } 
-                        }
-                        console.log(users)
-                    } else {
-                        logger('Wrong mode!! '+ socket.username)
+                            }
+                            io.to(socket.channel).emit('update_userlist', {userlist : u});
+                            sockets.forEach(s => {
+                                if (typeof s.username !== "undefined")
+                                    if (s.username.indexOf(socket.channel + '%%%%' + opUser + '@') === 0) {
+                                        s.mode = '+';
+                                        s.username = s.username.substring(0, s.username.length - 1) + '+'; 
+                                    }
+                            })            
+                        } 
                     }
+                    console.log(users)
+                } else {
+                    logger('Wrong mode!! '+ socket.username)
                 }
             }
         } else {

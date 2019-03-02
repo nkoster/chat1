@@ -231,7 +231,7 @@ $(function() {
     }
 
     socket.on('show_topic', function(data) {
-        chat('topic: ' + topic.html(), ':', '#666', false, false)
+        chat(channel.text() + ' topic: ' + topic.text(), ':', '#666', false, false)
     });
     
     socket.on('send_file_request', function(data) {

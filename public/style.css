@@ -49,7 +49,7 @@ input {
     left: 0;
     right: 0;
     height: 30px;
-    background: #666;
+    background: black;
     border-bottom: 2px solid #333;
 }
 
@@ -153,29 +153,32 @@ input#message {
 #channel, #picture, #topic, #username {
     display: inline-block;
     padding: 5px;
-    vertical-align: middle;
+    vertical-aligsn: middle;
     font-size: 16px;
     font-weight: bold;
     color: #ccc;
     border: none;
-    background: #666;
+    background: black;
     white-space: nowrap;
     height: 24px;
 }
 
 #picture {
-    margin-top: 1px;
+    float: left;
+    /* margin-top: 1px; */
 }
 
 #channel {
+    float: left;
     margin-left: 5px;
     margin-bottom: 2px;
 }
 
 #topic {
     font-size: 80%;
+    float: left;
     color: #eee;
-    vertical-align: middle;
+    /* vertical-align: middle; */
     margin-top: 3px;
 }
 

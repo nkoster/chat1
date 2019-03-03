@@ -153,7 +153,7 @@ input#message {
 #channel, #picture, #topic, #username {
     display: inline-block;
     padding: 5px;
-    vertical-aligsn: middle;
+    vertical-align: middle;
     font-size: 16px;
     font-weight: bold;
     color: #ccc;
@@ -165,7 +165,6 @@ input#message {
 
 #picture {
     float: left;
-    /* margin-top: 1px; */
 }
 
 #channel {
@@ -178,7 +177,6 @@ input#message {
     font-size: 80%;
     float: left;
     color: #eee;
-    /* vertical-align: middle; */
     margin-top: 3px;
 }
 

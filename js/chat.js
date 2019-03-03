@@ -643,6 +643,20 @@ $(function() {
         }, 3000)
     }, 0.5);
 
+    document.getElementById('message').onblur = function() {
+        this.style.transition = 'all 0.5s ease-in-out';
+        this.parentElement.style.transition = 'all 0.5s ease-in-out'
+        this.style.background = '#ccc';
+        this.parentElement.style.background = '#ccc'
+    }
+
+    document.getElementById('message').onfocus = function() {
+        this.style.transition = 'all 0.5s ease-in-out';
+        this.parentElement.style.transition = 'all 0.5s ease-in-out'
+        this.style.background = '#ffffff';
+        this.parentElement.style.background = '#ffffff'
+    }
+
     message.focus()
 
 });

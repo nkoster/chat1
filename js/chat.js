@@ -645,16 +645,20 @@ $(function() {
 
     document.getElementById('message').onblur = function() {
         this.style.transition = 'all 0.5s ease-in-out';
-        this.parentElement.style.transition = 'all 0.5s ease-in-out'
+        this.parentElement.style.transition = 'all 0.3s ease-in-out'
         this.style.background = '#ccc';
-        this.parentElement.style.background = '#ccc'
+        this.parentElement.style.background = '#ccc';
+        this.parentElement.style.boxShadow = '0 0px 4px rgba(0,0,0,.4)';
+        this.parentElement.style.height = '30px'
     }
 
     document.getElementById('message').onfocus = function() {
         this.style.transition = 'all 0.5s ease-in-out';
-        this.parentElement.style.transition = 'all 0.5s ease-in-out'
+        this.parentElement.style.transition = 'all 0.2s ease-in-out'
         this.style.background = '#ffffff';
-        this.parentElement.style.background = '#ffffff'
+        this.parentElement.style.background = '#ffffff';
+        this.parentElement.style.boxShadow = '0 -2px 4px rgba(0,0,0,.4)';
+        this.parentElement.style.height = '31px'
     }
 
     message.focus()

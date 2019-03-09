@@ -166,6 +166,7 @@ input#message {
 
 #picture {
     float: left;
+    width: 27px;
 }
 
 #channel {

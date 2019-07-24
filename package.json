@@ -13,13 +13,15 @@
     "ejs": "^2.5.7",
     "expr-eval": "^1.2.2",
     "express": "^4.16.2",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
     "gulp-util": "^3.0.8",
+    "gulplog": "^1.0.0",
+    "has-gulplog": "^0.1.0",
     "nodemon": "^1.14.3",
     "socket.io": "^2.0.4"
   },
   "devDependencies": {
-    "gulp-uglify": "^3.0.1"
+    "gulp-uglify": "^3.0.2"
   }
 }

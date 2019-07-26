@@ -21,7 +21,8 @@ let
     queryUser = '',
     queryChannel = '',
     sockets = [],
-    operKey = '';
+    operKey = '',
+    theDay;
 
 fs.readFile('operkey', 'utf8', (err, data) => {
     if (err) throw err;
@@ -888,5 +889,27 @@ io.on('connection', socket => {
     })
 
 });
+
+function dayChanged() {
+    if (theDay != new Date().getDay()) {
+        theDay = new Date().getDay()
+        return true
+    }
+    return false
+}
+
+setInterval(function() {
+    if (dayChanged()) {
+        logger('Day changed')
+        d = new Date().toDateString()
+        io.emit('server_message', {
+            message : 'it\'s now ' + [
+                'sunday', 'monday', 'tuesday', 'wednesday',
+                'thursday', 'friday', 'saturday' ][theDay] +
+                ' ' + d.substr(d.indexOf(' ') + 1).toLowerCase(),
+            username : ':'
+        })
+    }
+}, 10000)
 
 logger('Server listening at TCP port 9999');

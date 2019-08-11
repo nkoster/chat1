@@ -71,13 +71,20 @@ $(function() {
         }
         if (!html) {
             m = urlify(msg.replace(/<(?:.|\n)*?>/gm, ''))
+            m = emoji(m);
+            chatroom.append('<div class="message" style="color:' + color +
+                '"><span class="inside"><span class="mono">' + 
+                myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b>  ' + 
+                usr.replace(/<(?:.|\n)*?>/gm, '') +
+                ':' + b1 + ' &nbsp; ' + 
+                m + b2 +'</span></div>');
+        } else {
+            chatroom.append('<div class="message" style="color:' + color +
+                '"><span class="inside"><span class="mono">' + 
+                myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; ' + 
+                //usr.replace(/<(?:.|\n)*?>/gm, '') +
+                ': ' + ' &nbsp; ' + m +'</span></div>');
         }
-        m = emoji(m);
-        chatroom.append('<div class="message" style="color:' + color +
-            '"><span class="inside"><span class="mono">' + 
-            myDate.toString().split(/\s+/).slice(4,5) + '</span> &nbsp; <b>  ' + 
-            usr.replace(/<(?:.|\n)*?>/gm, '') + ':' + b1 + ' &nbsp; ' + 
-            m + b2 +'</span></div>');
         chatroom.scrollTop($('#chatroom')[0].scrollHeight)
         return
     }
@@ -101,6 +108,13 @@ $(function() {
             chat(data.message, data.username, '#043', true, false)
         }
     });
+
+    socket.on('html_message', function(data) {
+        checkAlarm()
+        if (typeof data.username != 'undefined') {
+            chat(data.message, data.username, '#043', false, true)
+        }
+    })
 
     socket.on("topic", function(data) {
         topic.html(emoji(data.topic));
@@ -129,11 +143,13 @@ $(function() {
         socket.emit('typing', { username: username.html() });
     });
 
-    message.bind("keyup", function(event) {
+    message.bind('keyup', function(event) {
         event.preventDefault();
         if (event.keyCode === 13 && message.val() !== '') {
-            messageBufferIndex = messageBuffer.length;
-            messageBuffer.push(message.val());
+            messageBuffer[messageBuffer.length - 1] = message.val()
+            messageBuffer.push('')
+            //message.val('')
+            messageBufferIndex = messageBuffer.length - 1
             if (message.val() === '/help') {
                 help.forEach(function(h) {
                     chat(h, ':', '#052', false, true)
@@ -183,25 +199,27 @@ $(function() {
             }
             message.val('');
         }
+        // arrow up
         if (event.keyCode === 38) {
-            //if (messageBufferIndex > 0) messageBufferIndex -= 1;
-            message.val(messageBuffer[messageBufferIndex]);
-            if (messageBufferIndex > 0) messageBufferIndex -= 1;
+            if (messageBufferIndex > 0) messageBufferIndex--
+            message.val(messageBuffer[messageBufferIndex])
         }
+        // arrow down
         if (event.keyCode === 40) {
             if (messageBufferIndex < messageBuffer.length - 1) {
-                messageBufferIndex += 1;
-                message.val(messageBuffer[messageBufferIndex])
-            } else {
-                messageBufferIndex = messageBuffer.length - 1;
-                message.val('')    
+                messageBufferIndex++
+                message.val(messageBuffer[messageBufferIndex])  
             }
         }
         if (event.keyCode === 27) {
             messageBufferIndex = messageBuffer.length - 1;
             message.val('')
         }
+        if (event.keyCode === 8 ) {
+            // to do tab
 
+        }
+        messageBuffer[messageBufferIndex] = message.val()
     });
 
     function tr(lang, text, socket) {

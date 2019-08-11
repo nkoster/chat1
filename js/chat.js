@@ -211,11 +211,13 @@ $(function() {
                 message.val(messageBuffer[messageBufferIndex])  
             }
         }
+        // escape
         if (event.keyCode === 27) {
             messageBufferIndex = messageBuffer.length - 1;
             message.val('')
         }
-        if (event.keyCode === 8 ) {
+        // tab
+        if (event.keyCode === 9 ) {
             // to do tab
 
         }

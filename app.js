@@ -333,7 +333,7 @@ io.on('connection', socket => {
         let message = data.message;
         let user = socket.username.split('%%%%')[1];
         let shortUser = user.substring(0, user.lastIndexOf('@'));
-        message = message.replace(/<(?:.|\n)*?>/gm, '').trim();
+        //message = message.replace(/<(?:.|\n)*?>/gm, '').trim();
         if (message === '') return false;
         if (message[0] === '/') {
             logger('command: ' + message);
@@ -713,9 +713,10 @@ io.on('connection', socket => {
                             msg = hearts[Math.floor(Math.random() * 5)];
                         }
                         if (msg.split(' ').length > 1) {
-                            msg = msg.replace(' ' + HAL, '').replace(HAL, '')
+                            // msg = msg.replace(' ' + HAL, '').replace(HAL, '')
+                            msg = msg.replace(HAL,'*' + HAL + '*')
                         } else {
-                            msg = msg.replace(HAL, shortUser)
+                            msg = msg.replace(HAL, '<b>' + shortUser + '<b>')
                         }
                         if (msg === shortUser + '!') {
                             msg = 'hey!'

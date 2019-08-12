@@ -145,7 +145,7 @@ io.on('connection', socket => {
 
         socket.emit('server_message',
             {
-                message : 'cheapchat 0.2-beta (stuff will break)',
+                message : 'cheapchat 0.3-beta (stuff will break)',
                 username : ':'
             });
 

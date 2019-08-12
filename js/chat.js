@@ -143,9 +143,13 @@ $(function() {
         socket.emit('typing', { username: username.html() });
     });
 
-    message.bind('keyup', function(event) {
-        event.preventDefault();
+    message.bind('keyup', function() {
+        messageBuffer[messageBufferIndex] = message.val()
+    })
+    
+    message.bind('keydown', function(event) {
         if (event.keyCode === 13 && message.val() !== '') {
+            event.preventDefault();
             messageBuffer[messageBuffer.length - 1] = message.val()
             messageBuffer.push('')
             //message.val('')
@@ -218,8 +222,7 @@ $(function() {
         }
         // tab
         if (event.keyCode === 9 ) {
-            // to do tab
-
+            event.preventDefault()
         }
         messageBuffer[messageBufferIndex] = message.val()
     });

@@ -698,9 +698,9 @@ io.on('connection', socket => {
                             .replace('je kan', 'jij kan')
                             .replace('word je', 'word jij')
                             .replace("you're", 'you are')
-                        if (msg.search(/[A-Za-z]$/i) !== -1) {
-                            msg += '!'
-                        }
+                        // if (msg.search(/[A-Za-z]$/i) !== -1) {
+                        //     msg += '!'
+                        // }
                         if (msg.split(/\s+/).length > 2) {
                             msg = msg.replace(/hey/i, '')
                         }
@@ -714,9 +714,9 @@ io.on('connection', socket => {
                         }
                         if (msg.split(' ').length > 1) {
                             // msg = msg.replace(' ' + HAL, '').replace(HAL, '')
-                            msg = msg.replace(HAL,'*' + HAL + '*')
+                            msg = msg.replace(HAL,' (: ')
                         } else {
-                            msg = msg.replace(HAL, '<b>' + shortUser + '<b>')
+                            msg = msg.replace(HAL, ' (: ')
                         }
                         if (msg === shortUser + '!') {
                             msg = 'hey!'

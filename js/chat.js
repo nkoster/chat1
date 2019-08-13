@@ -232,7 +232,12 @@ $(function() {
             var searchInput = messageWords[messageWords.length -1]
             var user = []
             socket.users.forEach(function(element) {
-                if (element.includes(searchInput)) user.push(element)
+                if (element.includes(searchInput)) {
+                    if (element[0] === '@')
+                        user.push(element.substring(1))
+                    else
+                        user.push(element)
+                }
             })
             if (user.length === 1) {
                 messageWords[messageWords.length - 1] = user[0]

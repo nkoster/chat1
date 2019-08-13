@@ -660,18 +660,18 @@ $(function() {
         }
     }
 
-    $(function() {
-        console.log('Test if camera available');
-        navigator.getUserMedia = ( navigator.getUserMedia
-            || navigator.webkitGetUserMedia
-            || navigator.mozGetUserMedia
-            || navigator.msgGetUserMedia );
+    // $(function() {
+    //     console.log('Test if camera available');
+    //     navigator.getUserMedia = ( navigator.getUserMedia
+    //         || navigator.webkitGetUserMedia
+    //         || navigator.mozGetUserMedia
+    //         || navigator.msgGetUserMedia );
     
-        if(navigator.getUserMedia){
-            navigator.getUserMedia({video: true, audio: true},loadCamera,loadFail);
-        }
+    //     if(navigator.getUserMedia){
+    //         navigator.getUserMedia({video: true, audio: true},loadCamera,loadFail);
+    //     }
 
-    });
+    // });
 
     $(window).bind('beforeunload', function() {
         return 'Leave site?'

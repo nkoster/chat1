@@ -126,9 +126,11 @@ $(function() {
 
     socket.on("update_userlist", function(data) {
         var list = '';
+        var users = []
         data.userlist.forEach(function(element) {
             if (element !== null) {
                 var u = element.substring(0, element.lastIndexOf('@'));
+                users.push(u)
                 var ip = element.substring(element.lastIndexOf('@') + 1);
                 var myClass = element;
                 if (myClass[0] === '@') myClass = myClass.substring(1);
@@ -136,6 +138,8 @@ $(function() {
                 myClass + '" title="' + u + ' at ' + ip + '">' + u + '</span></b></span></p>'
             }
         });
+        socket.users = users
+        //console.log(socket.users)
         userlist.html(list)
     });
 
@@ -223,6 +227,17 @@ $(function() {
         // tab
         if (event.keyCode === 9 ) {
             event.preventDefault()
+            // var caretPos = document.activeElement.selectionStart
+            var messageWords = message.val().split(' ')
+            var searchInput = messageWords[messageWords.length -1]
+            var user = []
+            socket.users.forEach(function(element) {
+                if (element.includes(searchInput)) user.push(element)
+            })
+            if (user.length === 1) {
+                messageWords[messageWords.length - 1] = user[0]
+                message.val(messageWords.join(' '))
+            }
         }
         messageBuffer[messageBufferIndex] = message.val()
     });

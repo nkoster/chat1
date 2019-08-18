@@ -13,7 +13,8 @@ body, html {
 
 body {
     background: black;
-    background-image: url("leeuw.jpg");
+    /* background-image: url("leeuw.jpg"); */
+    background-image: url("teunis.jpg");
     background-size: cover;
 }
 

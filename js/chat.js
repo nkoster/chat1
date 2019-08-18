@@ -18,6 +18,7 @@ $(function() {
         message = $('#message'),
         messageBuffer = [],
         messageBufferIndex = 0,
+        searchHistory = false,
         username = $('#username'),
         send_message = $('#send_message'),
         chatroom = $('#chatroom'),
@@ -153,9 +154,12 @@ $(function() {
     
     message.bind('keydown', function(event) {
         if (event.keyCode === 13 && message.val() !== '') {
-            event.preventDefault();
-            messageBuffer[messageBuffer.length - 1] = message.val()
-            messageBuffer.push('')
+            event.preventDefault()
+            searchHistory = false
+            if (messageBuffer[messageBuffer.length - 2] !== message.val()) {
+                messageBuffer[messageBuffer.length - 1] = message.val()
+                messageBuffer.push('')
+            }
             //message.val('')
             messageBufferIndex = messageBuffer.length - 1
             if (message.val() === '/help') {
@@ -207,6 +211,13 @@ $(function() {
             }
             message.val('');
         }
+        // ctrl-r
+        if (event.keyCode === 82) {
+            if (event.ctrlKey) {
+                event.preventDefault()
+                searchHistory = true
+            }
+        }
         // arrow up
         if (event.keyCode === 38) {
             if (messageBufferIndex > 0) messageBufferIndex--
@@ -221,8 +232,9 @@ $(function() {
         }
         // escape
         if (event.keyCode === 27) {
-            messageBufferIndex = messageBuffer.length - 1;
+            messageBufferIndex = messageBuffer.length - 1
             message.val('')
+            if (searchHistory) searchHistory = false
         }
         // tab
         if (event.keyCode === 9 ) {
@@ -242,6 +254,23 @@ $(function() {
             if (user.length === 1) {
                 messageWords[messageWords.length - 1] = user[0]
                 message.val(messageWords.join(' '))
+            }
+        }
+        if (searchHistory) {
+            if (message.val().length > 0) {
+                var history = messageBuffer.slice(0, -1)
+                var found = []
+                for (var i=0; i<history.length; i++) {
+                    if (history[i].includes(message.val())) {
+                        found.push(history[i])
+                    }
+                }
+                if (found.length > 0) {
+                    if (found.length === 1) {
+                        event.preventDefault()
+                        message.val(found[0])
+                    }
+                }
             }
         }
         messageBuffer[messageBufferIndex] = message.val()

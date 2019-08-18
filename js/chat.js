@@ -233,7 +233,7 @@ $(function() {
         // escape
         if (event.keyCode === 27) {
             messageBufferIndex = messageBuffer.length - 1
-            message.val('')
+            if (!searchHistory) message.val('')
             if (searchHistory) searchHistory = false
         }
         // tab

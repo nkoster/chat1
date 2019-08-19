@@ -216,6 +216,7 @@ $(function() {
             if (event.ctrlKey) {
                 event.preventDefault()
                 searchHistory = true
+                message.css('background', '#ccccff')
             }
         }
         // arrow up
@@ -234,7 +235,10 @@ $(function() {
         if (event.keyCode === 27) {
             messageBufferIndex = messageBuffer.length - 1
             if (!searchHistory) message.val('')
-            if (searchHistory) searchHistory = false
+            if (searchHistory) {
+                searchHistory = false
+                message.css('background', '#ffffff')
+            }
         }
         // tab
         if (event.keyCode === 9 ) {

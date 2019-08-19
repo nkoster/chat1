@@ -156,11 +156,12 @@ $(function() {
         if (event.keyCode === 13 && message.val() !== '') {
             event.preventDefault()
             searchHistory = false
+            message.css('background', '#ffffff')
+                .parent().css('background', '#ffffff')
             if (messageBuffer[messageBuffer.length - 2] !== message.val()) {
                 messageBuffer[messageBuffer.length - 1] = message.val()
                 messageBuffer.push('')
             }
-            //message.val('')
             messageBufferIndex = messageBuffer.length - 1
             if (message.val() === '/help') {
                 help.forEach(function(h) {
@@ -215,8 +216,15 @@ $(function() {
         if (event.keyCode === 82) {
             if (event.ctrlKey) {
                 event.preventDefault()
-                searchHistory = true
-                message.css('background', '#ccccff')
+                if (searchHistory) {
+                    searchHistory = false
+                    message.css('background', '#ffffff')
+                        .parent().css('background', '#ffffff')
+                } else {
+                    searchHistory = true
+                    message.css('background', '#ccccff')
+                        .parent().css('background', '#ccccff')
+                }
             }
         }
         // arrow up
@@ -238,6 +246,7 @@ $(function() {
             if (searchHistory) {
                 searchHistory = false
                 message.css('background', '#ffffff')
+                    .parent().css('background', '#ffffff')
             }
         }
         // tab
@@ -720,7 +729,7 @@ $(function() {
     }, 0.5);
 
     document.getElementById('message').onblur = function() {
-        this.style.transition = 'all 0.5s ease-in-out';
+        this.style.transition = 'all 0.3s ease-in-out';
         this.parentElement.style.transition = 'all 0.3s ease-in-out'
         this.style.background = '#ccc';
         this.parentElement.style.background = '#ccc';
@@ -729,7 +738,7 @@ $(function() {
     }
 
     document.getElementById('message').onfocus = function() {
-        this.style.transition = 'all 0.5s ease-in-out';
+        this.style.transition = 'all 0.3s ease-in-out';
         this.parentElement.style.transition = 'all 0.2s ease-in-out'
         this.style.background = '#ffffff';
         this.parentElement.style.background = '#ffffff';

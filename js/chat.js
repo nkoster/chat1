@@ -270,7 +270,7 @@ $(function() {
             }
         }
         if (searchHistory) {
-            if (message.val().length > 0) {
+            if (messageBuffer[messageBuffer.length - 1].length > 0) {
                 var history = messageBuffer.slice(0, -1)
                 var found = []
                 for (var i=0; i<history.length; i++) {

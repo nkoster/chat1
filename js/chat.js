@@ -222,8 +222,8 @@ $(function() {
                         .parent().css('background', '#ffffff')
                 } else {
                     searchHistory = true
-                    message.css('background', '#ccccff')
-                        .parent().css('background', '#ccccff')
+                    message.css('background', '#bbccff')
+                        .parent().css('background', '#bbccff')
                 }
             }
         }
@@ -278,10 +278,13 @@ $(function() {
                         found.push(history[i])
                     }
                 }
-                if (found.length > 0) {
-                    if (found.length === 1) {
+                unique = found.filter(function(item, pos) {
+                    return found.indexOf(item) == pos;
+                })
+                if (unique.length > 0) {
+                    if (unique.length === 1) {
                         event.preventDefault()
-                        message.val(found[0])
+                        message.val(unique[0])
                     }
                 }
             }

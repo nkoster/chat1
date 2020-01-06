@@ -341,6 +341,10 @@ $(function() {
         var input = $('#input');
         input.bind('change', function() {
             var f = this.files[0];
+
+            // here we gonna put the chunks version
+            // instead of the "reader.result", below.
+
             if (f.size < 20000000) {
                 var reader = new FileReader();
                 reader.onload = function() {
